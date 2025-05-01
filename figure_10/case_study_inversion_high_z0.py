@@ -92,7 +92,7 @@ init_array_k_dep = np.linspace(bounds[1][0], bounds[1][1], pop_size)
 
 init_array = np.array([init_array_k_ero, init_array_k_dep]).T
 
-optimization_results = differential_evolution(wood, bounds, args = args,
+optimization_results = differential_evolution(channel_evolution, bounds, args = args,
                                               maxiter = max_iter, popsize = pop_size,
                                               recombination = recomb, #default is 0.7
                                               polish = False)
