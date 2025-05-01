@@ -75,7 +75,7 @@ with open('results/' + str(run_name) + '_params.txt','w') as params_file:  #writ
     for key, value in param_dict.items():  
         params_file.write('%s: %s\n' % (key, value))
 
-morph_vars_perturb = wood(time_to_run,
+morph_vars_perturb = channel_evolution(time_to_run,
      timestep,
      reach_length,
      Q,
