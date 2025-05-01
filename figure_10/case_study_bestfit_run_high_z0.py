@@ -19,8 +19,15 @@ from case_study_function import channel_evolution
 #parameter values, etc
 
 run_name = 'case_study_bestfit_high_z0'
-k_ero = 0.2764506604263795  #ratio of bed to bank erodibility, unitless
-k_dep = 88.11428991662648
+inversion_record_name = 'results/case_study_high_z0_inversion_record.csv'
+colnames = ['k_ero', 'k_dep', 'misfit']
+data = pd.read_csv(inversion_record_name, header = None, names = colnames).sort_values(by = 'misfit', ascending = False)
+
+
+#get bestfit k_ero and k_dep from inversion record
+
+k_ero = data.k_ero.iloc[-1]  #ratio of bed to bank erodibility, unitless
+k_dep = data.k_dep.iloc[-1]
 theta_deg = 60. #degrees; bank angle
 theta = np.radians(theta_deg)
 
@@ -79,7 +86,7 @@ sigma_z_vals = np.array([0.52, 0.75, 0.67])
 l_bed_obst_vals = np.array([11.0, 18.9, 17.1])
 l_bank_obst_vals = np.array([0.65, 0.61, 0.86])
 
-morph_vars_perturb = wood(time_to_run,
+morph_vars_perturb = channel_evolution(time_to_run,
      timestep,
      reach_length,
      Q_time_series_expanded,
