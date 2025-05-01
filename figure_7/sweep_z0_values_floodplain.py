@@ -11,7 +11,7 @@ sweep ONE AXIS of the parameter space in a parallelized way using multiprocessin
 from multiprocessing import Pool
 from functools import partial
 import numpy as np
-from wood_dynamic_function_9_PARALLEL import wood
+from roughness_function import wood
 import time
 import os
 
