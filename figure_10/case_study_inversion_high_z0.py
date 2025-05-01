@@ -9,7 +9,7 @@ differential evolution optimization"""
 
 import numpy as np
 import pandas as pd
-from case_study_inversion_function import wood
+from case_study_inversion_function import channel_evolution
 from scipy.optimize import differential_evolution
 
 #######INITIALIZE###########################################################

@@ -164,7 +164,7 @@ def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
     return R_r, S_r, d_r, f_r_over_f
 
 
-def wood(variable_args, *fixed_args):
+def channel_evolution(variable_args, *fixed_args):
     print('------------')
     
     k_ero = 10 ** variable_args[0] #NOTE THIS HAS BEEN LOGGED 

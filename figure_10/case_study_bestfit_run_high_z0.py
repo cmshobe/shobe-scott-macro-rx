@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 import copy as cp
 import matplotlib.pyplot as plt
-from case_study_function import wood
+from case_study_function import channel_evolution
 
 
 #######INITIALIZE###########################################################

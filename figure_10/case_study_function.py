@@ -167,7 +167,7 @@ def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
     return R_r, S_r, d_r, f_r_over_f, which_regime
 
 
-def wood(time_to_run,
+def channel_evolution(time_to_run,
          timestep,
          reach_length,
          Q_time_series,
