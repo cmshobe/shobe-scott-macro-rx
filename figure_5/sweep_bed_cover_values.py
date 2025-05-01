@@ -86,7 +86,7 @@ if __name__ == '__main__':
                  h_floodplain, use_fp) for l_bed_obstacle in param_array_tuple]
         
         #issue tasks to thread pool
-        results = p.starmap(wood, args)
+        results = p.starmap(channel_evolution, args)
         
         #output = [p.get() for p in results]
 
