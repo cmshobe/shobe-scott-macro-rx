@@ -1,0 +1,12 @@
+sigma_z: 0.5
+l_bed_obstacle: 0.0
+l_bank_obstacle: 0.0
+k_ero: 2.0
+k_dep: 20.0
+Q: 150
+Qs_in: 0.001
+theta: 60.0
+d50: 0.06
+h_fp: 2.0055933553059884
+runtime: 5000000000
+timestep: 100

@@ -1,0 +1,13 @@
+n_runs: 15
+k_ero: 2.0
+k_dep: 20.0
+Q: 150
+Qs_in: 0.001
+theta: 60.0
+d50: 0.06
+h_fp: 2.0055933553059884
+initial_slope: 0.0055593355305988265
+initial_width: 51.00417998438822
+reach_length: 10
+runtime: 10000000000
+timestep: 100
