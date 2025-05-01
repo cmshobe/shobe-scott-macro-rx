@@ -11,7 +11,7 @@ run one realization (for testing)
 import numpy as np
 import copy as cp
 import matplotlib.pyplot as plt
-from wood_trajectory_function import wood
+from roughness_trajectory_function import wood
 
 
 #######INITIALIZE###########################################################
