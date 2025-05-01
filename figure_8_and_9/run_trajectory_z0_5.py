@@ -17,7 +17,7 @@ from wood_trajectory_function import wood
 #######INITIALIZE###########################################################
 #parameter values, etc
 
-run_name = 'trajectory_z0_5_nofp'
+run_name = 'trajectory_z0_5'
 Q = 150 #m^3/s water discharge
 Qs_in = .001 #m^3/s sediment flux in
 sigma_z = 5.0 #roughness length scale including wood (ideally back-calculate from literature)
