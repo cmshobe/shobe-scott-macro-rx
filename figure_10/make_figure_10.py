@@ -143,8 +143,8 @@ c.ax.yaxis.set_visible(False)
 #cax.text(1.1, 0.93, 'high', transform=cax.transAxes, fontsize=16)
 cax.set_title('log(misfit) [-]', fontsize=12)
 
-misfit_scatter.set_xlabel('$K^*_{\mathrm{ero}}$ [-]', labelpad = 0)
-misfit_scatter.set_ylabel('$K^*_{\mathrm{dep}}$ [-]', labelpad = -5)
+misfit_scatter.set_xlabel('$k^*_{\mathrm{ero}}$ [-]', labelpad = 0)
+misfit_scatter.set_ylabel('$k^*_{\mathrm{dep}}$ [-]', labelpad = -5)
 
 misfit_scatter.set_xlim(k_ero_min, k_ero_max)
 misfit_scatter.set_ylim(k_dep_min, k_dep_max)
@@ -201,7 +201,7 @@ bestfit_k_ero = data.iloc[-1, 0]
 bestfit_k_dep = data.iloc[-1, 1]
 
 misfit_scatter.text(0.18, 0.47, 
-                      '$K^*_{\mathrm{ero}}$ = ' + '%.2f'%np.round(bestfit_k_ero, 2) + '\n' + '$K^*_{\mathrm{dep}}$ = ' + '%.1f'%np.round(bestfit_k_dep, 1), 
+                      '$k^*_{\mathrm{ero}}$ = ' + '%.2f'%np.round(bestfit_k_ero, 2) + '\n' + '$k^*_{\mathrm{dep}}$ = ' + '%.1f'%np.round(bestfit_k_dep, 1), 
                       transform=misfit_scatter.transAxes, fontsize = 12,
                       bbox = dict(edgecolor = 'k', facecolor = 'white', boxstyle='round', alpha = 0.5))
 print(max(bed_elev_data) - min(bed_elev_data))
@@ -301,8 +301,8 @@ misfit_scatter_2.scatter(data_2.k_ero.iloc[-1], data_2.k_dep.iloc[-1],
                             clip_on=False, marker = '*', edgecolor = 'white')
 
 
-misfit_scatter_2.set_xlabel('$K^*_{\mathrm{ero}}$ [-]', labelpad = 0)
-misfit_scatter_2.set_ylabel('$K^*_{\mathrm{dep}}$ [-]', labelpad = -5)
+misfit_scatter_2.set_xlabel('$k^*_{\mathrm{ero}}$ [-]', labelpad = 0)
+misfit_scatter_2.set_ylabel('$k^*_{\mathrm{dep}}$ [-]', labelpad = -5)
 
 misfit_scatter_2.set_xlim(k_ero_min, k_ero_max)
 misfit_scatter_2.set_ylim(k_dep_min, k_dep_max)
@@ -355,7 +355,7 @@ bestfit_k_dep_2 = data_2.iloc[-1, 1]
 
 
 misfit_scatter_2.text(0.23, 0.73, 
-                      '$K^*_{\mathrm{ero}}$ = ' + '%.2f'%np.round(bestfit_k_ero_2, 2) + '\n' + '$K^*_{\mathrm{dep}}$ = ' + '%.1f'%np.round(bestfit_k_dep_2, 1), 
+                      '$k^*_{\mathrm{ero}}$ = ' + '%.2f'%np.round(bestfit_k_ero_2, 2) + '\n' + '$k^*_{\mathrm{dep}}$ = ' + '%.1f'%np.round(bestfit_k_dep_2, 1), 
                       transform=misfit_scatter_2.transAxes, fontsize = 12,
                       bbox = dict(edgecolor = 'k', facecolor = 'white', boxstyle='round', alpha = 0.5))
 
