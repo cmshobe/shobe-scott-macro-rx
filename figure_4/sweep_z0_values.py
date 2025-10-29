@@ -17,7 +17,7 @@ import os
 
 # protect the entry point
 if __name__ == '__main__':
-    run_name = 'figure_4'
+    run_name = 'figure_4_test'
     n_steps = 15
     #total_runs = n_steps**3
     
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     k_dep = 20.
     
     time_to_run = 10000000000 #s
-    timestep = 100 #s
+    timestep = 50 #s
     
     reach_length = 10 #m
     S = 0.0055593355305988265#0.005208958660154328#0.006740351232927963

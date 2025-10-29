@@ -17,13 +17,13 @@ from roughness_trajectory_function import channel_evolution
 #######INITIALIZE###########################################################
 #parameter values, etc
 
-run_name = 'trajectory_z0_baseline'
+run_name = 'trajectory_z0_baseline_test'
 Q = 150 #m^3/s water discharge
 Qs_in = .001 #m^3/s sediment flux in
 sigma_z = 0.01 #roughness length scale including wood (ideally back-calculate from literature)
 l_bed_obstacle = 0. #fraction of bed covered by wood
 l_bank_obstacle = 0. #fraction of banks covered by wood
-k_ero = 2. #ratio of bed to bank erodibility, unitless
+k_ero = 0.1 #ratio of bed to bank erodibility, unitless
 k_dep = 20.
 theta_deg = 60. #degrees; bank angle
 theta = np.radians(theta_deg)
@@ -32,18 +32,18 @@ theta = np.radians(theta_deg)
 #e = 1.5 #range of 1.33-2; Rickenmann, 2011
 
 time_to_run = 5000000000#5000000000 #work out time units...
-timestep = 100 #CHECK UNITS
-print_interval = 10000000
+timestep = 10 #CHECK UNITS
+print_interval = 1000000
 save_interval = 100
 reach_length = 10 #meters
 #h_floodplain = 2.
-use_fp = 0 #0 for unconfined, 1 for confined
+use_fp = 1 #0 for unconfined, 1 for confined
 
 #read in starting equilibrium S and w values
 
-if run_name == 'trajectory_z0_baseline':
+if run_name == 'trajectory_z0_baseline_test':
     S = 0.001#0.00164 #setting slope for now
-    wb  = 50#20#25.053 #initial basal width [m]
+    wb  = 20#20#25.053 #initial basal width [m]
 else:
     baseline_name = 'trajectory_z0_baseline'
     print('loading baseline slope and width...')

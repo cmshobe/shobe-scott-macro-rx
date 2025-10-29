@@ -285,6 +285,13 @@ def channel_evolution(time_to_run,
         tau_bank = shear_stress_r * (Fw_tot / 2) * ((wb / d_r) * np.sin(theta) + np.cos(theta))
         tau_bed = shear_stress_r * (1 - Fw_tot) * (1 + (d_r / (wb * np.tan(theta))))
         
+        tau_star_bank = tau_bank / ((rho_s - rho_w) * g * d50)
+        tau_star_bed = tau_bed / ((rho_s - rho_w) * g * d50)
+        
+        #tau_crit = tau_star_crit * (rho_s - rho_w) * g * d50
+        excess_tau_bank = np.maximum(tau_star_bank - tau_star_crit, 0)
+        excess_tau_bed = np.maximum(tau_star_bed - tau_star_crit, 0)
+        
         if (np.isnan(tau_bank) == True) or (np.isnan(tau_bed) == True):
             sys.exit('nan shear stress')
         if (tau_bed <=0) or (tau_bank <= 0):
@@ -294,15 +301,15 @@ def channel_evolution(time_to_run,
         #PART 4: CALCULATION OF BED AND BANK EROSION
         
         #instead of distinguishing net erosion and net deposition...
-        if fc_bed == 1:
+        if (fc_bed == 1) or (excess_tau_bed == 0):
             E_bed = 0
         else:
-            E_bed = (Qs_out / reach_length) * (1 / (((1 / k_ero) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * l_bank + wb))
+            E_bed = (Qs_out / reach_length) * (1 / (((1 / k_ero) * (np.power(excess_tau_bank, 3/2) / np.power(excess_tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * l_bank + wb))
         
-        if fc_bank == 1:
+        if (fc_bank == 1) or (excess_tau_bank == 0):
             E_bank = 0
         else:
-            E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
+            E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(excess_tau_bed, 3/2) / np.power(excess_tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
         
         if fc_bank == 1:
             D_bed = 0

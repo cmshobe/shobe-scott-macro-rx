@@ -164,6 +164,9 @@ observed_widths = np.array([104, 108, 114, 119])
 width_timeseries.plot(time_array, width_data, linewidth = 1, color = 'k',
                       label = 'modeled')
 
+width_timeseries.errorbar(observed_times, observed_widths, yerr = np.repeat(5, 4), 
+                               xerr = None, fmt = 'none', color = 'darkgray', zorder = 0)
+
 width_timeseries.scatter(observed_times, observed_widths, marker = 's', 
                          facecolor = 'darkgray', edgecolor = 'k',
                          label = 'observed')
@@ -186,6 +189,8 @@ observed_bed_elevs = np.array([0.007, 0.007, 0.008, 0.007]) * 117.1
 #observed_bed_elevs -= min(observed_bed_elevs)
 
 bed_elev_timeseries.plot(time_array, bed_elev_data, linewidth = 1, color = 'k')
+bed_elev_timeseries.errorbar(observed_times, observed_bed_elevs, yerr = np.repeat(0.2, 4), 
+                               xerr = None, fmt = 'none', color = 'darkgray', zorder = 0)
 bed_elev_timeseries.scatter(observed_times, observed_bed_elevs, marker = 's', facecolor = 'darkgray', edgecolor = 'k')
 bed_elev_timeseries.set_ylabel('$h$ [m]')
 
@@ -322,6 +327,8 @@ observed_widths = np.array([104, 108, 114, 119])
 
 width_timeseries_2.plot(time_array, width_data, linewidth = 1, color = 'k')
 
+width_timeseries_2.errorbar(observed_times, observed_widths, yerr = np.repeat(5, 4), 
+                               xerr = None, fmt = 'none', color = 'darkgray', zorder = 0)
 
 width_timeseries_2.scatter(observed_times, observed_widths, marker = 's', facecolor = 'darkgray', edgecolor = 'k')
 
@@ -340,6 +347,8 @@ observed_bed_elevs = np.array([0.007, 0.007, 0.008, 0.007]) * 117.1
 #observed_bed_elevs -= min(observed_bed_elevs)
 
 bed_elev_timeseries_2.plot(time_array, bed_elev_data, linewidth = 1, color = 'k')
+bed_elev_timeseries_2.errorbar(observed_times, observed_bed_elevs, yerr = np.repeat(0.2, 4), 
+                               xerr = None, fmt = 'none', color = 'darkgray', zorder = 0)
 bed_elev_timeseries_2.scatter(observed_times, observed_bed_elevs, marker = 's', facecolor = 'darkgray', edgecolor = 'k')
 bed_elev_timeseries_2.set_ylabel('$h$ [m]')
 
