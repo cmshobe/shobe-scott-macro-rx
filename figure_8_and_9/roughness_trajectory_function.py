@@ -79,7 +79,7 @@ def base_flow_resistance(Q, d, wb, theta, a1, sigma_z, g, S, chan_depth,
     return manning_strickler_term, d
 
 
-@nb.jit(nb.types.Tuple((nb.float64, nb.float64, nb.float64, nb.float64))(nb.float64, nb.float64,
+@nb.jit(nb.types.Tuple((nb.float64, nb.float64, nb.float64, nb.float64, nb.int64))(nb.float64, nb.float64,
                                                  nb.float64, nb.float64,
                                                  nb.float64, nb.float64,
                                                  nb.float64, nb.float64,
@@ -88,6 +88,7 @@ def base_flow_resistance(Q, d, wb, theta, a1, sigma_z, g, S, chan_depth,
                                                  nb.int8),nopython=True)
 def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
                          manning_strickler_term, e, use_fp):
+    rough_iter = 0
     calc_Q_r = 0
     while np.isclose(calc_Q_r, Q, rtol=1e-3) == False: 
         #while we haven't converged on a roughened depth that yields the correct discharge value...
@@ -128,6 +129,8 @@ def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
         
         #finally, calculate discharge as product of the three terms
         calc_Q_r = xs_area_r * VPE_term * sqrt_term_r
+        
+        rough_iter += 1
 
     if (d_r > chan_depth) and (use_fp == 1): #if flow is going overbank...
         calc_Q_r = Q #trip the flag to stop accruing depth
@@ -160,7 +163,7 @@ def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
         
         S_r = S * np.power(sqrt_f_over_f_r, e) #* np.power(d / d_r, e / 6)
         
-    return R_r, S_r, d_r, f_r_over_f
+    return R_r, S_r, d_r, f_r_over_f, rough_iter
 
 
 def channel_evolution(time_to_run,
@@ -248,7 +251,7 @@ def channel_evolution(time_to_run,
             sys.exit('MANNING term is nan')
         
         #total flow resistance
-        R_r, S_r, d_r, f_r_over_f = total_flow_resistance(Q, d_r, 
+        R_r, S_r, d_r, f_r_over_f, rough_iter = total_flow_resistance(Q, d_r, 
                                                                       wb, theta, 
                                                           a1, a2, sigma_z, 
                                                           g, S, chan_depth, 
@@ -285,6 +288,13 @@ def channel_evolution(time_to_run,
         tau_bank = shear_stress_r * (Fw_tot / 2) * ((wb / d_r) * np.sin(theta) + np.cos(theta))
         tau_bed = shear_stress_r * (1 - Fw_tot) * (1 + (d_r / (wb * np.tan(theta))))
         
+        tau_star_bank = tau_bank / ((rho_s - rho_w) * g * d50)
+        tau_star_bed = tau_bed / ((rho_s - rho_w) * g * d50)
+        
+        #tau_crit = tau_star_crit * (rho_s - rho_w) * g * d50
+        excess_tau_bank = np.maximum(tau_star_bank - tau_star_crit, 0)
+        excess_tau_bed = np.maximum(tau_star_bed - tau_star_crit, 0)
+        
         if (np.isnan(tau_bank) == True) or (np.isnan(tau_bed) == True):
             sys.exit('nan shear stress')
         if (tau_bed <=0) or (tau_bank <= 0):
@@ -294,15 +304,15 @@ def channel_evolution(time_to_run,
         #PART 4: CALCULATION OF BED AND BANK EROSION
         
         #instead of distinguishing net erosion and net deposition...
-        if fc_bed == 1:
+        if (fc_bed == 1) or (excess_tau_bed == 0):
             E_bed = 0
         else:
-            E_bed = (Qs_out / reach_length) * (1 / (((1 / k_ero) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * l_bank + wb))
+            E_bed = (Qs_out / reach_length) * (1 / (((1 / k_ero) * (np.power(excess_tau_bank, 3/2) / np.power(excess_tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * l_bank + wb))
         
-        if fc_bank == 1:
+        if (fc_bank == 1) or (excess_tau_bank == 0):
             E_bank = 0
         else:
-            E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
+            E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(excess_tau_bed, 3/2) / np.power(excess_tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
         
         if fc_bank == 1:
             D_bed = 0
@@ -337,6 +347,17 @@ def channel_evolution(time_to_run,
         if time % print_interval == 0:
             #iter += 1
             print('time = ' + str(time))
+            print('rough_iter = ' + str(rough_iter))
+            print('depth = ' + str(d_r))
+            print('wb = ' + str(wb))
+            print('tau_total = ' + str(shear_stress_r))
+            print('tau_bed = ' + str(tau_bed))
+            print('tau_bank = ' + str(tau_bank))
+            print('tau_crit_Pa = ' + str(tau_star_crit * ((rho_s - rho_w) * g * d50)))
+            print('excess_taustar_bed = ' + str(excess_tau_bed))
+            print('excess_taustar_bank = ' + str(excess_tau_bank))
+            print('dQs = ' + str(Qs_out - Qs_in))
+            print('---------------------')
 
         if time % save_interval == 0:
             iter += 1
