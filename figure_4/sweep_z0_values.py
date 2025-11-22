@@ -17,7 +17,7 @@ import os
 
 # protect the entry point
 if __name__ == '__main__':
-    run_name = 'figure_4_test'
+    run_name = 'figure_4_rev1'
     n_steps = 15
     #total_runs = n_steps**3
     

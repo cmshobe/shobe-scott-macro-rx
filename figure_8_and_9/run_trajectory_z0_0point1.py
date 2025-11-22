@@ -17,14 +17,14 @@ from roughness_trajectory_function import channel_evolution
 #######INITIALIZE###########################################################
 #parameter values, etc
 
-run_name = 'trajectory_z0_0point1'
+run_name = 'trajectory_z0_baseline_rev1'
 Q = 150 #m^3/s water discharge
 Qs_in = .001 #m^3/s sediment flux in
-sigma_z = 0.1 #roughness length scale including wood (ideally back-calculate from literature)
+sigma_z = 0.01 #roughness length scale including wood (ideally back-calculate from literature)
 l_bed_obstacle = 0. #fraction of bed covered by wood
 l_bank_obstacle = 0. #fraction of banks covered by wood
 k_ero = 2. #ratio of bed to bank erodibility, unitless
-k_dep = 20.
+k_dep = 20. #ratio of bed to bank deposition, unitless
 theta_deg = 60. #degrees; bank angle
 theta = np.radians(theta_deg)
 
@@ -35,13 +35,13 @@ time_to_run = 5000000000#5000000000 #work out time units...
 timestep = 100 #CHECK UNITS
 print_interval = 10000000
 save_interval = 100
-reach_length = 10 #meters
+reach_length = 100 #meters
 #h_floodplain = 2.
 use_fp = 0 #0 for unconfined, 1 for confined
 
 #read in starting equilibrium S and w values
 
-if run_name == 'trajectory_z0_baseline':
+if run_name == 'trajectory_z0_baseline_rev1':
     S = 0.001#0.00164 #setting slope for now
     wb  = 50#20#25.053 #initial basal width [m]
 else:
@@ -96,16 +96,15 @@ morph_vars_perturb = channel_evolution(time_to_run,
 
 save_widths = morph_vars_perturb[0]
 save_slopes = morph_vars_perturb[1]
-save_depths = morph_vars_perturb[2]
-save_depths_r = morph_vars_perturb[3]
-save_qs_out = morph_vars_perturb[4]
-save_fw = morph_vars_perturb[5]
-save_tau_bed = morph_vars_perturb[6]
-save_tau_bank = morph_vars_perturb[7]
-save_S_r = morph_vars_perturb[8]
-save_fr_over_f0 = morph_vars_perturb[9]
-save_chan_depths = morph_vars_perturb[10]
-teq = morph_vars_perturb[11]
+save_depths_r = morph_vars_perturb[2]
+save_qs_out = morph_vars_perturb[3]
+save_fw = morph_vars_perturb[4]
+save_tau_bed = morph_vars_perturb[5]
+save_tau_bank = morph_vars_perturb[6]
+save_S_r = morph_vars_perturb[7]
+save_fr_over_f0 = morph_vars_perturb[8]
+save_chan_depths = morph_vars_perturb[9]
+teq = morph_vars_perturb[10]
 
 
 #save everything as npys
