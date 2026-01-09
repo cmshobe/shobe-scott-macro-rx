@@ -16,6 +16,9 @@ import sys
 import numpy as np
 import copy as cp
 import numba as nb
+import time as timer
+
+start_time = timer.time()
 
 #@nb.jit(nb.types.Tuple((nb.float64, nb.float64))(nb.float64, nb.float64,
 #                                                 nb.float64, nb.float64,
@@ -189,7 +192,7 @@ def channel_evolution(time_to_run,
     
     
     #constants that are not model parameters
-    tolerance_over_timestep = 2e-11
+    tolerance_over_timestep = 1e-13
     a1 = 6.5 #VPE constant
     a2 = 2.5 #VPE constant
     rho_w = 1000 #kg/m^3; water density
@@ -374,7 +377,7 @@ def channel_evolution(time_to_run,
         
         
         
-        if (chan_depth <= 0) or np.isclose(chan_depth, 0, atol = 0.001, rtol = 0):
+        if ((chan_depth <= 0) and use_fp == 1) or (np.isclose(chan_depth, 0, atol = 0.001, rtol = 0) and use_fp == 1):
             print('channel filled completely before max time')
             print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' + str(l_bank_obstacle))
             print(str(time) + '//' + str(time / 3.154e7))
@@ -389,6 +392,8 @@ def channel_evolution(time_to_run,
             print(str(time) + '//' + str(time / 3.154e7))
             kill_flag = 1
             teq = time
+            end_time = timer.time()
+            print('Runtime: ' + str(end_time - start_time) + 'seconds')
         #else model should keep running
         else:
             prior_w = cp.deepcopy(wb)
@@ -398,4 +403,6 @@ def channel_evolution(time_to_run,
         print('max time reached before SS')
         print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' + str(l_bank_obstacle))
         teq = -9999
+        end_time = timer.time()
+        print('Runtime: ' + str(end_time - start_time) + 'seconds')
     return (wb, d_r, S, S_r, tau_bed, tau_bank, f_r_over_f, teq)

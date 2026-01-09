@@ -12,15 +12,18 @@ import numpy as np
 import copy as cp
 import matplotlib.pyplot as plt
 from roughness_trajectory_function import channel_evolution
+import time
+
+start_time = time.time()
 
 
 #######INITIALIZE###########################################################
 #parameter values, etc
 
-run_name = 'trajectory_z0_baseline_rev1'
+run_name = 'trajectory_z0_0point1_AGUtest_short'
 Q = 150 #m^3/s water discharge
 Qs_in = .001 #m^3/s sediment flux in
-sigma_z = 0.01 #roughness length scale including wood (ideally back-calculate from literature)
+sigma_z = 0.1 #roughness length scale including wood (ideally back-calculate from literature)
 l_bed_obstacle = 0. #fraction of bed covered by wood
 l_bank_obstacle = 0. #fraction of banks covered by wood
 k_ero = 2. #ratio of bed to bank erodibility, unitless
@@ -31,11 +34,11 @@ theta = np.radians(theta_deg)
 #constants that are not model parameters
 #e = 1.5 #range of 1.33-2; Rickenmann, 2011
 
-time_to_run = 5000000000#5000000000 #work out time units...
-timestep = 100 #CHECK UNITS
-print_interval = 10000000
-save_interval = 100
-reach_length = 100 #meters
+time_to_run = 90000000#5000000000 #work out time units...
+timestep = 1000 #CHECK UNITS
+print_interval = 1000
+save_interval = 1000
+reach_length = 1000 #meters
 #h_floodplain = 2.
 use_fp = 0 #0 for unconfined, 1 for confined
 
@@ -45,7 +48,7 @@ if run_name == 'trajectory_z0_baseline_rev1':
     S = 0.001#0.00164 #setting slope for now
     wb  = 50#20#25.053 #initial basal width [m]
 else:
-    baseline_name = 'trajectory_z0_baseline'
+    baseline_name = 'trajectory_z0_baseline_rev1'
     print('loading baseline slope and width...')
     baseline_slopes = np.load('results/' + str(baseline_name) + '_slopes.npy')
     S = baseline_slopes[np.where(np.load('results/' + str(baseline_name) + '_slopes.npy') > 0)[0][-1]] #last slope from baseline
@@ -99,12 +102,17 @@ save_slopes = morph_vars_perturb[1]
 save_depths_r = morph_vars_perturb[2]
 save_qs_out = morph_vars_perturb[3]
 save_fw = morph_vars_perturb[4]
-save_tau_bed = morph_vars_perturb[5]
-save_tau_bank = morph_vars_perturb[6]
-save_S_r = morph_vars_perturb[7]
-save_fr_over_f0 = morph_vars_perturb[8]
-save_chan_depths = morph_vars_perturb[9]
-teq = morph_vars_perturb[10]
+save_tau_total = morph_vars_perturb[5]
+save_tau_bed = morph_vars_perturb[6]
+save_tau_bank = morph_vars_perturb[7]
+save_S_r = morph_vars_perturb[8]
+save_fr_over_f0 = morph_vars_perturb[9]
+save_chan_depths = morph_vars_perturb[10]
+teq = morph_vars_perturb[11]
+
+#shortcuts to retrieve final width and slope values:
+#save_widths[np.where(save_widths > 0)[0][-1]]
+#save_slopes[np.where(save_slopes > 0)[0][-1]]
 
 
 #save everything as npys
@@ -113,10 +121,13 @@ np.save('results/' + run_name +'_slopes.npy', save_slopes)
 np.save('results/' + run_name +'_e_slopes.npy', save_S_r)
 np.save('results/' + run_name +'_depths_r.npy', save_depths_r)
 np.save('results/' + run_name +'_qs_out.npy', save_qs_out)
+np.save('results/' + run_name +'_tau_total.npy', save_tau_total)
 np.save('results/' + run_name +'_tau_bed.npy', save_tau_bed)
 np.save('results/' + run_name +'_tau_bank.npy', save_tau_bank)
 np.save('results/' + run_name +'_fr_over_f0.npy', save_fr_over_f0)
 np.save('results/' + run_name +'_chan_depths.npy', save_chan_depths)
 np.save('results/' + run_name +'_teq.npy', teq)
 
+end_time = time.time()
 
+print('Runtime: ' + str(end_time - start_time) + 'seconds')

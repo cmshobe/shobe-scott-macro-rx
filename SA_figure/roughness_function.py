@@ -5,7 +5,7 @@ Created on 9 Jan 2025
 
 @author: charlesshobe
 
-VERSION 9!!
+VERSION 9!! PARALLEL
 -this is version 5 but with dynamic depth (= version 7)
 -but then modified to get hydraulics right!
 
@@ -16,12 +16,15 @@ import sys
 import numpy as np
 import copy as cp
 import numba as nb
+import time as timer
 
-# @nb.jit(nb.types.Tuple((nb.float64, nb.float64))(nb.float64, nb.float64,
-#                                                  nb.float64, nb.float64,
-#                                                  nb.float64, nb.float64,
-#                                                  nb.float64, nb.float64,
-#                                                  nb.float64, nb.int8),nopython=True)
+start_time = timer.time()
+
+#@nb.jit(nb.types.Tuple((nb.float64, nb.float64))(nb.float64, nb.float64,
+#                                                 nb.float64, nb.float64,
+#                                                 nb.float64, nb.float64,
+#                                                 nb.float64, nb.float64,
+#                                                 nb.float64, nb.int8),nopython=True)
 # def base_flow_resistance(Q, d, wb, theta, a1, sigma_z, g, S, chan_depth,
 #                          use_fp):
 #     calc_Q = 0
@@ -53,7 +56,7 @@ import numba as nb
         
 #         #finally, calculate discharge as product of the three terms
 #         calc_Q = xs_area * manning_strickler_term * sqrt_term
-        
+
 #     if (d > chan_depth) and (use_fp == 1): #if flow is going overbank...
 #         calc_Q = Q #trip the flag to stop accruing depth
 #         d = chan_depth
@@ -75,11 +78,11 @@ import numba as nb
           
 #         #square root term
 #         sqrt_term = np.power(g * R * S, 1/2)
-
+            
 #     return manning_strickler_term, d
 
 
-@nb.jit(nb.types.Tuple((nb.float64, nb.float64, nb.float64, nb.float64, nb.int64))(nb.float64, nb.float64,
+@nb.jit(nb.types.Tuple((nb.float64, nb.float64, nb.float64, nb.float64))(nb.float64, nb.float64,
                                                  nb.float64, nb.float64,
                                                  nb.float64, nb.float64,
                                                  nb.float64, nb.float64,
@@ -88,7 +91,7 @@ import numba as nb
                                                  nb.int8),nopython=True)
 def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
                          e, use_fp):
-    rough_iter = 0
+    
     calc_Q_r = 0
     while np.isclose(calc_Q_r, Q, rtol=1e-3) == False: 
         #while we haven't converged on a roughened depth that yields the correct discharge value...
@@ -97,7 +100,7 @@ def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
             d_r += 1e-5
         elif calc_Q_r > Q:
             d_r -= 1e-5
-
+        
         #break up numerical solution into component terms so it isn't so crazy
         width_area_term_r = wb + d_r / np.tan(theta) #this is hard to explain: it's the term that gets multiplied by depth to give XS area. It's wb + d/tan(theta)
         
@@ -131,8 +134,8 @@ def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
         #finally, calculate discharge as product of the three terms
         calc_Q_r = xs_area_r * VPE_term * sqrt_term_r
         
-        rough_iter += 1
-
+        
+        
     if (d_r > chan_depth) and (use_fp == 1): #if flow is going overbank...
         calc_Q_r = Q #trip the flag to stop accruing depth
     
@@ -166,7 +169,7 @@ def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
         
         S_r = S * np.power(sqrt_f_over_f_r, e) #* np.power(d / d_r, e / 6)
         
-    return R_r, S_r, d_r, f_r_over_f, rough_iter
+    return R_r, S_r, d_r, f_r_over_f
 
 
 def channel_evolution(time_to_run,
@@ -184,9 +187,9 @@ def channel_evolution(time_to_run,
          S,
          d50,
          h_floodplain,
-         use_fp,
-         print_interval,
-         save_interval):
+         use_fp):
+    
+    
     
     #constants that are not model parameters
     tolerance_over_timestep = 1e-13
@@ -205,44 +208,42 @@ def channel_evolution(time_to_run,
     ####RUN#####################################################################
     #set up time loop
     time = 0
-    iter = 0
+    #iter = 0
     
     #d = 0.01 #guess for depth w/o roughness; loop will adjust
     d_r = 0.01 #guess for depth incl. roughness; loop will adjust
-
-    save_widths = np.repeat(-99., int(time_to_run / save_interval) + 1)
-    save_slopes = cp.deepcopy(save_widths)
-    #save_depths = cp.deepcopy(save_widths)#np.ones(int(time_to_run / save_interval) + 1)
-    save_depths_r = cp.deepcopy(save_widths)
-    save_qs_out = cp.deepcopy(save_widths)
-    save_fw = cp.deepcopy(save_widths)
-    save_tau_total = cp.deepcopy(save_widths)
-    save_tau_bed = cp.deepcopy(save_widths)
-    save_tau_bank = cp.deepcopy(save_widths)
-    save_S_r = cp.deepcopy(save_widths)
-    save_fr_over_f0 = cp.deepcopy(save_widths)
-    save_chan_depths = cp.deepcopy(save_widths)
+    
+    #save_widths = np.zeros(int(time_to_run / timestep) + 1)
+    #save_slopes = cp.deepcopy(save_widths)
+    #save_depths = cp.deepcopy(save_widths)
+    #save_depths_r = cp.deepcopy(save_widths)
+    #save_qs_out = cp.deepcopy(save_widths)
+    #save_tau_bed = cp.deepcopy(save_widths)
+    #save_tau_bank = cp.deepcopy(save_widths)
+    #save_S_r = cp.deepcopy(save_widths)
+    #save_fr_over_f0 = cp.deepcopy(save_widths)
 
 
-    save_widths[0] = wb
-    save_slopes[0] = S
+    #save_widths[0] = wb
+    #save_slopes[0] = S
     #save_depths[0] = 0
-    save_depths_r[0] = 0
-    save_qs_out[0] = 0
-    save_fw[0] = 0
-    save_tau_total[0] = 0
-    save_tau_bed[0] = 0
-    save_tau_bank[0] = 0
-    save_S_r[0] = 0
-    save_fr_over_f0[0] = 0
-    save_chan_depths[0] = chan_depth
-
+    #save_depths_r[0] = 0
+    #save_qs_out[0] = 0
+    #save_tau_bed[0] = 0
+    #save_tau_bank[0] = 0
+    #save_S_r[0] = 0
+    #save_fr_over_f0[0] = 0
+    
+    
+    
+    
+    
     prior_w = 0
     prior_S = 0
     
     kill_flag = 0
     while kill_flag == 0 and time < time_to_run:
-
+        
         #PART 1: HYDRAULICS
         #base-level flow resistance
         #manning_strickler_term, d = base_flow_resistance(Q, d, wb, theta, a1, 
@@ -256,17 +257,17 @@ def channel_evolution(time_to_run,
         #    sys.exit('MANNING term is nan')
         
         #total flow resistance
-        R_r, S_r, d_r, f_r_over_f, rough_iter = total_flow_resistance(Q, d_r, 
+        R_r, S_r, d_r, f_r_over_f = total_flow_resistance(Q, d_r, 
                                                                       wb, theta, 
                                                           a1, a2, sigma_z, 
                                                           g, S, chan_depth, 
                                                           e,
                                                           use_fp)
-        
+            
         #PART 2: BEDLOAD TRANSPORT
         shear_stress_r = rho_w * g * R_r * S_r
         shields_stress = shear_stress_r / ((rho_s - rho_w) * g * d50)
-
+        
         #calc water surface width with roughness
         w_r = wb + 2 * (d_r / np.tan(theta))
         
@@ -282,12 +283,12 @@ def channel_evolution(time_to_run,
         
         
         Qs_out = 3.97 * np.power((rho_s - rho_w) / rho_w, 1/2) * np.power(g, 1/2) * np.power(np.maximum(shields_stress - tau_star_crit, 0), 3/2) * np.power(d50, 3/2) * w_r * (1 - fc_tot)
-
+        
         #PART 3: CALCULATION OF BANK AND BED SHEAR STRESSES
         
         #calc Fw
         Fw_tot = 1.766 * ((wb / (2 * d_r)) * np.sin(theta) + 1.5)**(-1.4026)
-        
+            
         #calc tau bank and bed
         tau_bank = shear_stress_r * (Fw_tot / 2) * ((wb / d_r) * np.sin(theta) + np.cos(theta))
         tau_bed = shear_stress_r * (1 - Fw_tot) * (1 + (d_r / (wb * np.tan(theta))))
@@ -303,44 +304,41 @@ def channel_evolution(time_to_run,
             sys.exit('nan shear stress')
         if (tau_bed <=0) or (tau_bank <= 0):
             sys.exit('ERROR <=zero shear stress')
-
         
+
         #PART 4: CALCULATION OF BED AND BANK EROSION
         
         #CMS 11/21/2025:
-        #if (fc_bed == 1) or (fc_bank == 1):
-        #    print('-----------')
-        #    print('fc_bed = ' + str(fc_bed))
-        #    print('fc_bank = ' + str(fc_bank))
-        #    print('fc_tot = ' + str(fc_tot))
-        #    sys.exit("failed: bank or bed cover term = 1")
+        if (fc_bed == 1) or (fc_bank == 1):
+            print('-----------')
+            print('fc_bed = ' + str(fc_bed))
+            print('fc_bank = ' + str(fc_bank))
+            print('fc_tot = ' + str(fc_tot))
+            sys.exit("failed: bank or bed cover term = 1")
         
         #instead of distinguishing net erosion and net deposition...
-        if (fc_bed == 1) and (fc_bank != 1):# or (excess_tau_bed == 0):
+        if (fc_bed == 1):# or (excess_tau_bed == 0):
             E_bed = 0
-            E_bank = Qs_out / (reach_length * l_bank)
-            D_bank = 0
-            D_bed = Qs_in / (reach_length * wb)
-            
-        elif (fc_bank == 1) and (fc_bed != 1):# or (excess_tau_bank == 0):
-            E_bank = 0
-            E_bed = Qs_out / (reach_length * wb)
-            D_bed = 0
-            D_bank = Qs_in / (reach_length * l_bank)
-            
-        elif (fc_bed == 1) and (fc_bank == 1):
-            #E_bank = 0
-            #E_bed = 0
-            #D_bank = 
-            sys.exit("failed: bank AND bed cover term BOTH = 1")
-            
-        else: #nothing is fully covered
+        else:
             #E_bed = (Qs_out / reach_length) * (1 / (((1 / k_ero) * (np.power(excess_tau_bank, 3/2) / np.power(excess_tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * l_bank + wb))
             E_bed = (Qs_out / reach_length) * (1 / (((1 / k_ero) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * l_bank + wb))
-            D_bank = ((Qs_in) / reach_length) * (1 / (((k_dep) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * wb + l_bank))
-            E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
-            D_bed = ((Qs_in) / reach_length) * (1 / (((1 / (k_dep)) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * l_bank + wb))
 
+        if (fc_bank == 1):# or (excess_tau_bank == 0):
+            E_bank = 0
+        else:
+            #E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(excess_tau_bed, 3/2) / np.power(excess_tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
+            E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
+
+        if fc_bank == 1:
+            D_bed = 0
+        else:
+            D_bed = ((Qs_in) / reach_length) * (1 / (((1 / (k_dep)) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * l_bank + wb))
+        
+        if fc_bed == 1:
+            D_bank = 0
+        else:
+            D_bank = ((Qs_in) / reach_length) * (1 / (((k_dep) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * wb + l_bank))
+        
         dh_bed = (D_bed - E_bed) / (1 - phi)
         dh_bank = (D_bank - E_bank) / (1 - phi)
         
@@ -352,64 +350,37 @@ def channel_evolution(time_to_run,
         
         #update slope in response to new bed elevation assuming next node downstream maintains constant elevation
         S = (h_node - h_baselevel) / reach_length
-            
+        
         if S <= 0:
             sys.exit("failed: slope <= 0")
-    
+        
         #adjust basal width
         wb += (2 * ((-dh_bank / np.sin(theta)) - (-dh_bed / np.tan(theta))) * timestep)
         
         time += timestep
         
-        if (time % print_interval == 0) or (time == timestep):
-            #iter += 1
-            print('time = ' + str(time))
-            print('rough_iter = ' + str(rough_iter))
-            print('depth = ' + str(d_r))
-            print('h_floodplain = ' + str(h_floodplain))
-            print('h_node = ' + str(h_node))
-            print('chan_depth = ' + str(chan_depth))
-            #print('h_bed = ' + str(h_node))
-            print('wb = ' + str(wb))
-            print('slope = ' + str(S))
-            print('tau_total = ' + str(shear_stress_r))
-            print('tau_bed = ' + str(tau_bed))
-            print('tau_bank = ' + str(tau_bank))
-            print('fc_bed = ' + str(fc_bed))
-            print('fc_bank = ' + str(fc_bank))
-            print('fc_tot = ' + str(fc_tot))
-            #print('tau_crit_Pa = ' + str(tau_star_crit * ((rho_s - rho_w) * g * d50)))
-            #print('excess_taustar_bed = ' + str(excess_tau_bed))
-            #print('excess_taustar_bank = ' + str(excess_tau_bank))
-            print('Qs_out = ' + str(Qs_out))
-            print('Qs_in = ' + str(Qs_in))
-            print('dQs = ' + str(Qs_out - Qs_in))
-            print('dh_bed = ' + str(dh_bed))
-            print('dh_bank = ' + str(dh_bank))
-            print('---------------------')
-            mass_bal_check = -(dh_bed * wb * (1 - phi)) - (dh_bank * l_bank * (1 - phi)) + (Qs_in / reach_length) - (Qs_out / reach_length)
-            print('mass balance check: ' + str(mass_bal_check))
-            print('---------------------')
-
-        if time % save_interval == 0:
-            iter += 1
-            save_widths[iter] = wb
-            save_slopes[iter] = S
-            #save_depths[iter] = d
-            save_depths_r[iter] = d_r
-            save_qs_out[iter] = Qs_out
-            save_fw[iter] = Fw_tot
-            save_tau_total[iter] = shear_stress_r
-            save_tau_bed[iter] = tau_bed
-            save_tau_bank[iter] = tau_bank
-            save_S_r[iter] = S_r
-            save_fr_over_f0[iter] = f_r_over_f
-            save_chan_depths[iter] = chan_depth
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         if ((chan_depth <= 0) and use_fp == 1) or (np.isclose(chan_depth, 0, atol = 0.001, rtol = 0) and use_fp == 1):
             print('channel filled completely before max time')
-            print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' + str(l_bank_obstacle))
-            print(time)
+            print(str(sigma_z) + ' // ' + str(k_ero) + ' // ' + str(k_dep))
+            print(str(time) + '//' + str(time / 3.154e7))
             kill_flag = 1
             teq = time
         
@@ -417,10 +388,12 @@ def channel_evolution(time_to_run,
         atol = 0
         if np.isclose(prior_w, wb, rtol = rtol, atol = atol) and np.isclose(prior_S, S, rtol = rtol, atol = atol):#check to see if width and slope are at steady state
             print('reached SS before max time')
-            print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' + str(l_bank_obstacle))
-            print(time)
+            print(str(sigma_z) + ' // ' + str(k_ero) + ' // ' + str(k_dep))
+            print(str(time) + '//' + str(time / 3.154e7))
             kill_flag = 1
             teq = time
+            end_time = timer.time()
+            print('Runtime: ' + str(end_time - start_time) + 'seconds')
         #else model should keep running
         else:
             prior_w = cp.deepcopy(wb)
@@ -428,8 +401,8 @@ def channel_evolution(time_to_run,
 
     if kill_flag == 0:
         print('max time reached before SS')
-        print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' + str(l_bank_obstacle))
+        print(str(sigma_z) + ' // ' + str(k_ero) + ' // ' + str(k_dep))
         teq = -9999
-    return (save_widths, save_slopes, save_depths_r, save_qs_out, 
-            save_fw, save_tau_total, save_tau_bed, save_tau_bank, save_S_r, save_fr_over_f0,
-            save_chan_depths, teq)
+        end_time = timer.time()
+        print('Runtime: ' + str(end_time - start_time) + 'seconds')
+    return (wb, d_r, S, S_r, tau_bed, tau_bank, f_r_over_f, teq)

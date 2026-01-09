@@ -17,12 +17,17 @@ import os
 
 # protect the entry point
 if __name__ == '__main__':
-    run_name = 'figure_7_rev1_L1000_tol1e-13_dt1000_hfp3'
+    run_name = 'figure_k_rev1_L1000_tol1e-13_dt1000_n100_ero1-5_dep10-50'
     n_steps = 15
     #total_runs = n_steps**3
     
-    sigma_z_values = np.linspace(0.1, 1, n_steps)#np.logspace(-2, 1, n_steps)
-    #sigma_z = 1
+    k_ero_values = np.linspace(1, 5, 10)#np.logspace(0, 1, 5)
+    k_dep_values = np.linspace(10, 50, 10)#np.logspace(1, np.log10(50), 5)
+    
+    X, Y = np.meshgrid(k_ero_values, k_dep_values)
+    
+    #sigma_z_values = np.logspace(-2, 1, n_steps)
+    sigma_z = 1.
     #l_bed_obstacle_values = np.linspace(0, 250, n_steps)
     l_bed_obstacle = 0.
     #l_bank_obstacle_values = np.linspace(0, 2.5, n_steps)
@@ -33,18 +38,26 @@ if __name__ == '__main__':
     theta = np.radians(theta_deg)
     d50 = 0.06 #m
     
-    k_ero = 2.
-    k_dep = 20.
+    #k_ero = 2.
+    #k_dep = 20.
     
     time_to_run = 200000000000 #s
-    timestep = 1000 #s
+    timestep = 1000#50 #s
     
     reach_length = 1000 #m
+    
+    #For 10 m reach length:
+        #S = 0.0055662191333570865
+        #wb = 51.058424581763184
+    #For 100 m reach length:
+        #S = 0.00558684804324513
+        #wb = 51.30730088868196
+    
     S = 0.005598014552362633#0.0055593355305988265#0.005208958660154328#0.006740351232927963
     wb = 51.44112749947885#53.87690135192294#51.00417998438822#54.349856075608386#51.81330955924939
     
-    h_floodplain = 3. + (S * reach_length)#1.95 + (S * reach_length)
-    use_fp = 1 #0 for no, 1 for yes
+    h_floodplain = 1.95 + (S * reach_length)
+    use_fp = 0 #0 for no, 1 for yes
     
     #make array of all combinations of three parameters of interest
     #in the resulting array...
@@ -57,15 +70,15 @@ if __name__ == '__main__':
     
     #param_array = np.hstack((param_array_variables, param_array_constants))
     
-    param_array_tuple = tuple( sigma_z_values)
-    save_array = np.zeros((len(sigma_z_values), 1))
+    #param_array_tuple = tuple( (X.ravel(), Y.ravel()))
+    param_array = np.array( (X.ravel(), Y.ravel()))
+    save_array = np.zeros((len(k_ero_values) * len(k_dep_values), 1))
     
     param_dict = {'n_runs': n_steps,
-                  'k_ero': k_ero,
-                  'k_dep': k_dep,
                   'Q': Q,
                   'Qs_in': Qs_in,
                   'theta': theta_deg,
+                  'sigma_z': sigma_z,
                   'd50': d50,
                   'h_fp': h_floodplain,
                   'initial_slope': S,
@@ -83,7 +96,7 @@ if __name__ == '__main__':
         #prepare arguments
         args = [(time_to_run, timestep, reach_length, Q, Qs_in, wb, theta,
                  sigma_z, l_bed_obstacle, l_bank_obstacle, k_ero, k_dep, S, d50, 
-                 h_floodplain, use_fp) for sigma_z in param_array_tuple]
+                 h_floodplain, use_fp) for k_ero, k_dep in zip(param_array[0], param_array[1])]
         
         #issue tasks to thread pool
         results = p.starmap(channel_evolution, args)
@@ -94,5 +107,5 @@ if __name__ == '__main__':
 
         
     results_array = np.array(results)
-    save_array = np.column_stack((sigma_z_values, results_array))
-    np.save('sweep_z0_values_floodplain_' + str(run_name) + '.npy', save_array)
+    save_array = np.column_stack((param_array.T, results_array))
+    np.save('sweep_k_values_' + str(run_name) + '.npy', save_array)

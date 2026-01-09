@@ -12,7 +12,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 #run from which to get data
-run_name = 'figure_5'
+run_name = 'figure_5_rev1_L1000_tol1e-13_dt1000_testnewfc_0_250'
 data = np.load('sweep_bed_cover_values_' + str(run_name) + '.npy')
 
 #convert to pandas dataframe for seaborn compatibility
@@ -47,7 +47,7 @@ df['fc_bed'] = df['l_bed'] / df['width']
 df['fc_bed_norm'] = df['fc_bed'] / float(df['fc_bed'][df['l_bed'] == min_rx].iloc[0])
 
 #calculate bed elevation
-reach_length = 10 #m
+reach_length = 1000 #m
 h_baselevel = 0
 df['bed_elev'] = df['slope'] * reach_length + h_baselevel
 df['bed_elev_norm'] = df['bed_elev'] / float(df['bed_elev'][df['l_bed'] == min_rx].iloc[0])

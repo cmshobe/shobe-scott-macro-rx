@@ -12,7 +12,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 #run from which to get data
-run_name = 'figure_6'
+run_name = 'figure_6_rev1_L1000_tol1e-13_dt1000'
 data = np.load('sweep_bank_cover_values_' + str(run_name) + '.npy')
 
 #convert to pandas dataframe for seaborn compatibility
@@ -48,7 +48,7 @@ df['fc_bank_norm'] = df['fc_bank'] / float(df['fc_bank'][df['l_bank'] == min_rx]
 
 
 #calculate bed elevation
-reach_length = 10 #m
+reach_length = 1000 #m
 h_baselevel = 0
 df['bed_elev'] = df['slope'] * reach_length + h_baselevel
 df['bed_elev_norm'] = df['bed_elev'] / float(df['bed_elev'][df['l_bank'] == min_rx].iloc[0])
@@ -58,7 +58,7 @@ text_x = 0.02
 text_y = 0.88
 
 xmin = 0.0
-xmax = 0.8
+xmax = 0.9
 
 markersize = 100
 

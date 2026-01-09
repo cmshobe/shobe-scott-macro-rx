@@ -16,67 +16,70 @@ import sys
 import numpy as np
 import copy as cp
 import numba as nb
+import time as timer
 
-@nb.jit(nb.types.Tuple((nb.float64, nb.float64))(nb.float64, nb.float64,
-                                                 nb.float64, nb.float64,
-                                                 nb.float64, nb.float64,
-                                                 nb.float64, nb.float64,
-                                                 nb.float64, nb.int8),nopython=True)
-def base_flow_resistance(Q, d, wb, theta, a1, sigma_z, g, S, chan_depth,
-                         use_fp):
-    calc_Q = 0
-    while np.isclose(calc_Q, Q, rtol=1e-3) == False: 
-        
-        #while we haven't converged on a no-roughness depth that yields the correct discharge value...
-        if calc_Q < Q:
-            d += 1e-5
-        elif calc_Q > Q:
-            d -= 1e-5
-        
-        #break up numerical solution into component terms so it isn't so crazy
-        width_area_term = wb + d / np.tan(theta) #this is hard to explain: it's the term that gets multiplied by depth to give XS area. It's wb + d/tan(theta)
-        
-        #cross-sectional area term
-        xs_area = width_area_term * d #xs area of flow incl. wood roughness
-        
-        #wetted perimeter
-        wp = wb + 2 * (d / np.sin(theta))
-        
-        #hydraulic radius
-        R = xs_area / wp
-        
-        #Manning-strickler baselevel roughness term
-        manning_strickler_term = a1 * np.power(R / sigma_z, 1 / 6)
-          
-        #square root term
-        sqrt_term = np.power(g * R * S, 1/2)
-        
-        #finally, calculate discharge as product of the three terms
-        calc_Q = xs_area * manning_strickler_term * sqrt_term
+start_time = timer.time()
 
-    if (d > chan_depth) and (use_fp == 1): #if flow is going overbank...
-        calc_Q = Q #trip the flag to stop accruing depth
-        d = chan_depth
+#@nb.jit(nb.types.Tuple((nb.float64, nb.float64))(nb.float64, nb.float64,
+#                                                 nb.float64, nb.float64,
+#                                                 nb.float64, nb.float64,
+#                                                 nb.float64, nb.float64,
+#                                                 nb.float64, nb.int8),nopython=True)
+# def base_flow_resistance(Q, d, wb, theta, a1, sigma_z, g, S, chan_depth,
+#                          use_fp):
+#     calc_Q = 0
+#     while np.isclose(calc_Q, Q, rtol=1e-3) == False: 
         
-        #break up numerical solution into component terms so it isn't so crazy
-        width_area_term = wb + d / np.tan(theta) #this is hard to explain: it's the term that gets multiplied by depth to give XS area. It's wb + d/tan(theta)
+#         #while we haven't converged on a no-roughness depth that yields the correct discharge value...
+#         if calc_Q < Q:
+#             d += 1e-5
+#         elif calc_Q > Q:
+#             d -= 1e-5
         
-        #cross-sectional area term
-        xs_area = width_area_term * d #xs area of flow incl. wood roughness
+#         #break up numerical solution into component terms so it isn't so crazy
+#         width_area_term = wb + d / np.tan(theta) #this is hard to explain: it's the term that gets multiplied by depth to give XS area. It's wb + d/tan(theta)
         
-        #wetted perimeter
-        wp = wb + 2 * (d / np.sin(theta))
+#         #cross-sectional area term
+#         xs_area = width_area_term * d #xs area of flow incl. wood roughness
         
-        #hydraulic radius
-        R = xs_area / wp
+#         #wetted perimeter
+#         wp = wb + 2 * (d / np.sin(theta))
         
-        #Manning-strickler baselevel roughness term
-        manning_strickler_term = a1 * np.power(R / sigma_z, 1 / 6)
+#         #hydraulic radius
+#         R = xs_area / wp
+        
+#         #Manning-strickler baselevel roughness term
+#         manning_strickler_term = a1 * np.power(R / sigma_z, 1 / 6)
           
-        #square root term
-        sqrt_term = np.power(g * R * S, 1/2)
+#         #square root term
+#         sqrt_term = np.power(g * R * S, 1/2)
+        
+#         #finally, calculate discharge as product of the three terms
+#         calc_Q = xs_area * manning_strickler_term * sqrt_term
+
+#     if (d > chan_depth) and (use_fp == 1): #if flow is going overbank...
+#         calc_Q = Q #trip the flag to stop accruing depth
+#         d = chan_depth
+        
+#         #break up numerical solution into component terms so it isn't so crazy
+#         width_area_term = wb + d / np.tan(theta) #this is hard to explain: it's the term that gets multiplied by depth to give XS area. It's wb + d/tan(theta)
+        
+#         #cross-sectional area term
+#         xs_area = width_area_term * d #xs area of flow incl. wood roughness
+        
+#         #wetted perimeter
+#         wp = wb + 2 * (d / np.sin(theta))
+        
+#         #hydraulic radius
+#         R = xs_area / wp
+        
+#         #Manning-strickler baselevel roughness term
+#         manning_strickler_term = a1 * np.power(R / sigma_z, 1 / 6)
+          
+#         #square root term
+#         sqrt_term = np.power(g * R * S, 1/2)
             
-    return manning_strickler_term, d
+#     return manning_strickler_term, d
 
 
 @nb.jit(nb.types.Tuple((nb.float64, nb.float64, nb.float64, nb.float64))(nb.float64, nb.float64,
@@ -84,10 +87,11 @@ def base_flow_resistance(Q, d, wb, theta, a1, sigma_z, g, S, chan_depth,
                                                  nb.float64, nb.float64,
                                                  nb.float64, nb.float64,
                                                  nb.float64, nb.float64,
-                                                 nb.float64, nb.float64,
+                                                 nb.float64,
                                                  nb.int8),nopython=True)
 def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
-                         manning_strickler_term, e, use_fp):
+                         e, use_fp):
+    
     calc_Q_r = 0
     while np.isclose(calc_Q_r, Q, rtol=1e-3) == False: 
         #while we haven't converged on a roughened depth that yields the correct discharge value...
@@ -115,8 +119,9 @@ def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
         VPE_term = VPE_term_numerator / VPE_term_denomenator
         
         #reduced energy slope
-        sqrt_f_over_f_r = VPE_term / manning_strickler_term
-        
+        sqrt_f_over_f_r_numerator = a2 * np.power(R_r / sigma_z, 5/6)
+        sqrt_f_over_f_r_denomenator = np.power(np.power(a1, 2) + np.power(a2, 2) * np.power(R_r / sigma_z, 5/3), 1/2)
+        sqrt_f_over_f_r = sqrt_f_over_f_r_numerator / sqrt_f_over_f_r_denomenator
         
         #calculate f_r / f for comparison with field studies (Follett and Wohl, etc)
         f_r_over_f = 1 / np.power(sqrt_f_over_f_r, 2)
@@ -128,6 +133,8 @@ def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
         
         #finally, calculate discharge as product of the three terms
         calc_Q_r = xs_area_r * VPE_term * sqrt_term_r
+        
+        
         
     if (d_r > chan_depth) and (use_fp == 1): #if flow is going overbank...
         calc_Q_r = Q #trip the flag to stop accruing depth
@@ -152,7 +159,9 @@ def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
         VPE_term = VPE_term_numerator / VPE_term_denomenator
         
         #reduced energy slope
-        sqrt_f_over_f_r = VPE_term / manning_strickler_term
+        sqrt_f_over_f_r_numerator = a2 * np.power(R_r / sigma_z, 5/6)
+        sqrt_f_over_f_r_denomenator = np.power(np.power(a1, 2) + np.power(a2, 2) * np.power(R_r / sigma_z, 5/3), 1/2)
+        sqrt_f_over_f_r = sqrt_f_over_f_r_numerator / sqrt_f_over_f_r_denomenator
         
         
         #calculate f_r / f for comparison with field studies (Follett and Wohl, etc)
@@ -183,7 +192,7 @@ def channel_evolution(time_to_run,
     
     
     #constants that are not model parameters
-    tolerance_over_timestep = 2e-11
+    tolerance_over_timestep = 1e-13
     a1 = 6.5 #VPE constant
     a2 = 2.5 #VPE constant
     rho_w = 1000 #kg/m^3; water density
@@ -201,7 +210,7 @@ def channel_evolution(time_to_run,
     time = 0
     #iter = 0
     
-    d = 0.01 #guess for depth w/o roughness; loop will adjust
+    #d = 0.01 #guess for depth w/o roughness; loop will adjust
     d_r = 0.01 #guess for depth incl. roughness; loop will adjust
     
     #save_widths = np.zeros(int(time_to_run / timestep) + 1)
@@ -237,22 +246,21 @@ def channel_evolution(time_to_run,
         
         #PART 1: HYDRAULICS
         #base-level flow resistance
-        manning_strickler_term, d = base_flow_resistance(Q, d, wb, theta, a1, 
-                                                         sigma_z, g, S, chan_depth,
-                                                         use_fp)
+        #manning_strickler_term, d = base_flow_resistance(Q, d, wb, theta, a1, 
+        #                                                 sigma_z, g, S, chan_depth,
+        #                                                 use_fp)
         
-        if np.isnan(manning_strickler_term) == True:
-            print(time)
-            print(chan_depth)
-            print(d)
-            sys.exit('MANNING term is nan')
+        #if np.isnan(manning_strickler_term) == True:
+        #    print(time)
+        #    print(chan_depth)
+        #    print(d)
+        #    sys.exit('MANNING term is nan')
         
         #total flow resistance
         R_r, S_r, d_r, f_r_over_f = total_flow_resistance(Q, d_r, 
                                                                       wb, theta, 
                                                           a1, a2, sigma_z, 
                                                           g, S, chan_depth, 
-                                                          manning_strickler_term, 
                                                           e,
                                                           use_fp)
             
@@ -285,6 +293,13 @@ def channel_evolution(time_to_run,
         tau_bank = shear_stress_r * (Fw_tot / 2) * ((wb / d_r) * np.sin(theta) + np.cos(theta))
         tau_bed = shear_stress_r * (1 - Fw_tot) * (1 + (d_r / (wb * np.tan(theta))))
         
+        #tau_star_bank = tau_bank / ((rho_s - rho_w) * g * d50)
+        #tau_star_bed = tau_bed / ((rho_s - rho_w) * g * d50)
+        
+        #tau_crit = tau_star_crit * (rho_s - rho_w) * g * d50
+        #excess_tau_bank = np.maximum(tau_star_bank - tau_star_crit, 0)
+        #excess_tau_bed = np.maximum(tau_star_bed - tau_star_crit, 0)
+        
         if (np.isnan(tau_bank) == True) or (np.isnan(tau_bed) == True):
             sys.exit('nan shear stress')
         if (tau_bed <=0) or (tau_bank <= 0):
@@ -293,26 +308,55 @@ def channel_evolution(time_to_run,
 
         #PART 4: CALCULATION OF BED AND BANK EROSION
         
+        #CMS 11/21/2025:
+        #if (fc_bed == 1) or (fc_bank == 1):
+        #    print('-----------')
+        #    print('fc_bed = ' + str(fc_bed))
+        #    print('fc_bank = ' + str(fc_bank))
+        #    print('fc_tot = ' + str(fc_tot))
+        #    sys.exit("failed: bank or bed cover term = 1")
+        
         #instead of distinguishing net erosion and net deposition...
-        if fc_bed == 1:
+        if (fc_bed == 1) and (fc_bank != 1):# or (excess_tau_bed == 0):
             E_bed = 0
-        else:
-            E_bed = (Qs_out / reach_length) * (1 / (((1 / k_ero) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * l_bank + wb))
-        
-        if fc_bank == 1:
-            E_bank = 0
-        else:
-            E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
-        
-        if fc_bank == 1:
-            D_bed = 0
-        else:
-            D_bed = ((Qs_in) / reach_length) * (1 / (((1 / (k_dep)) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * l_bank + wb))
-        
-        if fc_bed == 1:
+            E_bank = Qs_out / (reach_length * l_bank)
             D_bank = 0
-        else:
+            D_bed = Qs_in / (reach_length * wb)
+            
+        elif (fc_bank == 1) and (fc_bed != 1):# or (excess_tau_bank == 0):
+            E_bank = 0
+            E_bed = Qs_out / (reach_length * wb)
+            D_bed = 0
+            D_bank = Qs_in / (reach_length * l_bank)
+            
+        elif (fc_bed == 1) and (fc_bank == 1):
+            #E_bank = 0
+            #E_bed = 0
+            #D_bank = 
+            sys.exit("failed: bank AND bed cover term BOTH = 1")
+            
+        else: #nothing is fully covered
+            #E_bed = (Qs_out / reach_length) * (1 / (((1 / k_ero) * (np.power(excess_tau_bank, 3/2) / np.power(excess_tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * l_bank + wb))
+            E_bed = (Qs_out / reach_length) * (1 / (((1 / k_ero) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * l_bank + wb))
             D_bank = ((Qs_in) / reach_length) * (1 / (((k_dep) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * wb + l_bank))
+            E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
+            D_bed = ((Qs_in) / reach_length) * (1 / (((1 / (k_dep)) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * l_bank + wb))
+
+            
+        #else:
+        #    #E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(excess_tau_bed, 3/2) / np.power(excess_tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
+        #    E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
+        #    D_bed = ((Qs_in) / reach_length) * (1 / (((1 / (k_dep)) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * l_bank + wb))
+
+        #if fc_bank == 1:
+        #    D_bed = 0
+        #else:
+        #    D_bed = ((Qs_in) / reach_length) * (1 / (((1 / (k_dep)) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * l_bank + wb))
+        
+        #if fc_bed == 1:
+        #    D_bank = 0
+        #else:
+        #    D_bank = ((Qs_in) / reach_length) * (1 / (((k_dep) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * wb + l_bank))
         
         dh_bed = (D_bed - E_bed) / (1 - phi)
         dh_bank = (D_bank - E_bank) / (1 - phi)
@@ -352,7 +396,7 @@ def channel_evolution(time_to_run,
         
         
         
-        if (chan_depth <= 0) or np.isclose(chan_depth, 0, atol = 0.001, rtol = 0):
+        if ((chan_depth <= 0) and use_fp == 1) or (np.isclose(chan_depth, 0, atol = 0.001, rtol = 0) and use_fp == 1):
             print('channel filled completely before max time')
             print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' + str(l_bank_obstacle))
             print(str(time) + '//' + str(time / 3.154e7))
@@ -367,6 +411,8 @@ def channel_evolution(time_to_run,
             print(str(time) + '//' + str(time / 3.154e7))
             kill_flag = 1
             teq = time
+            end_time = timer.time()
+            print('Runtime: ' + str(end_time - start_time) + 'seconds')
         #else model should keep running
         else:
             prior_w = cp.deepcopy(wb)
@@ -376,4 +422,6 @@ def channel_evolution(time_to_run,
         print('max time reached before SS')
         print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' + str(l_bank_obstacle))
         teq = -9999
+        end_time = timer.time()
+        print('Runtime: ' + str(end_time - start_time) + 'seconds')
     return (wb, d_r, S, S_r, tau_bed, tau_bank, f_r_over_f, teq)

@@ -282,7 +282,7 @@ alpha = 0.7
 markersize = 100
 
 xmin_short = -0.00005
-xmax_short = 0.001
+xmax_short = 0.1
 
 #create figure: 6 panels
 fig2, axs = plt.subplots(3,2, figsize = (8,8))
@@ -296,7 +296,10 @@ slope_hfp = axs[2, 1]
 
 #WIDTH
 width_min = 0.97
-width_max = 1.1
+width_max = 3
+
+#line style
+runaway_depo_line = '--'
 
 width.plot(time_array[:sigma_z_nofp_1_final_index], 
                  sigma_z_nofp_1_widths_norm[:sigma_z_nofp_1_final_index],
@@ -329,21 +332,24 @@ width.plot(time_array[:sigma_z_nofp_4_final_index],
 width.plot(time_array[:sigma_z_nofp_5_final_index], 
                  sigma_z_nofp_5_widths_norm[:sigma_z_nofp_5_final_index],
                  linewidth = linewidth,
-                 color = sigma_z_5_color, alpha = alpha)
+                 color = sigma_z_5_color, alpha = alpha,
+                 linestyle = runaway_depo_line)
 #width.scatter(time_array[sigma_z_nofp_5_final_index], 
 #                   sigma_z_nofp_5_widths_norm[sigma_z_nofp_5_final_index],
 #                   color = sigma_z_5_color, alpha = alpha, s = 100)
 width.plot(time_array[:sigma_z_nofp_6_final_index], 
                  sigma_z_nofp_6_widths_norm[:sigma_z_nofp_6_final_index],
                  linewidth = linewidth,
-                 color = sigma_z_6_color, alpha = alpha)
+                 color = sigma_z_6_color, alpha = alpha,
+                 linestyle = runaway_depo_line)
 #width.scatter(time_array[sigma_z_nofp_6_final_index], 
 #                   sigma_z_nofp_6_widths_norm[sigma_z_nofp_6_final_index],
 #                   color = sigma_z_6_color, alpha = alpha, s = 100)
 width.plot(time_array[:sigma_z_nofp_7_final_index], 
                  sigma_z_nofp_7_widths_norm[:sigma_z_nofp_7_final_index],
                  linewidth = linewidth,
-                 color = sigma_z_7_color, alpha = alpha)
+                 color = sigma_z_7_color, alpha = alpha,
+                 linestyle = runaway_depo_line)
 #width.scatter(time_array[sigma_z_nofp_7_final_index], 
 #                   sigma_z_nofp_7_widths_norm[sigma_z_nofp_7_final_index],
 #                   color = sigma_z_7_color, alpha = alpha, s = 100)
@@ -351,57 +357,72 @@ width.plot(time_array[:sigma_z_nofp_7_final_index],
 width.axhline(y = 1, color = 'gray', linestyle = '--')
 width.get_xaxis().set_ticklabels([])
 width.set_ylabel('Normalized width [-]')
-#width.text(text_x, text_y, 'A', transform=width.transAxes, fontsize = 20)
+width.text(text_x, text_y, 'A', transform=width.transAxes, fontsize = 20)
 width.set_xlim(xmin_short, xmax_short)
 width.set_ylim(width_min, width_max)
 
-#width_hfp.plot(time_array[:sigma_z_1_final_index], 
-#                sigma_z_1_widths_norm[:sigma_z_1_final_index],
-#                linewidth = linewidth, color = sigma_z_1_color, alpha = alpha)
-#width_hfp.scatter(time_array[sigma_z_1_final_index], 
-#                   sigma_z_1_widths_norm[sigma_z_1_final_index],
-#                   color = sigma_z_1_color, alpha = alpha, s = 100)
-#width_hfp.plot(time_array[:sigma_z_2_final_index], 
-#                sigma_z_2_widths_norm[:sigma_z_2_final_index],
-#                linewidth = linewidth, color = sigma_z_2_color, alpha = alpha)
-#width_hfp.scatter(time_array[sigma_z_2_final_index], 
-#                   sigma_z_2_widths_norm[sigma_z_2_final_index],
-#                   color = sigma_z_2_color, alpha = alpha, s = 100)
-#width_hfp.plot(time_array[:sigma_z_3_final_index], 
-#                sigma_z_3_widths_norm[:sigma_z_3_final_index],
-#                linewidth = linewidth, color = sigma_z_3_color, alpha = alpha)
-#width_hfp.scatter(time_array[sigma_z_3_final_index], 
-#                   sigma_z_3_widths_norm[sigma_z_3_final_index],
-#                   color = sigma_z_3_color, alpha = alpha, s = 100)
-width_hfp.plot(time_array[:sigma_z_4_final_index], 
-                sigma_z_4_widths_norm[:sigma_z_4_final_index],
-                linewidth = linewidth, color = sigma_z_4_color, alpha = alpha)
-#width_hfp.scatter(time_array[sigma_z_4_final_index], 
-#                   sigma_z_4_widths_norm[sigma_z_4_final_index],
-#                   color = sigma_z_4_color, alpha = alpha, s = 100)
-width_hfp.plot(time_array[:sigma_z_5_final_index], 
-                sigma_z_5_widths_norm[:sigma_z_5_final_index],
-                linewidth = linewidth, color = sigma_z_5_color, alpha = alpha)
-#width_hfp.scatter(time_array[sigma_z_5_final_index], 
-#                   sigma_z_5_widths_norm[sigma_z_5_final_index],
-#                   color = sigma_z_5_color, alpha = alpha, s = 100)
-width_hfp.plot(time_array[:sigma_z_6_final_index], 
-                sigma_z_6_widths_norm[:sigma_z_6_final_index],
-                linewidth = linewidth, color = sigma_z_6_color, alpha = alpha)
-#width_hfp.scatter(time_array[sigma_z_6_final_index], 
-#                   sigma_z_6_widths_norm[sigma_z_6_final_index],
-#                   color = sigma_z_6_color, alpha = alpha, s = 100)
-width_hfp.plot(time_array[:sigma_z_7_final_index], 
-                sigma_z_7_widths_norm[:sigma_z_6_final_index],
-                linewidth = linewidth, color = sigma_z_7_color, alpha = alpha)
+width_hfp.plot(time_array[:sigma_z_nofp_1_final_index], 
+                 sigma_z_nofp_1_widths_norm[:sigma_z_nofp_1_final_index],
+                 linewidth = linewidth,
+                 color = sigma_z_1_color, alpha = alpha)
+width_hfp.scatter(time_array[sigma_z_nofp_1_final_index], 
+                   sigma_z_nofp_1_widths_norm[sigma_z_nofp_1_final_index],
+                   color = sigma_z_1_color, alpha = alpha, s = 100)
+width_hfp.plot(time_array[:sigma_z_nofp_2_final_index], 
+                 sigma_z_nofp_2_widths_norm[:sigma_z_nofp_2_final_index],
+                 linewidth = linewidth,
+                 color = sigma_z_2_color, alpha = alpha)
+width_hfp.scatter(time_array[sigma_z_nofp_2_final_index], 
+                   sigma_z_nofp_2_widths_norm[sigma_z_nofp_2_final_index],
+                   color = sigma_z_2_color, alpha = alpha, s = 100)
+width_hfp.plot(time_array[:sigma_z_nofp_3_final_index], 
+                 sigma_z_nofp_3_widths_norm[:sigma_z_nofp_3_final_index],
+                 linewidth = linewidth, 
+                 color = sigma_z_3_color, alpha = alpha)
+width_hfp.scatter(time_array[sigma_z_nofp_3_final_index], 
+                   sigma_z_nofp_3_widths_norm[sigma_z_nofp_3_final_index],
+                   color = sigma_z_3_color, alpha = alpha, s = 100)
+width_hfp.plot(time_array[:sigma_z_nofp_4_final_index], 
+                 sigma_z_nofp_4_widths_norm[:sigma_z_nofp_4_final_index],
+                 linewidth = linewidth,
+                 color = sigma_z_4_color, alpha = alpha)
+width_hfp.scatter(time_array[sigma_z_nofp_4_final_index], 
+                   sigma_z_nofp_4_widths_norm[sigma_z_nofp_4_final_index],
+                   color = sigma_z_4_color, alpha = alpha, s = 100)
+width_hfp.plot(time_array[:sigma_z_nofp_5_final_index], 
+                 sigma_z_nofp_5_widths_norm[:sigma_z_nofp_5_final_index],
+                 linewidth = linewidth,
+                 color = sigma_z_5_color, alpha = alpha,
+                 linestyle = runaway_depo_line)
+width_hfp.scatter(time_array[sigma_z_nofp_5_final_index], 
+                   sigma_z_nofp_5_widths_norm[sigma_z_nofp_5_final_index],
+                   color = sigma_z_5_color, alpha = alpha, s = 100)
+width_hfp.plot(time_array[:sigma_z_nofp_6_final_index], 
+                 sigma_z_nofp_6_widths_norm[:sigma_z_nofp_6_final_index],
+                 linewidth = linewidth,
+                 color = sigma_z_6_color, alpha = alpha,
+                 linestyle = runaway_depo_line)
+width_hfp.scatter(time_array[sigma_z_nofp_6_final_index], 
+                   sigma_z_nofp_6_widths_norm[sigma_z_nofp_6_final_index],
+                   color = sigma_z_6_color, alpha = alpha, s = 100,)
+width_hfp.plot(time_array[:sigma_z_nofp_7_final_index], 
+                 sigma_z_nofp_7_widths_norm[:sigma_z_nofp_7_final_index],
+                 linewidth = linewidth,
+                 color = sigma_z_7_color, alpha = alpha,
+                 clip_on = False,
+                 linestyle = runaway_depo_line)
+width_hfp.scatter(time_array[sigma_z_nofp_7_final_index], 
+                   sigma_z_nofp_7_widths_norm[sigma_z_nofp_7_final_index],
+                   color = sigma_z_7_color, alpha = alpha, s = 100,
+                   clip_on = False)
 
 width_hfp.axhline(y = 1, color = 'gray', linestyle = '--')
 width_hfp.get_xaxis().set_ticklabels([])
 #width_long.get_yaxis().set_ticklabels([])
 #width_long.set_ylabel('Equilibrium width [m]')
-#width_hfp.text(text_x, text_y, 'B', transform=width_hfp.transAxes, fontsize = 20)
-width_hfp.set_xlim(xmin_short, 0.0005)
-width_hfp.set_ylim(0.95, 1.2)
+width_hfp.text(text_x, text_y, 'B', transform=width_hfp.transAxes, fontsize = 20)
+width_hfp.set_xlim(-0.02, 1.05)
+width_hfp.set_ylim(0.95, 4)
 
 #DEPTH
 depth_min = 0.95
@@ -438,21 +459,24 @@ depth.plot(time_array[1:sigma_z_nofp_4_final_index],
 depth.plot(time_array[1:sigma_z_nofp_5_final_index], 
                  sigma_z_nofp_5_depths_norm[1:sigma_z_nofp_5_final_index],
                  linewidth = linewidth,  label = '$z_0=2.5$ m',
-                 color = sigma_z_5_color, alpha = alpha)
+                 color = sigma_z_5_color, alpha = alpha,
+                 linestyle = runaway_depo_line)
 #depth.scatter(time_array[sigma_z_nofp_5_final_index], 
 #                   sigma_z_nofp_5_depths_norm[sigma_z_nofp_5_final_index],
 #                   color = sigma_z_5_color, alpha = alpha, s = 100)
 depth.plot(time_array[1:sigma_z_nofp_6_final_index], 
                  sigma_z_nofp_6_depths_norm[1:sigma_z_nofp_6_final_index],
                  linewidth = linewidth, label = '$z_0=5$ m',
-                 color = sigma_z_6_color, alpha = alpha)
+                 color = sigma_z_6_color, alpha = alpha,
+                 linestyle = runaway_depo_line)
 #depth.scatter(time_array[sigma_z_nofp_6_final_index], 
 #                   sigma_z_nofp_6_depths_norm[sigma_z_nofp_6_final_index],
 #                   color = sigma_z_6_color, alpha = alpha, s = 100)
 depth.plot(time_array[1:sigma_z_nofp_7_final_index], 
                  sigma_z_nofp_7_depths_norm[1:sigma_z_nofp_7_final_index],
                  linewidth = linewidth, label = '$z_0=10$ m',
-                 color = sigma_z_7_color, alpha = alpha)
+                 color = sigma_z_7_color, alpha = alpha,
+                 linestyle = runaway_depo_line)
 #depth.scatter(time_array[sigma_z_nofp_7_final_index], 
 #                   sigma_z_nofp_7_depths_norm[sigma_z_nofp_7_final_index],
 #                   color = sigma_z_7_color, alpha = alpha, s = 100)
@@ -463,60 +487,73 @@ handles, labels = depth.get_legend_handles_labels()
 depth.axhline(y = 1, color = 'gray', linestyle = '--')
 depth.get_xaxis().set_ticklabels([])
 depth.set_ylabel('Normalized depth [-]')
-#depth.text(text_x, text_y, 'C', transform=depth.transAxes, fontsize = 20)
+depth.text(text_x, text_y, 'C', transform=depth.transAxes, fontsize = 20)
 depth.set_xlim(xmin_short, xmax_short)
 #depth_short.set_xlim(xmin_short, xmax_short)
-depth.set_ylim(0.6, 9.5)
+depth.set_ylim(0.6, 9)
 
 #depth_hfp.set_clip_on(False)
 
-#depth_hfp.plot(time_array[1:sigma_z_1_final_index], 
-#                sigma_z_1_depths_norm[1:sigma_z_1_final_index],
-#                linewidth = linewidth, color = sigma_z_1_color, alpha = alpha)
-#depth_hfp.scatter(time_array[sigma_z_1_final_index], 
-#                   sigma_z_1_depths_norm[sigma_z_1_final_index],
-#                   color = sigma_z_1_color, alpha = alpha, s = 100)
-#depth_hfp.plot(time_array[1:sigma_z_2_final_index], 
-#                sigma_z_2_depths_norm[1:sigma_z_2_final_index],
-#                linewidth = linewidth, color = sigma_z_2_color, alpha = alpha)
-#depth_hfp.scatter(time_array[sigma_z_2_final_index], 
-#                   sigma_z_2_depths_norm[sigma_z_2_final_index],
-#                   color = sigma_z_2_color, alpha = alpha, s = 100)
-#depth_hfp.plot(time_array[1:sigma_z_3_final_index], 
-#                sigma_z_3_depths_norm[1:sigma_z_3_final_index],
-#                linewidth = linewidth, color = sigma_z_3_color, alpha = alpha)
-#depth_hfp.scatter(time_array[sigma_z_3_final_index], 
-#                   sigma_z_3_depths_norm[sigma_z_3_final_index],
-#                   color = sigma_z_3_color, alpha = alpha, s = 100)
-depth_hfp.plot(time_array[1:sigma_z_4_final_index], 
-                sigma_z_4_depths_norm[1:sigma_z_4_final_index],
-                linewidth = linewidth, color = sigma_z_4_color, alpha = alpha)
-#depth_hfp.scatter(time_array[sigma_z_4_final_index], 
-#                   sigma_z_4_depths_norm[sigma_z_4_final_index],
-#                   color = sigma_z_4_color, alpha = alpha, s = 100)
-depth_hfp.plot(time_array[1:sigma_z_5_final_index], 
-                sigma_z_5_depths_norm[1:sigma_z_5_final_index],
-                linewidth = linewidth, color = sigma_z_5_color, alpha = alpha)
-#depth_hfp.scatter(time_array[sigma_z_5_final_index], 
-#                   sigma_z_5_depths_norm[sigma_z_5_final_index],
-#                   color = sigma_z_5_color, alpha = alpha, s = 100)
-depth_hfp.plot(time_array[1:sigma_z_6_final_index], 
-                sigma_z_6_depths_norm[1:sigma_z_6_final_index],
-                linewidth = linewidth, color = sigma_z_6_color, alpha = alpha)
-#depth_long.scatter(time_array[sigma_z_6_final_index], 
-#                   sigma_z_6_depths_norm[sigma_z_6_final_index],
-#                   color = sigma_z_6_color, alpha = alpha, s = 100)
-depth_hfp.plot(time_array[1:sigma_z_7_final_index], 
-                sigma_z_6_depths_norm[1:sigma_z_7_final_index],
-                linewidth = linewidth, color = sigma_z_7_color, alpha = alpha)
+depth_hfp.plot(time_array[1:sigma_z_nofp_1_final_index], 
+                 sigma_z_nofp_1_depths_norm[1:sigma_z_nofp_1_final_index],
+                 linewidth = linewidth, label = '$z_0=0.1$ m', 
+                 color = sigma_z_1_color, alpha = alpha)
+depth_hfp.scatter(time_array[sigma_z_nofp_1_final_index], 
+                   sigma_z_nofp_1_depths_norm[sigma_z_nofp_1_final_index],
+                   color = sigma_z_1_color, alpha = alpha, s = 100)
+depth_hfp.plot(time_array[1:sigma_z_nofp_2_final_index], 
+                 sigma_z_nofp_2_depths_norm[1:sigma_z_nofp_2_final_index],
+                 linewidth = linewidth, label = '$z_0=0.25$ m',
+                 color = sigma_z_2_color, alpha = alpha)
+depth_hfp.scatter(time_array[sigma_z_nofp_2_final_index], 
+                   sigma_z_nofp_2_depths_norm[sigma_z_nofp_2_final_index],
+                   color = sigma_z_2_color, alpha = alpha, s = 100)
+depth_hfp.plot(time_array[1:sigma_z_nofp_3_final_index], 
+                 sigma_z_nofp_3_depths_norm[1:sigma_z_nofp_3_final_index],
+                 linewidth = linewidth, label = '$z_0=0.5$ m',
+                 color = sigma_z_3_color, alpha = alpha)
+depth_hfp.scatter(time_array[sigma_z_nofp_3_final_index], 
+                   sigma_z_nofp_3_depths_norm[sigma_z_nofp_3_final_index],
+                   color = sigma_z_3_color, alpha = alpha, s = 100)
+depth_hfp.plot(time_array[1:sigma_z_nofp_4_final_index], 
+                 sigma_z_nofp_4_depths_norm[1:sigma_z_nofp_4_final_index],
+                 linewidth = linewidth, label = '$z_0=1$ m',
+                 color = sigma_z_3_color, alpha = alpha)
+depth_hfp.scatter(time_array[sigma_z_nofp_4_final_index], 
+                   sigma_z_nofp_4_depths_norm[sigma_z_nofp_4_final_index],
+                   color = sigma_z_4_color, alpha = alpha, s = 100)
+depth_hfp.plot(time_array[1:sigma_z_nofp_5_final_index], 
+                 sigma_z_nofp_5_depths_norm[1:sigma_z_nofp_5_final_index],
+                 linewidth = linewidth,  label = '$z_0=2.5$ m',
+                 color = sigma_z_5_color, alpha = alpha,
+                 linestyle = runaway_depo_line)
+depth_hfp.scatter(time_array[sigma_z_nofp_5_final_index], 
+                   sigma_z_nofp_5_depths_norm[sigma_z_nofp_5_final_index],
+                   color = sigma_z_5_color, alpha = alpha, s = 100)
+depth_hfp.plot(time_array[1:sigma_z_nofp_6_final_index], 
+                 sigma_z_nofp_6_depths_norm[1:sigma_z_nofp_6_final_index],
+                 linewidth = linewidth, label = '$z_0=5$ m',
+                 color = sigma_z_6_color, alpha = alpha,
+                 linestyle = runaway_depo_line)
+depth_hfp.scatter(time_array[sigma_z_nofp_6_final_index], 
+                   sigma_z_nofp_6_depths_norm[sigma_z_nofp_6_final_index],
+                   color = sigma_z_6_color, alpha = alpha, s = 100)
+depth_hfp.plot(time_array[1:sigma_z_nofp_7_final_index], 
+                 sigma_z_nofp_7_depths_norm[1:sigma_z_nofp_7_final_index],
+                 linewidth = linewidth, label = '$z_0=10$ m',
+                 color = sigma_z_7_color, alpha = alpha,
+                 linestyle = runaway_depo_line)
+depth_hfp.scatter(time_array[sigma_z_nofp_7_final_index], 
+                   sigma_z_nofp_7_depths_norm[sigma_z_nofp_7_final_index],
+                   color = sigma_z_7_color, alpha = alpha, s = 100)
 
 depth_hfp.axhline(y = 1, color = 'gray', linestyle = '--')
 depth_hfp.get_xaxis().set_ticklabels([])
 #depth_long.get_yaxis().set_ticklabels([])
 #depth_long.set_ylabel('Equilibrium depth [m]')
-#depth_hfp.text(text_x, text_y, 'D', transform=depth_hfp.transAxes, fontsize = 20)
-depth_hfp.set_ylim(1.18, 2.25)
-depth_hfp.set_xlim(xmin_short, 0.0005)
+depth_hfp.text(text_x, text_y, 'D', transform=depth_hfp.transAxes, fontsize = 20)
+depth_hfp.set_ylim(0.6, 9)
+depth_hfp.set_xlim(-0.02, 1.05)
 
 import matplotlib.patches as mpatches
 arr = mpatches.FancyArrowPatch((0.2, 0.05), (0.38, 0.62),transform=depth_hfp.transAxes,
@@ -550,7 +587,7 @@ arr = mpatches.FancyArrowPatch((0.2, 0.05), (0.38, 0.62),transform=depth_hfp.tra
 
 #SLOPE
 slope_min = 0.6
-slope_max = 1.3
+slope_max = 3
 
 slope.plot(time_array[:sigma_z_nofp_1_final_index], 
                  sigma_z_nofp_1_slopes_norm[:sigma_z_nofp_1_final_index],
@@ -578,19 +615,23 @@ slope.plot(time_array[:sigma_z_nofp_4_final_index],
 #                   color = sigma_z_4_color, alpha = alpha, s = 100)
 slope.plot(time_array[:sigma_z_nofp_5_final_index], 
                  sigma_z_nofp_5_slopes_norm[:sigma_z_nofp_5_final_index],
-                 linewidth = linewidth, color = sigma_z_5_color, alpha = alpha)
+                 linewidth = linewidth, color = sigma_z_5_color, alpha = alpha,
+                 linestyle = runaway_depo_line)
 #slope.scatter(time_array[sigma_z_nofp_5_final_index], 
 #                   sigma_z_nofp_5_slopes_norm[sigma_z_nofp_5_final_index],
 #                   color = sigma_z_5_color, alpha = alpha, s = 100)
 slope.plot(time_array[:sigma_z_nofp_6_final_index], 
                  sigma_z_nofp_6_slopes_norm[:sigma_z_nofp_6_final_index],
-                 linewidth = linewidth, color = sigma_z_6_color, alpha = alpha)
+                 linewidth = linewidth, color = sigma_z_6_color, alpha = alpha,
+                 linestyle = runaway_depo_line)
 #slope.scatter(time_array[sigma_z_nofp_6_final_index], 
 #                   sigma_z_nofp_6_slopes_norm[sigma_z_nofp_6_final_index],
 #                   color = sigma_z_6_color, alpha = alpha, s = 100)
 slope.plot(time_array[:sigma_z_nofp_7_final_index], 
                  sigma_z_nofp_7_slopes_norm[:sigma_z_nofp_7_final_index],
-                 linewidth = linewidth, color = sigma_z_7_color, alpha = alpha, zorder = 20)
+                 linewidth = linewidth, color = sigma_z_7_color, alpha = alpha, 
+                 zorder = 20,
+                 linestyle = runaway_depo_line)
 #slope.scatter(time_array[sigma_z_nofp_7_final_index], 
 #                   sigma_z_nofp_7_slopes_norm[sigma_z_nofp_7_final_index],
 #                   color = sigma_z_7_color, alpha = alpha, s = 100)
@@ -599,55 +640,61 @@ slope.plot(time_array[:sigma_z_nofp_7_final_index],
 slope.set_xlabel('Normalized time [-]')
 slope.set_ylabel('Normalized local slope [-]')
 slope.axhline(y = 1, color = 'gray', linestyle = '--')
-#slope.text(text_x, text_y, 'E', transform=slope.transAxes, fontsize = 20)
+slope.text(text_x, text_y, 'E', transform=slope.transAxes, fontsize = 20)
 slope.set_xlim(xmin_short, xmax_short)
 slope.set_ylim(slope_min, slope_max)
 
 
-#slope_legend = slope.legend(handles[::-1], labels[::-1], bbox_to_anchor=(1.1,1.88), loc = 'lower right', 
-#                   bbox_transform=slope.transAxes, framealpha = 1,
-#                   edgecolor = 'k', ncols = 2)
+slope_legend = slope.legend(handles[::-1], labels[::-1], bbox_to_anchor=(1.1,1.88), loc = 'lower right', 
+                   bbox_transform=slope.transAxes, framealpha = 1,
+                   edgecolor = 'k', ncols = 2)
 
 
-#slope_hfp.plot(time_array[:sigma_z_1_final_index], 
-#                sigma_z_1_slopes_norm[:sigma_z_1_final_index],
-#                linewidth = linewidth, color = sigma_z_1_color, alpha = alpha)
-#slope_hfp.scatter(time_array[sigma_z_1_final_index], 
-#                   sigma_z_1_slopes_norm[sigma_z_1_final_index],
-#                   color = sigma_z_1_color, alpha = alpha, s = 100)
-#slope_hfp.plot(time_array[:sigma_z_2_final_index], 
-#                sigma_z_2_slopes_norm[:sigma_z_2_final_index],
-#                linewidth = linewidth, color = sigma_z_2_color, alpha = alpha)
-#slope_hfp.scatter(time_array[sigma_z_2_final_index], 
-#                   sigma_z_2_slopes_norm[sigma_z_2_final_index],
-#                   color = sigma_z_2_color, alpha = alpha, s = 100)
-#slope_hfp.plot(time_array[:sigma_z_3_final_index], 
-#                sigma_z_3_slopes_norm[:sigma_z_3_final_index],
-#                linewidth = linewidth, color = sigma_z_3_color, alpha = alpha)
-#slope_hfp.scatter(time_array[sigma_z_3_final_index], 
-#                   sigma_z_3_slopes_norm[sigma_z_3_final_index],
-#                   color = sigma_z_3_color, alpha = alpha, s = 100)
-slope_hfp.plot(time_array[:sigma_z_4_final_index], 
-                sigma_z_4_slopes_norm[:sigma_z_4_final_index],
-                linewidth = linewidth, color = sigma_z_4_color, alpha = alpha)
-#slope_hfp.scatter(time_array[sigma_z_4_final_index], 
-#                   sigma_z_4_slopes_norm[sigma_z_4_final_index],
-#                   color = sigma_z_4_color, alpha = alpha, s = 100)
-slope_hfp.plot(time_array[:sigma_z_5_final_index], 
-                sigma_z_5_slopes_norm[:sigma_z_5_final_index],
-                linewidth = linewidth, color = sigma_z_5_color, alpha = alpha)
-#slope_hfp.scatter(time_array[sigma_z_5_final_index], 
-#                   sigma_z_5_slopes_norm[sigma_z_5_final_index],
-#                   color = sigma_z_5_color, alpha = alpha, s = 100)
-slope_hfp.plot(time_array[:sigma_z_6_final_index], 
-                sigma_z_6_slopes_norm[:sigma_z_6_final_index],
-                linewidth = linewidth, color = sigma_z_6_color, alpha = alpha)
-#slope_long.scatter(time_array[sigma_z_6_final_index], 
-#                   sigma_z_6_slopes_norm[sigma_z_6_final_index],
-#                   color = sigma_z_6_color, alpha = alpha, s = 100)
-slope_hfp.plot(time_array[:sigma_z_7_final_index], 
-                sigma_z_7_slopes_norm[:sigma_z_6_final_index],
-                linewidth = linewidth, color = sigma_z_7_color, alpha = alpha)
+slope_hfp.plot(time_array[:sigma_z_nofp_1_final_index], 
+                 sigma_z_nofp_1_slopes_norm[:sigma_z_nofp_1_final_index],
+                 linewidth = linewidth, color = sigma_z_1_color, alpha = alpha)
+slope_hfp.scatter(time_array[sigma_z_nofp_1_final_index], 
+                   sigma_z_nofp_1_slopes_norm[sigma_z_nofp_1_final_index],
+                   color = sigma_z_1_color, alpha = alpha, s = 100)
+slope_hfp.plot(time_array[:sigma_z_nofp_2_final_index], 
+                 sigma_z_nofp_2_slopes_norm[:sigma_z_nofp_2_final_index],
+                 linewidth = linewidth, color = sigma_z_2_color, alpha = alpha)
+slope_hfp.scatter(time_array[sigma_z_nofp_2_final_index], 
+                   sigma_z_nofp_2_slopes_norm[sigma_z_nofp_2_final_index],
+                   color = sigma_z_2_color, alpha = alpha, s = 100)
+slope_hfp.plot(time_array[:sigma_z_nofp_3_final_index], 
+                 sigma_z_nofp_3_slopes_norm[:sigma_z_nofp_3_final_index],
+                 linewidth = linewidth, color = sigma_z_3_color, alpha = alpha)
+slope_hfp.scatter(time_array[sigma_z_nofp_3_final_index], 
+                   sigma_z_nofp_3_slopes_norm[sigma_z_nofp_3_final_index],
+                   color = sigma_z_3_color, alpha = alpha, s = 100)
+slope_hfp.plot(time_array[:sigma_z_nofp_4_final_index], 
+                 sigma_z_nofp_4_slopes_norm[:sigma_z_nofp_4_final_index],
+                 linewidth = linewidth, color = sigma_z_4_color, alpha = alpha)
+slope_hfp.scatter(time_array[sigma_z_nofp_4_final_index], 
+                   sigma_z_nofp_4_slopes_norm[sigma_z_nofp_4_final_index],
+                   color = sigma_z_4_color, alpha = alpha, s = 100)
+slope_hfp.plot(time_array[:sigma_z_nofp_5_final_index], 
+                 sigma_z_nofp_5_slopes_norm[:sigma_z_nofp_5_final_index],
+                 linewidth = linewidth, color = sigma_z_5_color, alpha = alpha,
+                 linestyle = runaway_depo_line)
+slope_hfp.scatter(time_array[sigma_z_nofp_5_final_index], 
+                   sigma_z_nofp_5_slopes_norm[sigma_z_nofp_5_final_index],
+                   color = sigma_z_5_color, alpha = alpha, s = 100)
+slope_hfp.plot(time_array[:sigma_z_nofp_6_final_index], 
+                 sigma_z_nofp_6_slopes_norm[:sigma_z_nofp_6_final_index],
+                 linewidth = linewidth, color = sigma_z_6_color, alpha = alpha,
+                 linestyle = runaway_depo_line)
+slope_hfp.scatter(time_array[sigma_z_nofp_6_final_index], 
+                   sigma_z_nofp_6_slopes_norm[sigma_z_nofp_6_final_index],
+                   color = sigma_z_6_color, alpha = alpha, s = 100)
+slope_hfp.plot(time_array[:sigma_z_nofp_7_final_index], 
+                 sigma_z_nofp_7_slopes_norm[:sigma_z_nofp_7_final_index],
+                 linewidth = linewidth, color = sigma_z_7_color, alpha = alpha, 
+                 zorder = 20, linestyle = runaway_depo_line)
+slope_hfp.scatter(time_array[sigma_z_nofp_7_final_index], 
+                   sigma_z_nofp_7_slopes_norm[sigma_z_nofp_7_final_index],
+                   color = sigma_z_7_color, alpha = alpha, s = 100)
 
 slope_hfp.set_xlabel('Normalized time [-]')
 #slope_long.get_yaxis().set_ticklabels([])
@@ -655,14 +702,14 @@ slope_hfp.set_xlabel('Normalized time [-]')
 slope_hfp.axhline(y = 1, color = 'gray', linestyle = '--')
 #slope_short.set_xlim(-0.02, 1)
 slope_hfp.set_ylim(0.6, 4)
-#slope_hfp.text(text_x, text_y, 'F', transform=slope_hfp.transAxes, fontsize = 20)
+slope_hfp.text(text_x, text_y, 'F', transform=slope_hfp.transAxes, fontsize = 20)
 #slope.legend(loc = 'upper center', framealpha = 1, edgecolor = 'k')
-slope_hfp.set_xlim(xmin_short, 0.0005)
+slope_hfp.set_xlim(-0.02, 1.05)
 
 
 #plt.tight_layout()
-fig2.savefig('figure_8_short_trajectories_hires_rev1.png', dpi = 1000, bbox_inches = 'tight')
-fig2.savefig('figure_8_short_trajectories_lores_rev1.png', dpi = 200, bbox_inches = 'tight')
+fig2.savefig('figure_8_9_condensed.png', dpi = 1000, bbox_inches = 'tight')
+fig2.savefig('figure_8_9_condensed.png', dpi = 200, bbox_inches = 'tight')
 
 
 

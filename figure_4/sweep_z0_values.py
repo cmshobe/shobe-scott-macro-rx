@@ -17,7 +17,7 @@ import os
 
 # protect the entry point
 if __name__ == '__main__':
-    run_name = 'figure_4_rev1'
+    run_name = 'figure_4_rev1_L1000_tol1e-13_dt1000_TESTkero1kdep10'
     n_steps = 15
     #total_runs = n_steps**3
     
@@ -33,15 +33,23 @@ if __name__ == '__main__':
     theta = np.radians(theta_deg)
     d50 = 0.06 #m
     
-    k_ero = 2.
-    k_dep = 20.
+    k_ero = 1.
+    k_dep = 10.
     
-    time_to_run = 10000000000 #s
-    timestep = 50 #s
+    time_to_run = 200000000000 #s
+    timestep = 1000#50 #s
     
-    reach_length = 10 #m
-    S = 0.0055593355305988265#0.005208958660154328#0.006740351232927963
-    wb = 51.00417998438822#54.349856075608386#51.81330955924939
+    reach_length = 1000 #m
+    
+    #For 10 m reach length:
+        #S = 0.0055662191333570865
+        #wb = 51.058424581763184
+    #For 100 m reach length:
+        #S = 0.00558684804324513
+        #wb = 51.30730088868196
+    
+    S = 0.005598014552362633#0.0055593355305988265#0.005208958660154328#0.006740351232927963
+    wb = 51.44112749947885#53.87690135192294#51.00417998438822#54.349856075608386#51.81330955924939
     
     h_floodplain = 1.95 + (S * reach_length)
     use_fp = 0 #0 for no, 1 for yes
