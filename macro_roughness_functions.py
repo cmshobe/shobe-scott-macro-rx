@@ -104,6 +104,95 @@ def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
         
     return R_r, S_r, d_r, f_r_over_f
 
+
+@nb.jit(nb.types.Tuple((nb.float64, nb.float64, nb.float64, nb.float64, 
+                        nb.float64, nb.float64, nb.float64,
+                        nb.float64, nb.float64, nb.float64, nb.float64))(nb.float64, nb.float64,
+                                                 nb.float64, nb.float64,
+                                                 nb.float64, nb.float64,
+                                                 nb.float64, nb.float64,
+                                                 nb.float64, nb.int8,
+                                                 nb.float64, nb.float64,
+                                                 nb.float64, nb.float64,
+                                                 nb.float64, nb.float64,
+                                                 nb.float64, nb.float64,
+                                                 nb.float64),nopython=True)
+def transport_erosion_deposition(rho_w, g, R_r, S_r, rho_s, d50, wb, d_r, theta,
+                                 use_fp, chan_depth, l_bed_obstacle,
+                                 l_bank_obstacle, tau_star_crit,
+                                 reach_length, k_ero, Qs_in, k_dep, phi):
+    
+    #PART 2: BEDLOAD TRANSPORT
+    shear_stress_r = rho_w * g * R_r * S_r
+    shields_stress = shear_stress_r / ((rho_s - rho_w) * g * d50)
+    
+    #calc water surface width with roughness
+    w_r = wb + 2 * (d_r / np.tan(theta))
+    
+    #calculate fc_bed and fc_bank
+    if use_fp == 1:
+        l_bank = 2 * (chan_depth / np.sin(theta))
+    elif use_fp == 0:
+        l_bank = 2 * (np.maximum(chan_depth, d_r) / np.sin(theta))
+    
+    fc_bed = np.minimum(l_bed_obstacle / wb, 1)
+    fc_bank = np.minimum((2 * l_bank_obstacle) / l_bank, 1)
+    fc_tot = (fc_bed * wb + fc_bank * l_bank) / (l_bank + wb)
+    
+    
+    Qs_out = 3.97 * np.power((rho_s - rho_w) / rho_w, 1/2) * np.power(g, 1/2) * np.power(np.maximum(shields_stress - tau_star_crit, 0), 3/2) * np.power(d50, 3/2) * w_r * (1 - fc_tot)
+    
+    #PART 3: CALCULATION OF BANK AND BED SHEAR STRESSES
+    
+    #calc Fw
+    Fw_tot = 1.766 * ((wb / (2 * d_r)) * np.sin(theta) + 1.5)**(-1.4026)
+        
+    #calc tau bank and bed
+    tau_bank = shear_stress_r * (Fw_tot / 2) * ((wb / d_r) * np.sin(theta) + np.cos(theta))
+    tau_bed = shear_stress_r * (1 - Fw_tot) * (1 + (d_r / (wb * np.tan(theta))))    
+
+    #PART 4: CALCULATION OF BED AND BANK EROSION
+    
+    if fc_bed == 1:
+        E_bed = 0
+        D_bank = 0
+    else:
+        E_bed = (Qs_out / reach_length) * (1 / (((1 / k_ero) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * l_bank + wb))
+        D_bank = ((Qs_in) / reach_length) * (1 / (((k_dep) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * wb + l_bank))
+
+    if fc_bank == 1:
+        E_bank = 0
+        D_bed = 0
+    else:
+        E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
+        D_bed = ((Qs_in) / reach_length) * (1 / (((1 / (k_dep)) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * l_bank + wb))
+
+    dh_bed = (D_bed - E_bed) / (1 - phi)
+    dh_bank = (D_bank - E_bank) / (1 - phi)
+    
+    return Qs_out, Fw_tot, shear_stress_r, tau_bed, tau_bank, dh_bed, dh_bank, fc_bed, fc_bank, fc_tot, l_bank
+
+@nb.jit(nb.types.Tuple((nb.float64, nb.float64, nb.float64, nb.float64))(nb.float64, nb.float64,
+                                                 nb.float64, nb.float64,
+                                                 nb.float64, nb.float64,
+                                                 nb.float64, nb.float64,
+                                                 nb.float64),nopython=True)
+def morphologic_change(h_node, dh_bed, timestep, h_floodplain, h_baselevel,
+                       reach_length, wb, dh_bank, theta):
+    
+    #PART 5: MORPHOLOGIC ADJUSTMENT TO BED AND BANK EROSION
+    #update bed elevation
+    h_node += (dh_bed * timestep)
+    chan_depth = h_floodplain - h_node
+    
+    #update slope in response to new bed elevation assuming next node downstream maintains constant elevation
+    S = (h_node - h_baselevel) / reach_length
+    
+    #adjust basal width
+    wb += (2 * ((-dh_bank / np.sin(theta)) - (-dh_bed / np.tan(theta))) * timestep)
+    
+    return h_node, chan_depth, S, wb
+
 def channel_evolution_equilibrium(time_to_run,
          timestep,
          reach_length,
@@ -157,75 +246,21 @@ def channel_evolution_equilibrium(time_to_run,
                                                           g, S, chan_depth, 
                                                           e,
                                                           use_fp)
-            
-        #PART 2: BEDLOAD TRANSPORT
-        shear_stress_r = rho_w * g * R_r * S_r
-        shields_stress = shear_stress_r / ((rho_s - rho_w) * g * d50)
         
-        #calc water surface width with roughness
-        w_r = wb + 2 * (d_r / np.tan(theta))
-        
-        #calculate fc_bed and fc_bank
-        if use_fp == 1:
-            l_bank = 2 * (chan_depth / np.sin(theta))
-        elif use_fp == 0:
-            l_bank = 2 * (np.maximum(chan_depth, d_r) / np.sin(theta))
-        
-        fc_bed = np.minimum(l_bed_obstacle / wb, 1)
-        fc_bank = np.minimum((2 * l_bank_obstacle) / l_bank, 1)
-        fc_tot = (fc_bed * wb + fc_bank * l_bank) / (l_bank + wb)
-        
-        
-        Qs_out = 3.97 * np.power((rho_s - rho_w) / rho_w, 1/2) * np.power(g, 1/2) * np.power(np.maximum(shields_stress - tau_star_crit, 0), 3/2) * np.power(d50, 3/2) * w_r * (1 - fc_tot)
-        
-        #PART 3: CALCULATION OF BANK AND BED SHEAR STRESSES
-        
-        #calc Fw
-        Fw_tot = 1.766 * ((wb / (2 * d_r)) * np.sin(theta) + 1.5)**(-1.4026)
-            
-        #calc tau bank and bed
-        tau_bank = shear_stress_r * (Fw_tot / 2) * ((wb / d_r) * np.sin(theta) + np.cos(theta))
-        tau_bed = shear_stress_r * (1 - Fw_tot) * (1 + (d_r / (wb * np.tan(theta))))
-        
-        if (np.isnan(tau_bank) == True) or (np.isnan(tau_bed) == True):
-            sys.exit('nan shear stress')
-        if (tau_bed <=0) or (tau_bank <= 0):
-            sys.exit('ERROR <=zero shear stress')
-        
-
-        #PART 4: CALCULATION OF BED AND BANK EROSION
-        
-        if fc_bed == 1:
-            E_bed = 0
-            D_bank = 0
-        else:
-            E_bed = (Qs_out / reach_length) * (1 / (((1 / k_ero) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * l_bank + wb))
-            D_bank = ((Qs_in) / reach_length) * (1 / (((k_dep) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * wb + l_bank))
-
-        if fc_bank == 1:
-            E_bank = 0
-            D_bed = 0
-        else:
-            E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
-            D_bed = ((Qs_in) / reach_length) * (1 / (((1 / (k_dep)) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * l_bank + wb))
-
-        dh_bed = (D_bed - E_bed) / (1 - phi)
-        dh_bank = (D_bank - E_bank) / (1 - phi)
+        #PARTS 2-4: transport, erosion, deposition
+        Qs_out, Fw_tot, shear_stress_r, tau_bed, tau_bank, dh_bed, dh_bank, fc_bed, fc_bank, fc_tot, l_bank = transport_erosion_deposition(
+            rho_w, g, R_r, S_r, rho_s, d50, wb, d_r, theta,
+                                         use_fp, chan_depth, l_bed_obstacle,
+                                         l_bank_obstacle, tau_star_crit,
+                                         reach_length, k_ero, Qs_in, k_dep, phi)
         
         
         #PART 5: MORPHOLOGIC ADJUSTMENT TO BED AND BANK EROSION
-        #update bed elevation
-        h_node += (dh_bed * timestep)
-        chan_depth = h_floodplain - h_node
-        
-        #update slope in response to new bed elevation assuming next node downstream maintains constant elevation
-        S = (h_node - h_baselevel) / reach_length
+        h_node, chan_depth, S, wb = morphologic_change(h_node, dh_bed, timestep, h_floodplain, h_baselevel,
+                                reach_length, wb, dh_bank, theta)
         
         if S <= 0:
             sys.exit("failed: slope <= 0")
-        
-        #adjust basal width
-        wb += (2 * ((-dh_bank / np.sin(theta)) - (-dh_bed / np.tan(theta))) * timestep)
         
         time += timestep
         
@@ -342,74 +377,20 @@ def channel_evolution_trajectory(time_to_run,
                                                           e,
                                                           use_fp)
         
-        #PART 2: BEDLOAD TRANSPORT
-        shear_stress_r = rho_w * g * R_r * S_r
-        shields_stress = shear_stress_r / ((rho_s - rho_w) * g * d50)
-
-        #calc water surface width with roughness
-        w_r = wb + 2 * (d_r / np.tan(theta))
-        
-        #calculate fc_bed and fc_bank
-        if use_fp == 1:
-            l_bank = 2 * (chan_depth / np.sin(theta))
-        elif use_fp == 0:
-            l_bank = 2 * (np.maximum(chan_depth, d_r) / np.sin(theta))
-        
-        fc_bed = np.minimum(l_bed_obstacle / wb, 1)
-        fc_bank = np.minimum((2 * l_bank_obstacle) / l_bank, 1)
-        fc_tot = (fc_bed * wb + fc_bank * l_bank) / (l_bank + wb)
-        
-        
-        Qs_out = 3.97 * np.power((rho_s - rho_w) / rho_w, 1/2) * np.power(g, 1/2) * np.power(np.maximum(shields_stress - tau_star_crit, 0), 3/2) * np.power(d50, 3/2) * w_r * (1 - fc_tot)
-
-        #PART 3: CALCULATION OF BANK AND BED SHEAR STRESSES
-        
-        #calc Fw
-        Fw_tot = 1.766 * ((wb / (2 * d_r)) * np.sin(theta) + 1.5)**(-1.4026)
-        
-        #calc tau bank and bed
-        tau_bank = shear_stress_r * (Fw_tot / 2) * ((wb / d_r) * np.sin(theta) + np.cos(theta))
-        tau_bed = shear_stress_r * (1 - Fw_tot) * (1 + (d_r / (wb * np.tan(theta))))
-        
-        if (np.isnan(tau_bank) == True) or (np.isnan(tau_bed) == True):
-            sys.exit('nan shear stress')
-        if (tau_bed <=0) or (tau_bank <= 0):
-            sys.exit('ERROR <=zero shear stress')
-
-        
-        #PART 4: CALCULATION OF BED AND BANK EROSION
-        
-        if fc_bed == 1:
-            E_bed = 0
-            D_bank = 0
-        else:
-            E_bed = (Qs_out / reach_length) * (1 / (((1 / k_ero) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * l_bank + wb))
-            D_bank = ((Qs_in) / reach_length) * (1 / (((k_dep) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * wb + l_bank))
-
-        if fc_bank == 1:
-            E_bank = 0
-            D_bed = 0
-        else:
-            E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
-            D_bed = ((Qs_in) / reach_length) * (1 / (((1 / (k_dep)) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * l_bank + wb))
-
-        dh_bed = (D_bed - E_bed) / (1 - phi)
-        dh_bank = (D_bank - E_bank) / (1 - phi)
+        #PARTS 2-4: transport, erosion, deposition
+        Qs_out, Fw_tot, shear_stress_r, tau_bed, tau_bank, dh_bed, dh_bank, fc_bed, fc_bank, fc_tot, l_bank = transport_erosion_deposition(
+            rho_w, g, R_r, S_r, rho_s, d50, wb, d_r, theta,
+                                         use_fp, chan_depth, l_bed_obstacle,
+                                         l_bank_obstacle, tau_star_crit,
+                                         reach_length, k_ero, Qs_in, k_dep, phi)
         
         #PART 5: MORPHOLOGIC ADJUSTMENT TO BED AND BANK EROSION
-        #update bed elevation
-        h_node += (dh_bed * timestep)
-        chan_depth = h_floodplain - h_node
-        
-        #update slope in response to new bed elevation assuming next node downstream maintains constant elevation
-        S = (h_node - h_baselevel) / reach_length
+        h_node, chan_depth, S, wb = morphologic_change(h_node, dh_bed, timestep, h_floodplain, h_baselevel,
+                                reach_length, wb, dh_bank, theta)
             
         if S <= 0:
             sys.exit("failed: slope <= 0")
     
-        #adjust basal width
-        wb += (2 * ((-dh_bank / np.sin(theta)) - (-dh_bed / np.tan(theta))) * timestep)
-        
         time += timestep
         
         if (time % print_interval == 0) or (time == timestep):
@@ -584,74 +565,19 @@ def channel_evolution_inversion(variable_args, *fixed_args):
                                                           e,
                                                           use_fp)
         
-        #PART 2: BEDLOAD TRANSPORT
-        shear_stress_r = rho_w * g * R_r * S_r
-        shields_stress = shear_stress_r / ((rho_s - rho_w) * g * d50)
-
-        #calc water surface width with roughness
-        w_r = wb + 2 * (d_r / np.tan(theta))
-        
-        #calculate fc_bed and fc_bank
-        if use_fp == 1:
-            l_bank = 2 * (chan_depth / np.sin(theta))
-        elif use_fp == 0:
-            l_bank = 2 * (np.maximum(chan_depth, d_r) / np.sin(theta))
-        
-        fc_bed = np.minimum(l_bed_obstacle / wb, 1)
-        fc_bank = np.minimum((2 * l_bank_obstacle) / l_bank, 1)
-        fc_tot = (fc_bed * wb + fc_bank * l_bank) / (l_bank + wb)
-        
-        
-        Qs_out = 3.97 * np.power((rho_s - rho_w) / rho_w, 1/2) * np.power(g, 1/2) * np.power(np.maximum(shields_stress - tau_star_crit, 0), 3/2) * np.power(d50, 3/2) * w_r * (1 - fc_tot)
-
-        #PART 3: CALCULATION OF BANK AND BED SHEAR STRESSES
-        
-        #calc Fw
-        Fw_tot = 1.766 * ((wb / (2 * d_r)) * np.sin(theta) + 1.5)**(-1.4026)
-        
-        #calc tau bank and bed
-        tau_bank = shear_stress_r * (Fw_tot / 2) * ((wb / d_r) * np.sin(theta) + np.cos(theta))
-        tau_bed = shear_stress_r * (1 - Fw_tot) * (1 + (d_r / (wb * np.tan(theta))))
-        
-        if (np.isnan(tau_bank) == True) or (np.isnan(tau_bed) == True):
-            sys.exit('nan shear stress')
-        if (tau_bed <=0) or (tau_bank <= 0):
-            sys.exit('ERROR <=zero shear stress')
-
-        
-        #PART 4: CALCULATION OF BED AND BANK EROSION
-        
-        if fc_bed == 1:
-            E_bed = 0
-            D_bank = 0
-        else:
-            E_bed = (Qs_out / reach_length) * (1 / (((1 / k_ero) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * l_bank + wb))
-            D_bank = ((Qs_in) / reach_length) * (1 / (((k_dep) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * wb + l_bank))
-
-        if fc_bank == 1:
-            E_bank = 0
-            D_bed = 0
-        else:
-            E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
-            D_bed = ((Qs_in) / reach_length) * (1 / (((1 / (k_dep)) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * l_bank + wb))
-
-        dh_bed = (D_bed - E_bed) / (1 - phi)
-        dh_bank = (D_bank - E_bank) / (1 - phi)
-        
+        #PARTS 2-4: transport, erosion, deposition
+        Qs_out, Fw_tot, shear_stress_r, tau_bed, tau_bank, dh_bed, dh_bank, fc_bed, fc_bank, fc_tot, l_bank = transport_erosion_deposition(
+            rho_w, g, R_r, S_r, rho_s, d50, wb, d_r, theta,
+                                         use_fp, chan_depth, l_bed_obstacle,
+                                         l_bank_obstacle, tau_star_crit,
+                                         reach_length, k_ero, Qs_in, k_dep, phi)
         
         #PART 5: MORPHOLOGIC ADJUSTMENT TO BED AND BANK EROSION
-        #update bed elevation
-        h_node += (dh_bed * timestep)
-        chan_depth = h_floodplain - h_node
-        
-        #update slope in response to new bed elevation assuming next node downstream maintains constant elevation
-        S = (h_node - h_baselevel) / reach_length
+        h_node, chan_depth, S, wb = morphologic_change(h_node, dh_bed, timestep, h_floodplain, h_baselevel,
+                                reach_length, wb, dh_bank, theta)
             
         if S <= 0:
             sys.exit("failed: slope <= 0")
-    
-        #adjust basal width
-        wb += (2 * ((-dh_bank / np.sin(theta)) - (-dh_bed / np.tan(theta))) * timestep)
         
         time += timestep
         timestep_iter += 1
@@ -811,73 +737,19 @@ def channel_evolution_bestfit(time_to_run,
                                                           e,
                                                           use_fp)
         
-        #PART 2: BEDLOAD TRANSPORT
-        shear_stress_r = rho_w * g * R_r * S_r
-        shields_stress = shear_stress_r / ((rho_s - rho_w) * g * d50)
-
-        #calc water surface width with roughness
-        w_r = wb + 2 * (d_r / np.tan(theta))
-        
-        #calculate fc_bed and fc_bank
-        if use_fp == 1:
-            l_bank = 2 * (chan_depth / np.sin(theta))
-        elif use_fp == 0:
-            l_bank = 2 * (np.maximum(chan_depth, d_r) / np.sin(theta))
-        
-        fc_bed = np.minimum(l_bed_obstacle / wb, 1)
-        fc_bank = np.minimum((2 * l_bank_obstacle) / l_bank, 1)
-        fc_tot = (fc_bed * wb + fc_bank * l_bank) / (l_bank + wb)
-        
-        
-        Qs_out = 3.97 * np.power((rho_s - rho_w) / rho_w, 1/2) * np.power(g, 1/2) * np.power(np.maximum(shields_stress - tau_star_crit, 0), 3/2) * np.power(d50, 3/2) * w_r * (1 - fc_tot)
-
-        #PART 3: CALCULATION OF BANK AND BED SHEAR STRESSES
-        
-        #calc Fw
-        Fw_tot = 1.766 * ((wb / (2 * d_r)) * np.sin(theta) + 1.5)**(-1.4026)
-        
-        #calc tau bank and bed
-        tau_bank = shear_stress_r * (Fw_tot / 2) * ((wb / d_r) * np.sin(theta) + np.cos(theta))
-        tau_bed = shear_stress_r * (1 - Fw_tot) * (1 + (d_r / (wb * np.tan(theta))))
-        
-        if (np.isnan(tau_bank) == True) or (np.isnan(tau_bed) == True):
-            sys.exit('nan shear stress')
-        if (tau_bed <=0) or (tau_bank <= 0):
-            sys.exit('ERROR <=zero shear stress')
-
-        
-        #PART 4: CALCULATION OF BED AND BANK EROSION
-        
-        if fc_bed == 1:
-            E_bed = 0
-            D_bank = 0
-        else:
-            E_bed = (Qs_out / reach_length) * (1 / (((1 / k_ero) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * l_bank + wb))
-            D_bank = ((Qs_in) / reach_length) * (1 / (((k_dep) * (np.power(tau_bank, 3/2) / np.power(tau_bed, 3/2)) * ((1 - fc_bank) / (1 - fc_bed))) * wb + l_bank))
-
-        if fc_bank == 1:
-            E_bank = 0
-            D_bed = 0
-        else:
-            E_bank = (Qs_out / reach_length) * (1 / (((k_ero) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * wb + l_bank))
-            D_bed = ((Qs_in) / reach_length) * (1 / (((1 / (k_dep)) * (np.power(tau_bed, 3/2) / np.power(tau_bank, 3/2)) * ((1 - fc_bed) / (1 - fc_bank))) * l_bank + wb))
-
-        dh_bed = (D_bed - E_bed) / (1 - phi)
-        dh_bank = (D_bank - E_bank) / (1 - phi)
+        #PARTS 2-4: transport, erosion, deposition
+        Qs_out, Fw_tot, shear_stress_r, tau_bed, tau_bank, dh_bed, dh_bank, fc_bed, fc_bank, fc_tot, l_bank = transport_erosion_deposition(
+            rho_w, g, R_r, S_r, rho_s, d50, wb, d_r, theta,
+                                         use_fp, chan_depth, l_bed_obstacle,
+                                         l_bank_obstacle, tau_star_crit,
+                                         reach_length, k_ero, Qs_in, k_dep, phi)
         
         #PART 5: MORPHOLOGIC ADJUSTMENT TO BED AND BANK EROSION
-        #update bed elevation
-        h_node += (dh_bed * timestep)
-        chan_depth = h_floodplain - h_node
-        
-        #update slope in response to new bed elevation assuming next node downstream maintains constant elevation
-        S = (h_node - h_baselevel) / reach_length
+        h_node, chan_depth, S, wb = morphologic_change(h_node, dh_bed, timestep, h_floodplain, h_baselevel,
+                                reach_length, wb, dh_bank, theta)
             
         if S <= 0:
             sys.exit("failed: slope <= 0")
-    
-        #adjust basal width
-        wb += (2 * ((-dh_bank / np.sin(theta)) - (-dh_bed / np.tan(theta))) * timestep)
         
         time += timestep
         timestep_iter += 1
