@@ -14,14 +14,13 @@ import time
 
 start_time = time.time()
 
-
 #######INITIALIZE###########################################################
 #parameter values, etc
 
 run_name = 'trajectory_test_refactor'
 Q = 150 #m^3/s water discharge
 Qs_in = .001 #m^3/s sediment flux in
-sigma_z = 0.1 #roughness length scale including wood (ideally back-calculate from literature)
+sigma_z = 0.1 #roughness length scale including macro-rx
 l_bed_obstacle = 0. #fraction of bed covered by wood
 l_bank_obstacle = 0. #fraction of banks covered by wood
 k_ero = 1. #ratio of bed to bank erodibility, unitless
@@ -29,15 +28,11 @@ k_dep = 10. #ratio of bed to bank deposition, unitless
 theta_deg = 60. #degrees; bank angle
 theta = np.radians(theta_deg)
 
-#constants that are not model parameters
-#e = 1.5 #range of 1.33-2; Rickenmann, 2011
-
-time_to_run = 1000000000#200000000000 #work out time units...
+time_to_run = 1000000000#200000000000
 timestep = 1000 #CHECK UNITS
 print_interval = 200000000000
 save_interval = 10000
 reach_length = 1000 #meters
-#h_floodplain = 2.
 use_fp = 1 #0 for unconfined, 1 for confined
 
 #read in starting equilibrium S and w values
@@ -55,7 +50,7 @@ else:
     wb = baseline_widths[np.where(baseline_slopes > 0)[0][-1]]
     print(wb)
 
-d50 = 0.06 #m !!!connect this to z0 to eliminate an arbitrary param choice
+d50 = 0.06 #m
 
 h_floodplain = 5. + (S * reach_length)
 
@@ -107,10 +102,6 @@ save_S_r = morph_vars_perturb[8]
 save_fr_over_f0 = morph_vars_perturb[9]
 save_chan_depths = morph_vars_perturb[10]
 teq = morph_vars_perturb[11]
-
-#shortcuts to retrieve final width and slope values:
-#save_widths[np.where(save_widths > 0)[0][-1]]
-#save_slopes[np.where(save_slopes > 0)[0][-1]]
 
 
 #save everything as npys

@@ -12,7 +12,6 @@ import numpy as np
 import pandas as pd
 from macro_roughness_functions import channel_evolution_bestfit
 
-
 #######INITIALIZE###########################################################
 #parameter values, etc
 
@@ -29,9 +28,6 @@ k_dep = data.k_dep.iloc[-1]
 theta_deg = 60. #degrees; bank angle
 theta = np.radians(theta_deg)
 
-#constants that are not model parameters
-#e = 1.5 #range of 1.33-2; Rickenmann, 2011
-
 time_to_run = 158803200#5000000000 #1,838 days between 2019 and 2024 survey = 158,803,200 s
 timestep = 100 #CHECK UNITS
 print_interval = 10000000
@@ -39,31 +35,21 @@ save_interval = 100
 reach_length = 1100.2 #meters
 use_fp = 1 #0 for unconfined, 1 for confined
 
-#read in starting equilibrium S and w values
+#starting S and wb values
 
-S = 0.0029#0.00164 #setting slope for now
-wb  = 43.6#20#25.053 #initial basal width [m]
+S = 0.0029
+wb  = 43.6 #m
 
-d50 = 0.03 #m !!!connect this to z0 to eliminate an arbitrary param choice
-
+d50 = 0.03 #m 
 h_floodplain = 2.95 + (S * reach_length)
 
-#bring in Q data
-Q_time_series = pd.read_parquet('inputs/sf_sno_Q.parquet')
-Q_time_series[(Q_time_series['datetime'] >= '2019-03-20 12:00:00') & (Q_time_series['datetime'] <= '2024-03-31 12:00:00')]
-
-#Q_time_series = pd.read_csv('sf_sno_q.txt', sep = '\t', header = 27).drop(columns = ['5s', '15s', '6s', '10s', '14n.1', '10s.1']).rename(columns={"20d": "date_time", "14n": "Q (cfs)"})
-#Q_time_series['Q (cms)'] = Q_time_series['Q (cfs)'] * 0.0283168466
-
-#trim discharge time series to known dates:
+#bring in Q data and trim to date bounds
     #2019: 2019-03-20
     #2020: 2020-04-08
     #2022: 2022-04-06
     #2024: 2024-03-31
-    
-#Q_time_series = Q_time_series.drop(index = range(7532)) #drop dates before noon on first survey day
-#Q_time_series = Q_time_series.drop(index = range(200000, 208247)) #drop dates after noon on last survey day
-
+Q_time_series = pd.read_parquet('inputs/sf_sno_Q.parquet')
+Q_time_series[(Q_time_series['datetime'] >= '2019-03-20 12:00:00') & (Q_time_series['datetime'] <= '2024-03-31 12:00:00')]
 Q_time_series_np = Q_time_series['Q (cms)'].to_numpy()
 expansion_factor = int((15 * 60) / timestep)
 Q_time_series_expanded = np.repeat(Q_time_series_np, expansion_factor)

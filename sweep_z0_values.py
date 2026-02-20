@@ -16,14 +16,9 @@ import os
 # protect the entry point
 if __name__ == '__main__':
     run_name = 'figure_4_test_refactor'
-    n_steps = 15
-    #total_runs = n_steps**3
-    
+    n_steps = 15    
     sigma_z_values = np.logspace(-2, 1, n_steps)
-    #sigma_z = 1
-    #l_bed_obstacle_values = np.linspace(0, 250, n_steps)
     l_bed_obstacle = 0.
-    #l_bank_obstacle_values = np.linspace(0, 2.5, n_steps)
     l_bank_obstacle = 0.
     Q = 150 #m3/s
     Qs_in = 0.001 #m3/s
@@ -35,19 +30,9 @@ if __name__ == '__main__':
     k_dep = 10.
     
     time_to_run = 1000000000 #s
-    timestep = 1000#50 #s
+    timestep = 1000 #s
     
     reach_length = 1000 #m
-    
-    #For 10 m reach length:
-        #S = 0.0055662191333570865
-        #wb = 51.058424581763184
-    #For 100 m reach length:
-        #S = 0.00558684804324513
-        #wb = 51.30730088868196
-    
-    #S = 0.005598014552362633#0.0055593355305988265#0.005208958660154328#0.006740351232927963
-    #wb = 51.44112749947885#53.87690135192294#51.00417998438822#54.349856075608386#51.81330955924939
     
     baseline_name = 'trajectory_z0_baseline_rev1'
     print('loading baseline slope and width...')
@@ -60,17 +45,6 @@ if __name__ == '__main__':
     
     h_floodplain = 1.95 + (S * reach_length)
     use_fp = 0 #0 for no, 1 for yes
-    
-    #make array of all combinations of three parameters of interest
-    #in the resulting array...
-        #column 0 is z0
-        #column 1 is k_ratio
-        #column 3 is d_ratio
-    
-    #param_array_variables = np.array(np.meshgrid(sigma_z_values, l_bed_obstacle_values, l_bank_obstacle_values)).T.reshape(-1, 3)
-    #param_array_constants = np.array([np.repeat(fc_bed, total_runs), np.repeat(fc_bank, total_runs)]).T
-    
-    #param_array = np.hstack((param_array_variables, param_array_constants))
     
     param_array_tuple = tuple( sigma_z_values)
     save_array = np.zeros((len(sigma_z_values), 1))
@@ -102,11 +76,6 @@ if __name__ == '__main__':
         
         #issue tasks to thread pool
         results = p.starmap(channel_evolution_equilibrium, args)
-        
-        #output = [p.get() for p in results]
-
-    
-
         
     results_array = np.array(results)
     save_array = np.column_stack((sigma_z_values, results_array))
