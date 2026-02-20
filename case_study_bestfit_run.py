@@ -18,7 +18,8 @@ from macro_roughness_functions import channel_evolution_bestfit
 run_name = 'case_study_test_refactor'
 inversion_record_name = 'results/case_study_test_refactor_inversion_record.csv'
 colnames = ['k_ero', 'k_dep', 'misfit']
-data = pd.read_csv(inversion_record_name, header = None, names = colnames).sort_values(by = 'misfit', ascending = False)
+data = (pd.read_csv(inversion_record_name, header = None, names = colnames)
+        .sort_values(by = 'misfit', ascending = False))
 
 
 #get bestfit k_ero and k_dep from inversion record
@@ -28,7 +29,8 @@ k_dep = data.k_dep.iloc[-1]
 theta_deg = 60. #degrees; bank angle
 theta = np.radians(theta_deg)
 
-time_to_run = 158803200#5000000000 #1,838 days between 2019 and 2024 survey = 158,803,200 s
+#1,838 days between 2019 and 2024 survey = 158,803,200 s
+time_to_run = 158803200#5000000000
 timestep = 100 #CHECK UNITS
 print_interval = 10000000
 save_interval = 100
@@ -49,28 +51,29 @@ h_floodplain = 2.95 + (S * reach_length)
     #2022: 2022-04-06
     #2024: 2024-03-31
 Q_time_series = pd.read_parquet('inputs/sf_sno_Q.parquet')
-Q_time_series[(Q_time_series['datetime'] >= '2019-03-20 12:00:00') & (Q_time_series['datetime'] <= '2024-03-31 12:00:00')]
+Q_time_series[(Q_time_series['datetime'] >= '2019-03-20 12:00:00') & 
+              (Q_time_series['datetime'] <= '2024-03-31 12:00:00')]
 Q_time_series_np = Q_time_series['Q (cms)'].to_numpy()
 expansion_factor = int((15 * 60) / timestep)
 Q_time_series_expanded = np.repeat(Q_time_series_np, expansion_factor)
 
-param_dict = {
-              'k_ero': k_ero,
+param_dict = {'k_ero': k_ero,
               'k_dep': k_dep,
               'theta': theta_deg,
               'd50': d50,
               'h_fp': h_floodplain,
               'runtime': time_to_run,
-              'timestep': timestep} #dict holds only vars that are unchanging
+              'timestep': timestep}
 
-with open('results/' + str(run_name) + '_params.txt','w') as params_file:  #write out params dict to text file
+#write out params dict to text file
+with open('results/' + str(run_name) + '_params.txt','w') as params_file:
     for key, value in param_dict.items():  
         params_file.write('%s: %s\n' % (key, value))
         
 #define input time series of sigma_z, l_bed, l_bank
-sigma_z_vals = np.array([0.13, 0.13, 0.14])#np.array([0.21, 0.24, 0.23])
-l_bed_obst_vals = np.array([1.74, 1.35, 1.84])#np.array([11.0, 18.9, 17.1])
-l_bank_obst_vals = np.array([1.91, 1.23, 1.84])#np.array([0.65, 0.61, 0.86])
+sigma_z_vals = np.array([0.13, 0.13, 0.14])
+l_bed_obst_vals = np.array([1.74, 1.35, 1.84])
+l_bank_obst_vals = np.array([1.91, 1.23, 1.84])
 
 morph_vars_perturb = channel_evolution_bestfit(time_to_run,
      timestep,

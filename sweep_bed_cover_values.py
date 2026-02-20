@@ -37,7 +37,7 @@ if __name__ == '__main__':
     baseline_name = 'trajectory_z0_baseline_rev1'
     print('loading baseline slope and width...')
     baseline_slopes = np.load('results/' + str(baseline_name) + '_slopes.npy')
-    S = baseline_slopes[np.where(baseline_slopes > 0)[0][-1]] #last slope from baseline
+    S = baseline_slopes[np.where(baseline_slopes > 0)[0][-1]]
     print(S)
     baseline_widths = np.load('results/' + str(baseline_name) + '_widths.npy')
     wb = baseline_widths[np.where(baseline_slopes > 0)[0][-1]]
@@ -61,9 +61,10 @@ if __name__ == '__main__':
                   'initial_width': wb,
                   'reach_length': reach_length,
                   'runtime': time_to_run,
-                  'timestep': timestep} #dict holds only vars that are unchanging
+                  'timestep': timestep}
     
-    with open('results/' + str(run_name) + '_params.txt','w') as params_file:  #write out params dict to text file
+    #write out params dict to text file
+    with open('results/' + str(run_name) + '_params.txt','w') as params_file:
         for key, value in param_dict.items():  
             params_file.write('%s: %s\n' % (key, value))
     

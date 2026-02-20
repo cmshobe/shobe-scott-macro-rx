@@ -17,8 +17,8 @@ import os
 if __name__ == '__main__':
     run_name = 'figure_7_test_refactor'
     
-    k_ero_values = np.linspace(1, 5, 10)#np.logspace(0, 1, 5)
-    k_dep_values = np.linspace(10, 50, 10)#np.logspace(1, np.log10(50), 5)
+    k_ero_values = np.linspace(1, 5, 10)
+    k_dep_values = np.linspace(10, 50, 10)
     
     X, Y = np.meshgrid(k_ero_values, k_dep_values)
     
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     baseline_name = 'trajectory_z0_baseline_rev1'
     print('loading baseline slope and width...')
     baseline_slopes = np.load('results/' + str(baseline_name) + '_slopes.npy')
-    S = baseline_slopes[np.where(baseline_slopes > 0)[0][-1]] #last slope from baseline
+    S = baseline_slopes[np.where(baseline_slopes > 0)[0][-1]]
     print(S)
     baseline_widths = np.load('results/' + str(baseline_name) + '_widths.npy')
     wb = baseline_widths[np.where(baseline_slopes > 0)[0][-1]]
@@ -62,9 +62,10 @@ if __name__ == '__main__':
                   'initial_width': wb,
                   'reach_length': reach_length,
                   'runtime': time_to_run,
-                  'timestep': timestep} #dict holds only vars that are unchanging
+                  'timestep': timestep}
     
-    with open('results/' + str(run_name) + '_params.txt','w') as params_file:  #write out params dict to text file
+    #write out params dict to text file
+    with open('results/' + str(run_name) + '_params.txt','w') as params_file:
         for key, value in param_dict.items():  
             params_file.write('%s: %s\n' % (key, value))
     
@@ -73,7 +74,8 @@ if __name__ == '__main__':
         #prepare arguments
         args = [(time_to_run, timestep, reach_length, Q, Qs_in, wb, theta,
                  sigma_z, l_bed_obstacle, l_bank_obstacle, k_ero, k_dep, S, d50, 
-                 h_floodplain, use_fp) for k_ero, k_dep in zip(param_array[0], param_array[1])]
+                 h_floodplain, use_fp) for k_ero, k_dep in zip(param_array[0], 
+                                                               param_array[1])]
         
         #issue tasks to thread pool
         results = p.starmap(channel_evolution_equilibrium, args)

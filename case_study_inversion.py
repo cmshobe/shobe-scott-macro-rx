@@ -20,7 +20,8 @@ run_name = 'case_study_test_refactor'
 theta_deg = 60. #degrees; bank angle
 theta = np.radians(theta_deg)
 
-time_to_run = 158803200 #1,838 days between 2019 and 2024 survey = 158,803,200 s
+#1,838 days between 2019 and 2024 survey = 158,803,200 s
+time_to_run = 158803200
 timestep = 100 #s
 print_interval = 1000000000
 save_interval = 100
@@ -39,19 +40,20 @@ h_floodplain = 2.95 + (S * reach_length)
     #2022: 2022-04-06
     #2024: 2024-03-31
 Q_time_series = pd.read_parquet('inputs/sf_sno_Q.parquet')
-Q_time_series[(Q_time_series['datetime'] >= '2019-03-20 12:00:00') & (Q_time_series['datetime'] <= '2024-03-31 12:00:00')]
+Q_time_series[(Q_time_series['datetime'] >= '2019-03-20 12:00:00') & 
+              (Q_time_series['datetime'] <= '2024-03-31 12:00:00')]
 Q_time_series_np = Q_time_series['Q (cms)'].to_numpy()
 expansion_factor = int((15 * 60) / timestep)
 Q_time_series_expanded = np.repeat(Q_time_series_np, expansion_factor)
 
-param_dict = {
-              'theta': theta_deg,
+param_dict = {'theta': theta_deg,
               'd50': d50,
               'h_fp': h_floodplain,
               'runtime': time_to_run,
-              'timestep': timestep} #dict holds only vars that are unchanging
+              'timestep': timestep} 
 
-with open('results/' + str(run_name) + '_params.txt','w') as params_file:  #write out params dict to text file
+#write out params dict to text file
+with open('results/' + str(run_name) + '_params.txt','w') as params_file:
     for key, value in param_dict.items():  
         params_file.write('%s: %s\n' % (key, value))
 
@@ -59,7 +61,8 @@ bounds = [(np.log10(0.01), np.log10(10)), (1, 120)] #order: k*ero, k*dep
 
 #define known time series of w and h
 w_obs = np.array([45., 46., 45.9])
-h_obs = np.array([0.0028, 0.0032, 0.003]) * reach_length #convert slope to elev above baselevel elev of 0 m
+#convert slope to elev above baselevel elev of 0 m
+h_obs = np.array([0.0028, 0.0032, 0.003]) * reach_length
 
 #define input time series of sigma_z, l_bed, l_bank
 sigma_z_vals = np.array([0.13, 0.13, 0.14])
@@ -82,9 +85,11 @@ init_array_k_dep = np.linspace(bounds[1][0], bounds[1][1], pop_size)
 
 init_array = np.array([init_array_k_ero, init_array_k_dep]).T
 
-optimization_results = differential_evolution(channel_evolution_inversion, bounds, args = args,
-                                              maxiter = max_iter, popsize = pop_size,
-                                              recombination = recomb, #default is 0.7
+optimization_results = differential_evolution(channel_evolution_inversion, 
+                                              bounds, args = args,
+                                              maxiter = max_iter, 
+                                              popsize = pop_size,
+                                              recombination = recomb,
                                               polish = False)
 
 

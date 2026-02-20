@@ -29,7 +29,7 @@ if __name__ == '__main__':
     k_ero = 1.
     k_dep = 10.
     
-    time_to_run = 1000000000#200000000000 #s
+    time_to_run = 200000000000 #s
     timestep = 1000 #s
     
     reach_length = 1000 #m
@@ -37,14 +37,14 @@ if __name__ == '__main__':
     baseline_name = 'trajectory_z0_baseline_rev1'
     print('loading baseline slope and width...')
     baseline_slopes = np.load('results/' + str(baseline_name) + '_slopes.npy')
-    S = baseline_slopes[np.where(baseline_slopes > 0)[0][-1]] #last slope from baseline
+    S = baseline_slopes[np.where(baseline_slopes > 0)[0][-1]]
     print(S)
     baseline_widths = np.load('results/' + str(baseline_name) + '_widths.npy')
     wb = baseline_widths[np.where(baseline_slopes > 0)[0][-1]]
     print(wb)
     
     h_floodplain = 5. + (S * reach_length)
-    use_fp = 0 #0 for no, 1 for yes
+    use_fp = 1 #0 for no, 1 for yes
     
     param_array_tuple = tuple( l_bank_obstacle_values)
     save_array = np.zeros((len(l_bank_obstacle_values), 1))
@@ -61,9 +61,10 @@ if __name__ == '__main__':
                   'initial_width': wb,
                   'reach_length': reach_length,
                   'runtime': time_to_run,
-                  'timestep': timestep} #dict holds only vars that are unchanging
+                  'timestep': timestep}
     
-    with open('results/' + str(run_name) + '_params.txt','w') as params_file:  #write out params dict to text file
+    #write out params dict to text file
+    with open('results/' + str(run_name) + '_params.txt','w') as params_file:
         for key, value in param_dict.items():  
             params_file.write('%s: %s\n' % (key, value))
     
