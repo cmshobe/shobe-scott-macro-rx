@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-All functions used in Shobe and Scott (in review)
+All functions used in Shobe and Scott (in review).
 
 Created February 2026 by @author: charlesshobe
 """

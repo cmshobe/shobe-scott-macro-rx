@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Nov  8 11:02:30 2024
+Run a suite of simulations that assess equilibrium channel response to
+different values of the bed cover length l_bank_roughness. Output from this 
+script is used to generate figure 6 in the paper.
 
-@author: charlesshobe
-
-sweep ONE AXIS of the parameter space in a parallelized way using multiprocessing
+Created February 2026 by @author: charlesshobe
 """
 
 from multiprocessing import Pool

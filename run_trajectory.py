@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on 9 Jan 2025 09:28:38
+Run a single model realization while recording information about flow and 
+morphology over time in the modeled channel. Output from this script is used to
+generate figure 8 in the paper.
 
-@author: charlesshobe
-
-run one realization (for testing)
+Created February 2026 by @author: charlesshobe
 """
 
 import numpy as np

@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on 11 Mar 2025 09:28:38
+Run an inverse modeling experiment in which the differential evolution 
+algorithm is used to converge on best-fit values of the erosion and deposition
+constants by comparing modeled channel geometry against field measurements.
+Output from this script is used to generate figure 9 in the paper using data 
+from the SF Snoqualmie River case study.
 
-@author: charlesshobe
-
-differential evolution optimization"""
+Created February 2026 by @author: charlesshobe
+"""
 
 import numpy as np
 import pandas as pd

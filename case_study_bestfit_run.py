@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on 9 Jan 2025 09:28:38
+Run a single realization of the model using data from the field case study and 
+the best fit erosion and deposition constant values constrained by the 
+inversion. Output from this script is used to generate figure 9 in the paper 
+using data from the SF Snoqualmie River case study.
 
-@author: charlesshobe
-
-run one realization (for testing)
+Created February 2026 by @author: charlesshobe
 """
 
 import numpy as np
