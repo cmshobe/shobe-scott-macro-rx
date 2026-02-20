@@ -9,7 +9,6 @@ run one realization (for testing)
 """
 
 import numpy as np
-import copy as cp
 from macro_roughness_functions import channel_evolution_trajectory
 import time
 

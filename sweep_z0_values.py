@@ -9,10 +9,8 @@ sweep ONE AXIS of the parameter space in a parallelized way using multiprocessin
 """
 
 from multiprocessing import Pool
-from functools import partial
 import numpy as np
 from macro_roughness_functions import channel_evolution_equilibrium
-import time
 import os
 
 # protect the entry point
