@@ -73,8 +73,8 @@ with open('results/' + str(run_name) + '_params.txt','w') as params_file:
         
 #define input time series of z0, l_bed, l_bank
 z0_vals = np.array([0.13, 0.13, 0.14])
-l_bed_obst_vals = np.array([1.74, 1.35, 1.84])
-l_bank_obst_vals = np.array([1.91, 1.23, 1.84])
+w_bed_roughness_vals = np.array([1.74, 1.35, 1.84])
+l_bank_roughness_vals = np.array([1.91, 1.23, 1.84])
 
 morph_vars_perturb = channel_evolution_bestfit(time_to_run,
      timestep,
@@ -91,8 +91,8 @@ morph_vars_perturb = channel_evolution_bestfit(time_to_run,
      print_interval,
      save_interval,
      z0_vals,
-     l_bed_obst_vals,
-     l_bank_obst_vals)
+     w_bed_roughness_vals,
+     l_bank_roughness_vals)
 
 save_widths = morph_vars_perturb[0]
 save_slopes = morph_vars_perturb[1]

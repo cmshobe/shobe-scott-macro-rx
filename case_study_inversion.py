@@ -69,14 +69,14 @@ h_obs = np.array([0.0028, 0.0032, 0.003]) * reach_length
 
 #define input time series of z0, l_bed, l_bank
 z0_vals = np.array([0.13, 0.13, 0.14])
-l_bed_obst_vals = np.array([1.74, 1.35, 1.84])
-l_bank_obst_vals = np.array([1.91, 1.23, 1.84])
+w_bed_roughness_vals = np.array([1.74, 1.35, 1.84])
+l_bank_roughness_vals = np.array([1.91, 1.23, 1.84])
 
 #define fixed arguments
 args = (time_to_run, timestep, reach_length, Q_time_series_expanded, wb, theta,
         S, d50, h_floodplain,
         use_fp, print_interval, save_interval, w_obs, h_obs, run_name,
-        z0_vals, l_bed_obst_vals, l_bank_obst_vals)
+        z0_vals, w_bed_roughness_vals, l_bank_roughness_vals)
 
 pop_size = 1#100
 max_iter = 1#25

@@ -18,8 +18,8 @@ if __name__ == '__main__':
     run_name = 'figure_4_test_refactor'
     n_steps = 15    
     z0_values = np.logspace(-2, 1, n_steps)
-    l_bed_obstacle = 0.
-    l_bank_obstacle = 0.
+    w_bed_roughness = 0.
+    l_bank_roughness = 0.
     Q = 150 #m3/s
     Qs_in = 0.001 #m3/s
     theta_deg = 60. #degrees; bank angle
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     h_floodplain = 1.95 + (S * reach_length)
     use_fp = 0 #0 for no, 1 for yes
     
-    param_array_tuple = tuple( z0_values)
+    param_array_tuple = tuple(z0_values)
     save_array = np.zeros((len(z0_values), 1))
     
     param_dict = {'n_runs': n_steps,
@@ -72,7 +72,7 @@ if __name__ == '__main__':
         
         #prepare arguments
         args = [(time_to_run, timestep, reach_length, Q, Qs_in, wb, theta,
-                 z0, l_bed_obstacle, l_bank_obstacle, k_ero, k_dep, S, d50, 
+                 z0, w_bed_roughness, l_bank_roughness, k_ero, k_dep, S, d50, 
                  h_floodplain, use_fp) for z0 in param_array_tuple]
         
         #issue tasks to thread pool

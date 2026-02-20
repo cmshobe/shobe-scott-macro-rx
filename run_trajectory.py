@@ -21,8 +21,8 @@ run_name = 'trajectory_test_refactor'
 Q = 150 #m^3/s water discharge
 Qs_in = .001 #m^3/s sediment flux in
 z0 = 0.1 #roughness length scale including macro-rx
-l_bed_obstacle = 0. #fraction of bed covered by wood
-l_bank_obstacle = 0. #fraction of banks covered by wood
+w_bed_roughness = 0. #fraction of bed covered by wood
+l_bank_roughness = 0. #fraction of banks covered by wood
 k_ero = 1. #ratio of bed to bank erodibility, unitless
 k_dep = 10. #ratio of bed to bank deposition, unitless
 theta_deg = 60. #degrees; bank angle
@@ -55,8 +55,8 @@ d50 = 0.06 #m
 h_floodplain = 5. + (S * reach_length)
 
 param_dict = {'z0': z0,
-              'l_bed_obstacle': l_bed_obstacle,
-              'l_bank_obstacle': l_bank_obstacle,
+              'w_bed_roughness': w_bed_roughness,
+              'l_bank_roughness': l_bank_roughness,
               'k_ero': k_ero,
               'k_dep': k_dep,
               'Q': Q,
@@ -80,8 +80,8 @@ morph_vars_perturb = channel_evolution_trajectory(time_to_run,
      wb,
      theta,
      z0,
-     l_bed_obstacle,
-     l_bank_obstacle,
+     w_bed_roughness,
+     l_bank_roughness,
      k_ero,
      k_dep,
      S,

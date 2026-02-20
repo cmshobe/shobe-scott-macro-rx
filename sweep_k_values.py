@@ -23,8 +23,8 @@ if __name__ == '__main__':
     X, Y = np.meshgrid(k_ero_values, k_dep_values)
     
     z0 = 0.1
-    l_bed_obstacle = 0.
-    l_bank_obstacle = 0.
+    w_bed_roughness = 0.
+    l_bank_roughness = 0.
     Q = 150 #m3/s
     Qs_in = 0.001 #m3/s
     theta_deg = 60. #degrees; bank angle
@@ -48,7 +48,7 @@ if __name__ == '__main__':
     h_floodplain = 5. + (S * reach_length)
     use_fp = 1 #0 for no, 1 for yes
     
-    param_array = np.array( (X.ravel(), Y.ravel()))
+    param_array = np.array((X.ravel(), Y.ravel()))
     save_array = np.zeros((len(k_ero_values) * len(k_dep_values), 1))
     
     param_dict = {'n_runs': len(X) * len(Y),
@@ -73,7 +73,7 @@ if __name__ == '__main__':
         
         #prepare arguments
         args = [(time_to_run, timestep, reach_length, Q, Qs_in, wb, theta,
-                 z0, l_bed_obstacle, l_bank_obstacle, k_ero, k_dep, S, d50, 
+                 z0, w_bed_roughness, l_bank_roughness, k_ero, k_dep, S, d50, 
                  h_floodplain, use_fp) for k_ero, k_dep in zip(param_array[0], 
                                                                param_array[1])]
         

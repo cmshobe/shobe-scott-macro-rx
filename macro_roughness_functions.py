@@ -130,8 +130,8 @@ function transport_erosion_deposition:
          nb.float64, nb.float64, nb.float64, nb.float64, nb.float64,
          nb.float64, nb.float64, nb.float64),nopython=True)
 def transport_erosion_deposition(rho_w, g, R_r, S_r, rho_s, d50, wb, d_r, theta,
-                                 use_fp, chan_depth, l_bed_obstacle,
-                                 l_bank_obstacle, tau_star_crit,
+                                 use_fp, chan_depth, w_bed_roughness,
+                                 l_bank_roughness, tau_star_crit,
                                  reach_length, k_ero, Qs_in, k_dep, phi):
     
     #PART 2: BEDLOAD TRANSPORT
@@ -147,8 +147,8 @@ def transport_erosion_deposition(rho_w, g, R_r, S_r, rho_s, d50, wb, d_r, theta,
     elif use_fp == 0:
         l_bank = 2 * (np.maximum(chan_depth, d_r) / np.sin(theta))
     
-    fc_bed = np.minimum(l_bed_obstacle / wb, 1)
-    fc_bank = np.minimum((2 * l_bank_obstacle) / l_bank, 1)
+    fc_bed = np.minimum(w_bed_roughness / wb, 1)
+    fc_bank = np.minimum((2 * l_bank_roughness) / l_bank, 1)
     fc_tot = (fc_bed * wb + fc_bank * l_bank) / (l_bank + wb)
     
     
@@ -247,8 +247,8 @@ def channel_evolution_equilibrium(time_to_run,
          wb,
          theta,
          z0,
-         l_bed_obstacle,
-         l_bank_obstacle,
+         w_bed_roughness,
+         l_bank_roughness,
          k_ero,
          k_dep,
          S,
@@ -297,7 +297,7 @@ def channel_evolution_equilibrium(time_to_run,
         (Qs_out, Fw_tot, shear_stress_r, tau_bed, tau_bank, dh_bed, dh_bank, 
          fc_bed, fc_bank, fc_tot, l_bank) = transport_erosion_deposition(
             rho_w, g, R_r, S_r, rho_s, d50, wb, d_r, theta, use_fp, chan_depth, 
-            l_bed_obstacle, l_bank_obstacle, tau_star_crit, reach_length, 
+            w_bed_roughness, l_bank_roughness, tau_star_crit, reach_length, 
             k_ero, Qs_in, k_dep, phi)
         
         
@@ -317,8 +317,8 @@ def channel_evolution_equilibrium(time_to_run,
                 np.isclose(chan_depth, 0, atol = 0.001, rtol = 0) 
                 and use_fp == 1):
             print('channel filled completely before max time')
-            print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
-                  + str(l_bank_obstacle))
+            print(str(z0) + ' // ' + str(w_bed_roughness) + ' // ' 
+                  + str(l_bank_roughness))
             print(str(time) + '//' + str(time / 3.154e7))
             kill_flag = 1
             teq = time
@@ -329,8 +329,8 @@ def channel_evolution_equilibrium(time_to_run,
         if np.isclose(prior_w, wb, rtol = rtol, atol = atol) and np.isclose(
                 prior_S, S, rtol = rtol, atol = atol):
             print('reached SS before max time')
-            print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
-                  + str(l_bank_obstacle))
+            print(str(z0) + ' // ' + str(w_bed_roughness) + ' // ' 
+                  + str(l_bank_roughness))
             print(str(time) + '//' + str(time / 3.154e7))
             kill_flag = 1
             teq = time
@@ -343,8 +343,8 @@ def channel_evolution_equilibrium(time_to_run,
 
     if kill_flag == 0:
         print('max time reached before SS')
-        print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
-              + str(l_bank_obstacle))
+        print(str(z0) + ' // ' + str(w_bed_roughness) + ' // ' 
+              + str(l_bank_roughness))
         teq = -9999
         end_time = timer.time()
         print('Runtime: ' + str(end_time - start_time) + 'seconds')
@@ -367,8 +367,8 @@ def channel_evolution_trajectory(time_to_run,
          wb,
          theta,
          z0,
-         l_bed_obstacle,
-         l_bank_obstacle,
+         w_bed_roughness,
+         l_bank_roughness,
          k_ero,
          k_dep,
          S,
@@ -442,7 +442,7 @@ def channel_evolution_trajectory(time_to_run,
         (Qs_out, Fw_tot, shear_stress_r, tau_bed, tau_bank, dh_bed, dh_bank, 
          fc_bed, fc_bank, fc_tot, l_bank) = transport_erosion_deposition(
             rho_w, g, R_r, S_r, rho_s, d50, wb, d_r, theta, use_fp, chan_depth, 
-            l_bed_obstacle, l_bank_obstacle, tau_star_crit, reach_length, 
+            w_bed_roughness, l_bank_roughness, tau_star_crit, reach_length, 
             k_ero, Qs_in, k_dep, phi)
         
         #PART 5: MORPHOLOGIC ADJUSTMENT TO BED AND BANK EROSION
@@ -502,8 +502,8 @@ def channel_evolution_trajectory(time_to_run,
                 np.isclose(chan_depth, 0, atol = 0.001, rtol = 0) 
                 and use_fp == 1):
             print('channel filled completely before max time')
-            print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
-                  + str(l_bank_obstacle))
+            print(str(z0) + ' // ' + str(w_bed_roughness) + ' // ' 
+                  + str(l_bank_roughness))
             print(time)
             kill_flag = 1
             teq = time
@@ -514,8 +514,8 @@ def channel_evolution_trajectory(time_to_run,
         if np.isclose(prior_w, wb, rtol = rtol, atol = atol) and np.isclose(
                 prior_S, S, rtol = rtol, atol = atol):
             print('reached SS before max time')
-            print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
-                  + str(l_bank_obstacle))
+            print(str(z0) + ' // ' + str(w_bed_roughness) + ' // ' 
+                  + str(l_bank_roughness))
             print(time)
             kill_flag = 1
             teq = time
@@ -526,8 +526,8 @@ def channel_evolution_trajectory(time_to_run,
 
     if kill_flag == 0:
         print('max time reached before SS')
-        print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
-              + str(l_bank_obstacle))
+        print(str(z0) + ' // ' + str(w_bed_roughness) + ' // ' 
+              + str(l_bank_roughness))
         teq = -9999
     return (save_widths, save_slopes, save_depths_r, save_qs_out, 
             save_fw, save_tau_total, save_tau_bed, save_tau_bank, save_S_r, 
@@ -575,8 +575,8 @@ def channel_evolution_inversion(variable_args, *fixed_args):
     l_bank_obst_vals = fixed_args[17]
     
     z0 = z0_vals[0]
-    l_bed_obstacle = l_bed_obst_vals[0]
-    l_bank_obstacle = l_bank_obst_vals[0]
+    w_bed_roughness = l_bed_obst_vals[0]
+    l_bank_roughness = l_bank_obst_vals[0]
     
     
     #constants that are not model parameters
@@ -653,7 +653,7 @@ def channel_evolution_inversion(variable_args, *fixed_args):
         (Qs_out, Fw_tot, shear_stress_r, tau_bed, tau_bank, dh_bed, dh_bank, 
          fc_bed, fc_bank, fc_tot, l_bank) = transport_erosion_deposition(
             rho_w, g, R_r, S_r, rho_s, d50, wb, d_r, theta, use_fp, chan_depth, 
-            l_bed_obstacle, l_bank_obstacle, tau_star_crit, reach_length, 
+            w_bed_roughness, l_bank_roughness, tau_star_crit, reach_length, 
             k_ero, Qs_in, k_dep, phi)
         
         #PART 5: MORPHOLOGIC ADJUSTMENT TO BED AND BANK EROSION
@@ -679,15 +679,15 @@ def channel_evolution_inversion(variable_args, *fixed_args):
             w_sim[0] = wb
             h_sim[0] = h_node
             z0 = z0_vals[1]
-            l_bed_obstacle = l_bed_obst_vals[1]
-            l_bank_obstacle = l_bank_obst_vals[1]
+            w_bed_roughness = l_bed_obst_vals[1]
+            l_bank_roughness = l_bank_obst_vals[1]
             
         if time == survey_time_2022:
             w_sim[1] = wb
             h_sim[1] = h_node
             z0 = z0_vals[2]
-            l_bed_obstacle = l_bed_obst_vals[2]
-            l_bank_obstacle = l_bank_obst_vals[2]
+            w_bed_roughness = l_bed_obst_vals[2]
+            l_bank_roughness = l_bank_obst_vals[2]
 
 
         if time % save_interval == 0:
@@ -707,8 +707,8 @@ def channel_evolution_inversion(variable_args, *fixed_args):
         if (chan_depth <= 0) or np.isclose(chan_depth, 0, atol = 0.001, 
                                            rtol = 0):
             print('channel filled completely before max time')
-            print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
-                  + str(l_bank_obstacle))
+            print(str(z0) + ' // ' + str(w_bed_roughness) + ' // ' 
+                  + str(l_bank_roughness))
             print(time)
             kill_flag = 1
 
@@ -716,8 +716,8 @@ def channel_evolution_inversion(variable_args, *fixed_args):
         w_sim[2] = wb
         h_sim[2] = h_node
         print('max time reached before SS')
-        print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
-              + str(l_bank_obstacle))
+        print(str(z0) + ' // ' + str(w_bed_roughness) + ' // ' 
+              + str(l_bank_roughness))
         
     #calculate misfit function
     
@@ -773,8 +773,8 @@ def channel_evolution_bestfit(time_to_run,
          l_bank_obst_vals):
     
     z0 = z0_vals[0]
-    l_bed_obstacle = l_bed_obst_vals[0]
-    l_bank_obstacle = l_bank_obst_vals[0]
+    w_bed_roughness = l_bed_obst_vals[0]
+    l_bank_roughness = l_bank_obst_vals[0]
     
     #constants
     a1 = 6.5 #VPE constant
@@ -844,7 +844,7 @@ def channel_evolution_bestfit(time_to_run,
         (Qs_out, Fw_tot, shear_stress_r, tau_bed, tau_bank, dh_bed, dh_bank, 
          fc_bed, fc_bank, fc_tot, l_bank) = transport_erosion_deposition(
             rho_w, g, R_r, S_r, rho_s, d50, wb, d_r, theta, use_fp, chan_depth, 
-            l_bed_obstacle, l_bank_obstacle, tau_star_crit, reach_length, 
+            w_bed_roughness, l_bank_roughness, tau_star_crit, reach_length, 
             k_ero, Qs_in, k_dep, phi)
         
         #PART 5: MORPHOLOGIC ADJUSTMENT TO BED AND BANK EROSION
@@ -871,13 +871,13 @@ def channel_evolution_bestfit(time_to_run,
             
         if time == survey_time_2020:
             z0 = z0_vals[1]
-            l_bed_obstacle = l_bed_obst_vals[1]
-            l_bank_obstacle = l_bank_obst_vals[1]
+            w_bed_roughness = l_bed_obst_vals[1]
+            l_bank_roughness = l_bank_obst_vals[1]
             
         if time == survey_time_2022:
             z0 = z0_vals[2]
-            l_bed_obstacle = l_bed_obst_vals[2]
-            l_bank_obstacle = l_bank_obst_vals[2]
+            w_bed_roughness = l_bed_obst_vals[2]
+            l_bank_roughness = l_bank_obst_vals[2]
 
 
         if time % save_interval == 0:
@@ -896,16 +896,16 @@ def channel_evolution_bestfit(time_to_run,
         if (chan_depth <= 0) or np.isclose(chan_depth, 0, atol = 0.001, 
                                            rtol = 0):
             print('channel filled completely before max time')
-            print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
-                  + str(l_bank_obstacle))
+            print(str(z0) + ' // ' + str(w_bed_roughness) + ' // ' 
+                  + str(l_bank_roughness))
             print(time)
             kill_flag = 1
             teq = time
 
     if kill_flag == 0:
         print('max time reached before SS')
-        print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
-              + str(l_bank_obstacle))
+        print(str(z0) + ' // ' + str(w_bed_roughness) + ' // ' 
+              + str(l_bank_roughness))
         teq = -9999
     return (save_widths, save_slopes, save_depths_r, save_qs_out, 
             save_fw,save_tau_bed, save_tau_bank, save_S_r, save_fr_over_f0,

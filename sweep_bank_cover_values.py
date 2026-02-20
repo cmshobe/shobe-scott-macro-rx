@@ -18,8 +18,8 @@ if __name__ == '__main__':
     run_name = 'figure_6_test_refactor'
     n_steps = 15
     z0 = 0.1
-    l_bed_obstacle = 0.
-    l_bank_obstacle_values = np.linspace(0, 5, n_steps)
+    w_bed_roughness = 0.
+    l_bank_roughness_values = np.linspace(0, 5, n_steps)
     Q = 150 #m3/s
     Qs_in = 0.001 #m3/s
     theta_deg = 60. #degrees; bank angle
@@ -46,8 +46,8 @@ if __name__ == '__main__':
     h_floodplain = 5. + (S * reach_length)
     use_fp = 1 #0 for no, 1 for yes
     
-    param_array_tuple = tuple( l_bank_obstacle_values)
-    save_array = np.zeros((len(l_bank_obstacle_values), 1))
+    param_array_tuple = tuple(l_bank_roughness_values)
+    save_array = np.zeros((len(l_bank_roughness_values), 1))
     
     param_dict = {'n_runs': n_steps,
                   'k_ero': k_ero,
@@ -72,12 +72,12 @@ if __name__ == '__main__':
         
         #prepare arguments
         args = [(time_to_run, timestep, reach_length, Q, Qs_in, wb, theta,
-                 z0, l_bed_obstacle, l_bank_obstacle, k_ero, k_dep, S, d50, 
-                 h_floodplain, use_fp) for l_bank_obstacle in param_array_tuple]
+                 z0, w_bed_roughness, l_bank_roughness, k_ero, k_dep, S, d50, 
+                 h_floodplain, use_fp) for l_bank_roughness in param_array_tuple]
         
         #issue tasks to thread pool
         results = p.starmap(channel_evolution_equilibrium, args)
         
     results_array = np.array(results)
-    save_array = np.column_stack((l_bank_obstacle_values, results_array))
+    save_array = np.column_stack((l_bank_roughness_values, results_array))
     np.save('results/sweep_bank_cover_values_' + str(run_name) + '.npy', save_array)
