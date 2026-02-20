@@ -64,8 +64,8 @@ w_obs = np.array([45., 46., 45.9])
 #convert slope to elev above baselevel elev of 0 m
 h_obs = np.array([0.0028, 0.0032, 0.003]) * reach_length
 
-#define input time series of sigma_z, l_bed, l_bank
-sigma_z_vals = np.array([0.13, 0.13, 0.14])
+#define input time series of z0, l_bed, l_bank
+z0_vals = np.array([0.13, 0.13, 0.14])
 l_bed_obst_vals = np.array([1.74, 1.35, 1.84])
 l_bank_obst_vals = np.array([1.91, 1.23, 1.84])
 
@@ -73,7 +73,7 @@ l_bank_obst_vals = np.array([1.91, 1.23, 1.84])
 args = (time_to_run, timestep, reach_length, Q_time_series_expanded, wb, theta,
         S, d50, h_floodplain,
         use_fp, print_interval, save_interval, w_obs, h_obs, run_name,
-        sigma_z_vals, l_bed_obst_vals, l_bank_obst_vals)
+        z0_vals, l_bed_obst_vals, l_bank_obst_vals)
 
 pop_size = 1#100
 max_iter = 1#25

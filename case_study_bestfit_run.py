@@ -70,8 +70,8 @@ with open('results/' + str(run_name) + '_params.txt','w') as params_file:
     for key, value in param_dict.items():  
         params_file.write('%s: %s\n' % (key, value))
         
-#define input time series of sigma_z, l_bed, l_bank
-sigma_z_vals = np.array([0.13, 0.13, 0.14])
+#define input time series of z0, l_bed, l_bank
+z0_vals = np.array([0.13, 0.13, 0.14])
 l_bed_obst_vals = np.array([1.74, 1.35, 1.84])
 l_bank_obst_vals = np.array([1.91, 1.23, 1.84])
 
@@ -89,7 +89,7 @@ morph_vars_perturb = channel_evolution_bestfit(time_to_run,
      use_fp,
      print_interval,
      save_interval,
-     sigma_z_vals,
+     z0_vals,
      l_bed_obst_vals,
      l_bank_obst_vals)
 

@@ -17,7 +17,7 @@ import os
 if __name__ == '__main__':
     run_name = 'figure_4_test_refactor'
     n_steps = 15    
-    sigma_z_values = np.logspace(-2, 1, n_steps)
+    z0_values = np.logspace(-2, 1, n_steps)
     l_bed_obstacle = 0.
     l_bank_obstacle = 0.
     Q = 150 #m3/s
@@ -46,8 +46,8 @@ if __name__ == '__main__':
     h_floodplain = 1.95 + (S * reach_length)
     use_fp = 0 #0 for no, 1 for yes
     
-    param_array_tuple = tuple( sigma_z_values)
-    save_array = np.zeros((len(sigma_z_values), 1))
+    param_array_tuple = tuple( z0_values)
+    save_array = np.zeros((len(z0_values), 1))
     
     param_dict = {'n_runs': n_steps,
                   'k_ero': k_ero,
@@ -72,12 +72,12 @@ if __name__ == '__main__':
         
         #prepare arguments
         args = [(time_to_run, timestep, reach_length, Q, Qs_in, wb, theta,
-                 sigma_z, l_bed_obstacle, l_bank_obstacle, k_ero, k_dep, S, d50, 
-                 h_floodplain, use_fp) for sigma_z in param_array_tuple]
+                 z0, l_bed_obstacle, l_bank_obstacle, k_ero, k_dep, S, d50, 
+                 h_floodplain, use_fp) for z0 in param_array_tuple]
         
         #issue tasks to thread pool
         results = p.starmap(channel_evolution_equilibrium, args)
         
     results_array = np.array(results)
-    save_array = np.column_stack((sigma_z_values, results_array))
+    save_array = np.column_stack((z0_values, results_array))
     np.save('results/sweep_z0_values_' + str(run_name) + '.npy', save_array)

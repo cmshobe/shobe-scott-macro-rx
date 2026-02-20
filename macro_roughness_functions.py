@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Feb 20 10:45:29 2026
+All functions used in Shobe and Scott (in review)
 
-@author: charlesshobe
+Created February 2026 by @author: charlesshobe
 """
 
 import sys
@@ -13,13 +13,17 @@ import numba as nb
 import time as timer
 import csv
 
-start_time = timer.time()
-
+"""
+total_flow_resistance:
+    
+    calculates hydraulic variables under a given discharge in the presence
+    of macro-roughness characterized by a roughness length scale z0
+"""
 @nb.jit(nb.types.Tuple((nb.float64, nb.float64, nb.float64, nb.float64))
         (nb.float64, nb.float64, nb.float64, nb.float64, nb.float64, 
          nb.float64, nb.float64, nb.float64, nb.float64, nb.float64,
          nb.float64, nb.int8), nopython=True)
-def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
+def total_flow_resistance(Q, d_r, wb, theta, a1, a2, z0, g, S, chan_depth,
                          e, use_fp):
     
     calc_Q_r = 0
@@ -44,15 +48,15 @@ def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
         R_r = xs_area_r / wp_r
         
         #VPE sqrt(8/f) term
-        VPE_term_numerator = a1 * a2 * (R_r/ sigma_z)
+        VPE_term_numerator = a1 * a2 * (R_r/ z0)
         VPE_term_denomenator = np.power(np.power(a1, 2) + np.power(a2, 2)
-                                        * np.power(R_r / sigma_z, 5/3), 1/2)
+                                        * np.power(R_r / z0, 5/3), 1/2)
         VPE_term = VPE_term_numerator / VPE_term_denomenator
         
         #reduced energy slope
-        sqrt_f_over_f_r_numerator = a2 * np.power(R_r / sigma_z, 5/6)
+        sqrt_f_over_f_r_numerator = a2 * np.power(R_r / z0, 5/6)
         sqrt_f_over_f_r_denomenator = np.power(np.power(a1, 2) + np.power(a2, 2) 
-                                               * np.power(R_r / sigma_z, 5/3), 
+                                               * np.power(R_r / z0, 5/3), 
                                                1/2)
         sqrt_f_over_f_r = (sqrt_f_over_f_r_numerator 
                            / sqrt_f_over_f_r_denomenator)
@@ -88,15 +92,15 @@ def total_flow_resistance(Q, d_r, wb, theta, a1, a2, sigma_z, g, S, chan_depth,
         R_r = xs_area_r / wp_r
         
         #VPE sqrt(8/f) term
-        VPE_term_numerator = a1 * a2 * (R_r/ sigma_z)
+        VPE_term_numerator = a1 * a2 * (R_r/ z0)
         VPE_term_denomenator = np.power(np.power(a1, 2) + np.power(a2, 2) 
-                                        * np.power(R_r / sigma_z, 5/3), 1/2)
+                                        * np.power(R_r / z0, 5/3), 1/2)
         VPE_term = VPE_term_numerator / VPE_term_denomenator
         
         #reduced energy slope
-        sqrt_f_over_f_r_numerator = a2 * np.power(R_r / sigma_z, 5/6)
+        sqrt_f_over_f_r_numerator = a2 * np.power(R_r / z0, 5/6)
         sqrt_f_over_f_r_denomenator = np.power(np.power(a1, 2) + np.power(a2, 2) 
-                                               * np.power(R_r / sigma_z, 5/3), 
+                                               * np.power(R_r / z0, 5/3), 
                                                1/2)
         sqrt_f_over_f_r = (sqrt_f_over_f_r_numerator 
                            / sqrt_f_over_f_r_denomenator)
@@ -219,7 +223,7 @@ def channel_evolution_equilibrium(time_to_run,
          Qs_in,
          wb,
          theta,
-         sigma_z,
+         z0,
          l_bed_obstacle,
          l_bank_obstacle,
          k_ero,
@@ -228,6 +232,8 @@ def channel_evolution_equilibrium(time_to_run,
          d50,
          h_floodplain,
          use_fp):
+    
+    start_time = timer.time()
     
     #constants
     tolerance_over_timestep = 1e-13
@@ -260,7 +266,7 @@ def channel_evolution_equilibrium(time_to_run,
         
         #total flow resistance
         R_r, S_r, d_r, f_r_over_f = total_flow_resistance(Q, d_r, wb, theta, 
-                                                          a1, a2, sigma_z, 
+                                                          a1, a2, z0, 
                                                           g, S, chan_depth, 
                                                           e, use_fp)
         
@@ -288,7 +294,7 @@ def channel_evolution_equilibrium(time_to_run,
                 np.isclose(chan_depth, 0, atol = 0.001, rtol = 0) 
                 and use_fp == 1):
             print('channel filled completely before max time')
-            print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' 
+            print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
                   + str(l_bank_obstacle))
             print(str(time) + '//' + str(time / 3.154e7))
             kill_flag = 1
@@ -300,7 +306,7 @@ def channel_evolution_equilibrium(time_to_run,
         if np.isclose(prior_w, wb, rtol = rtol, atol = atol) and np.isclose(
                 prior_S, S, rtol = rtol, atol = atol):
             print('reached SS before max time')
-            print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' 
+            print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
                   + str(l_bank_obstacle))
             print(str(time) + '//' + str(time / 3.154e7))
             kill_flag = 1
@@ -314,7 +320,7 @@ def channel_evolution_equilibrium(time_to_run,
 
     if kill_flag == 0:
         print('max time reached before SS')
-        print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' 
+        print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
               + str(l_bank_obstacle))
         teq = -9999
         end_time = timer.time()
@@ -330,7 +336,7 @@ def channel_evolution_trajectory(time_to_run,
          Qs_in,
          wb,
          theta,
-         sigma_z,
+         z0,
          l_bed_obstacle,
          l_bank_obstacle,
          k_ero,
@@ -398,7 +404,7 @@ def channel_evolution_trajectory(time_to_run,
         
         #total flow resistance
         R_r, S_r, d_r, f_r_over_f = total_flow_resistance(Q, d_r, wb, theta, 
-                                                          a1, a2, sigma_z, 
+                                                          a1, a2, z0, 
                                                           g, S, chan_depth, 
                                                           e, use_fp)
         
@@ -466,7 +472,7 @@ def channel_evolution_trajectory(time_to_run,
                 np.isclose(chan_depth, 0, atol = 0.001, rtol = 0) 
                 and use_fp == 1):
             print('channel filled completely before max time')
-            print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' 
+            print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
                   + str(l_bank_obstacle))
             print(time)
             kill_flag = 1
@@ -478,7 +484,7 @@ def channel_evolution_trajectory(time_to_run,
         if np.isclose(prior_w, wb, rtol = rtol, atol = atol) and np.isclose(
                 prior_S, S, rtol = rtol, atol = atol):
             print('reached SS before max time')
-            print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' 
+            print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
                   + str(l_bank_obstacle))
             print(time)
             kill_flag = 1
@@ -490,7 +496,7 @@ def channel_evolution_trajectory(time_to_run,
 
     if kill_flag == 0:
         print('max time reached before SS')
-        print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' 
+        print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
               + str(l_bank_obstacle))
         teq = -9999
     return (save_widths, save_slopes, save_depths_r, save_qs_out, 
@@ -498,6 +504,9 @@ def channel_evolution_trajectory(time_to_run,
             save_fr_over_f0, save_chan_depths, teq)
 
 def channel_evolution_inversion(variable_args, *fixed_args):
+    
+    start_time = timer.time()
+    
     print('------------')
     
     k_ero = 10 ** variable_args[0] #NOTE THIS HAS BEEN LOGGED 
@@ -521,11 +530,11 @@ def channel_evolution_inversion(variable_args, *fixed_args):
     w_obs = fixed_args[12] #np array of len(3)
     h_obs = fixed_args[13] #np array of len(3)
     run_name = fixed_args[14]
-    sigma_z_vals = fixed_args[15]
+    z0_vals = fixed_args[15]
     l_bed_obst_vals = fixed_args[16]
     l_bank_obst_vals = fixed_args[17]
     
-    sigma_z = sigma_z_vals[0]
+    z0 = z0_vals[0]
     l_bed_obstacle = l_bed_obst_vals[0]
     l_bank_obstacle = l_bank_obst_vals[0]
     
@@ -596,7 +605,7 @@ def channel_evolution_inversion(variable_args, *fixed_args):
         
         #total flow resistance
         R_r, S_r, d_r, f_r_over_f = total_flow_resistance(Q, d_r, wb, theta, 
-                                                          a1, a2, sigma_z, 
+                                                          a1, a2, z0, 
                                                           g, S, chan_depth, 
                                                           e, use_fp)
         
@@ -629,14 +638,14 @@ def channel_evolution_inversion(variable_args, *fixed_args):
         if time == survey_time_2020:
             w_sim[0] = wb
             h_sim[0] = h_node
-            sigma_z = sigma_z_vals[1]
+            z0 = z0_vals[1]
             l_bed_obstacle = l_bed_obst_vals[1]
             l_bank_obstacle = l_bank_obst_vals[1]
             
         if time == survey_time_2022:
             w_sim[1] = wb
             h_sim[1] = h_node
-            sigma_z = sigma_z_vals[2]
+            z0 = z0_vals[2]
             l_bed_obstacle = l_bed_obst_vals[2]
             l_bank_obstacle = l_bank_obst_vals[2]
 
@@ -658,7 +667,7 @@ def channel_evolution_inversion(variable_args, *fixed_args):
         if (chan_depth <= 0) or np.isclose(chan_depth, 0, atol = 0.001, 
                                            rtol = 0):
             print('channel filled completely before max time')
-            print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' 
+            print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
                   + str(l_bank_obstacle))
             print(time)
             kill_flag = 1
@@ -667,7 +676,7 @@ def channel_evolution_inversion(variable_args, *fixed_args):
         w_sim[2] = wb
         h_sim[2] = h_node
         print('max time reached before SS')
-        print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' 
+        print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
               + str(l_bank_obstacle))
         
     #calculate misfit function
@@ -710,11 +719,11 @@ def channel_evolution_bestfit(time_to_run,
          use_fp,
          print_interval,
          save_interval,
-         sigma_z_vals,
+         z0_vals,
          l_bed_obst_vals,
          l_bank_obst_vals):
     
-    sigma_z = sigma_z_vals[0]
+    z0 = z0_vals[0]
     l_bed_obstacle = l_bed_obst_vals[0]
     l_bank_obstacle = l_bank_obst_vals[0]
     
@@ -778,7 +787,7 @@ def channel_evolution_bestfit(time_to_run,
         
         #total flow resistance
         R_r, S_r, d_r, f_r_over_f = total_flow_resistance(Q, d_r, wb, theta, 
-                                                          a1, a2, sigma_z, 
+                                                          a1, a2, z0, 
                                                           g, S, chan_depth, 
                                                           e, use_fp)
         
@@ -812,12 +821,12 @@ def channel_evolution_bestfit(time_to_run,
             #print(str(S))
             
         if time == survey_time_2020:
-            sigma_z = sigma_z_vals[1]
+            z0 = z0_vals[1]
             l_bed_obstacle = l_bed_obst_vals[1]
             l_bank_obstacle = l_bank_obst_vals[1]
             
         if time == survey_time_2022:
-            sigma_z = sigma_z_vals[2]
+            z0 = z0_vals[2]
             l_bed_obstacle = l_bed_obst_vals[2]
             l_bank_obstacle = l_bank_obst_vals[2]
 
@@ -838,7 +847,7 @@ def channel_evolution_bestfit(time_to_run,
         if (chan_depth <= 0) or np.isclose(chan_depth, 0, atol = 0.001, 
                                            rtol = 0):
             print('channel filled completely before max time')
-            print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' 
+            print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
                   + str(l_bank_obstacle))
             print(time)
             kill_flag = 1
@@ -846,7 +855,7 @@ def channel_evolution_bestfit(time_to_run,
 
     if kill_flag == 0:
         print('max time reached before SS')
-        print(str(sigma_z) + ' // ' + str(l_bed_obstacle) + ' // ' 
+        print(str(z0) + ' // ' + str(l_bed_obstacle) + ' // ' 
               + str(l_bank_obstacle))
         teq = -9999
     return (save_widths, save_slopes, save_depths_r, save_qs_out, 

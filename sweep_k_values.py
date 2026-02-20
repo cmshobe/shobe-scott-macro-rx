@@ -22,7 +22,7 @@ if __name__ == '__main__':
     
     X, Y = np.meshgrid(k_ero_values, k_dep_values)
     
-    sigma_z = 0.1
+    z0 = 0.1
     l_bed_obstacle = 0.
     l_bank_obstacle = 0.
     Q = 150 #m3/s
@@ -55,7 +55,7 @@ if __name__ == '__main__':
                   'Q': Q,
                   'Qs_in': Qs_in,
                   'theta': theta_deg,
-                  'sigma_z': sigma_z,
+                  'z0': z0,
                   'd50': d50,
                   'h_fp': h_floodplain,
                   'initial_slope': S,
@@ -73,7 +73,7 @@ if __name__ == '__main__':
         
         #prepare arguments
         args = [(time_to_run, timestep, reach_length, Q, Qs_in, wb, theta,
-                 sigma_z, l_bed_obstacle, l_bank_obstacle, k_ero, k_dep, S, d50, 
+                 z0, l_bed_obstacle, l_bank_obstacle, k_ero, k_dep, S, d50, 
                  h_floodplain, use_fp) for k_ero, k_dep in zip(param_array[0], 
                                                                param_array[1])]
         

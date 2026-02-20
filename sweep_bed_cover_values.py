@@ -17,7 +17,7 @@ import os
 if __name__ == '__main__':
     run_name = 'figure_5_test_refactor'
     n_steps = 15
-    sigma_z = 0.1
+    z0 = 0.1
     l_bed_obstacle_values = np.linspace(0, 120, n_steps)
     l_bank_obstacle = 0.
     Q = 150 #m3/s
@@ -72,7 +72,7 @@ if __name__ == '__main__':
         
         #prepare arguments
         args = [(time_to_run, timestep, reach_length, Q, Qs_in, wb, theta,
-                 sigma_z, l_bed_obstacle, l_bank_obstacle, k_ero, k_dep, S, d50, 
+                 z0, l_bed_obstacle, l_bank_obstacle, k_ero, k_dep, S, d50, 
                  h_floodplain, use_fp) for l_bed_obstacle in param_array_tuple]
         
         #issue tasks to thread pool
