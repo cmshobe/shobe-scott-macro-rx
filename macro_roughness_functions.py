@@ -14,10 +14,11 @@ import time as timer
 import csv
 
 """
-total_flow_resistance:
+function total_flow_resistance:
     
-    calculates hydraulic variables under a given discharge in the presence
-    of macro-roughness characterized by a roughness length scale z0
+    Calculates hydraulic variables under a given discharge in the presence
+    of macro-roughness characterized by a roughness length scale z0.
+    
 """
 @nb.jit(nb.types.Tuple((nb.float64, nb.float64, nb.float64, nb.float64))
         (nb.float64, nb.float64, nb.float64, nb.float64, nb.float64, 
@@ -113,7 +114,14 @@ def total_flow_resistance(Q, d_r, wb, theta, a1, a2, z0, g, S, chan_depth,
         
     return R_r, S_r, d_r, f_r_over_f
 
-
+"""
+function transport_erosion_deposition:
+    
+    Calculates bedload transport, erosion, and deposition by combining
+    the Meyer-Peter and Mueller bedload transport formula with a sediment
+    mass balance in the channel reach.
+    
+"""
 @nb.jit(nb.types.Tuple((nb.float64, nb.float64, nb.float64, nb.float64, 
                         nb.float64, nb.float64, nb.float64, nb.float64, 
                         nb.float64, nb.float64, nb.float64))
@@ -196,6 +204,13 @@ def transport_erosion_deposition(rho_w, g, R_r, S_r, rho_s, d50, wb, d_r, theta,
     return (Qs_out, Fw_tot, shear_stress_r, tau_bed, tau_bank, dh_bed, dh_bank, 
             fc_bed, fc_bank, fc_tot, l_bank)
 
+"""
+function morphologic_change:
+    
+    Calculates morphologic change in the channel reach due to bed and bank 
+    erosion and deposition.
+    
+"""
 @nb.jit(nb.types.Tuple((nb.float64, nb.float64, nb.float64, nb.float64))
         (nb.float64, nb.float64, nb.float64, nb.float64, nb.float64, 
          nb.float64, nb.float64, nb.float64, nb.float64),nopython=True)
@@ -215,6 +230,14 @@ def morphologic_change(h_node, dh_bed, timestep, h_floodplain, h_baselevel,
            * timestep)
     
     return h_node, chan_depth, S, wb
+
+"""
+function channel_evolution_equilibrium:
+    
+    Top-level function for all simulations of equilibrium channel conditions, 
+    including those used to generate figures 4-7 in the paper.
+    
+"""
 
 def channel_evolution_equilibrium(time_to_run,
          timestep,
@@ -328,6 +351,13 @@ def channel_evolution_equilibrium(time_to_run,
 
     return (wb, d_r, S, S_r, tau_bed, tau_bank, f_r_over_f, teq)
 
+"""
+function channel_evolution_trajectory:
+    
+    Top-level function for all simulations investigating transient channel 
+    evolution, including those used to generate figure 8 in the paper.
+    
+"""
 
 def channel_evolution_trajectory(time_to_run,
          timestep,
@@ -502,6 +532,16 @@ def channel_evolution_trajectory(time_to_run,
     return (save_widths, save_slopes, save_depths_r, save_qs_out, 
             save_fw, save_tau_total, save_tau_bed, save_tau_bank, save_S_r, 
             save_fr_over_f0, save_chan_depths, teq)
+
+"""
+function channel_evolution_inversion:
+    
+    Top-level function for all simulations called during inversions in which
+    modeled channel morphology is compared to observed morphology from
+    a field site. This function is used to find the best-fit $k^*_\mathrm{ero}$
+    and $k^*_\mathrm{dep}$ values in figure 9 in the paper.
+    
+"""
 
 def channel_evolution_inversion(variable_args, *fixed_args):
     
@@ -704,6 +744,15 @@ def channel_evolution_inversion(variable_args, *fixed_args):
         csv_writer.writerow(data)
     
     return misfit
+
+"""
+function channel_evolution_bestfit:
+    
+    Top-level function for simulations that investigate the evolution of the
+    field case study under its best-fit model parameterization. This function 
+    is used to generate the best-fit results shown in figure 9 in the paper.
+    
+"""
 
 def channel_evolution_bestfit(time_to_run,
          timestep,
