@@ -148,7 +148,7 @@ def transport_erosion_deposition(rho_w, g, R_r, S_r, rho_s, d50, wb, d_r, theta,
         l_bank = 2 * (np.maximum(chan_depth, d_r) / np.sin(theta))
     
     fc_bed = np.minimum(w_bed_roughness / wb, 1)
-    fc_bank = np.minimum((2 * l_bank_roughness) / l_bank, 1)
+    fc_bank = np.minimum(l_bank_roughness / l_bank, 1)
     fc_tot = (fc_bed * wb + fc_bank * l_bank) / (l_bank + wb)
     
     
