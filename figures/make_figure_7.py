@@ -27,8 +27,8 @@ df = pd.DataFrame({'k_ero': data[:, 0],
                    'fr/f0': data[:, 8],
                    'teq': data[:, 9]})
 
-#w_r = wb + 2 * (d_r / np.tan(theta))
-df['w_r'] = df['width'] + 2 * (df['depth'] / np.tan(np.radians(60)))
+theta = 60 #degrees
+df['w_r'] = df['width'] + 2 * (df['depth'] / np.tan(np.radians(theta)))
 
 #run from which to normalize
 run_name_norm = 'figure_4_rev1_L1000_tol1e-13_dt1000_TESTkero1kdep10_newSw'
@@ -163,13 +163,10 @@ width.clabel(conts, fontsize = 12, zorder = 1)
 contsf2 = width.contourf(X, Y, arr2, levels = clevels2, cmap = 'binary', alpha = alpha2, vmin = 0.5, vmax = 0.5)
 conts2 = width.contour(X, Y, arr2, levels = clevels2, alpha = alpha2_line, colors = 'white', vmin = 0.5, vmax = 0.5)
 
-#ax2 = ax.twinx()
 x = np.arange(1,6)
-#width.plot(x, x * 30, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/30
 width.plot(x, x * 20, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/20
 width.plot(x, x * 10, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/10
 width.plot(x, x * 5, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/5
-#width.plot(x, x * 3.33, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/3
 width.set_xlim(k_ero_lims)
 width.set_ylim(k_dep_lims)
 
@@ -187,24 +184,18 @@ cbar_ax.set_ylim(vmin, vmax)
 cbar_ax.set_ylabel('Quantity of interest', labelpad = -20, fontsize = 12)
 cbar_ax.set_yticks(np.array([vmin, vmax]))
 cbar_ax.set_yticklabels(['Low', 'High'])
-#ax.set_box_aspect(1) #set square but not with 'equal' because that relies on data coords
 
-#width.set_xlabel(r'$k^*_{\mathrm{ero}}$')
 width.set_ylabel(r'$k^*_{\mathrm{dep}}$')
 width.get_xaxis().set_ticklabels([])
 width.set_title('A) Normalized width [-]')
 
-#now find a way to annotate each line 
-#width.text(text_30_x, text_30_y, r'$k^*_{\mathrm{dep}}=30k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=width.transAxes, rotation = 63)
+#now annotate each line 
 width.text(text_20_x, text_20_y, r'$k^*_{\mathrm{dep}}=20k^*_{\mathrm{ero}}$', color = 'w',
         transform=width.transAxes, rotation = text_20_r)
 width.text(text_10_x, text_10_y, r'$k^*_{\mathrm{dep}}=10k^*_{\mathrm{ero}}$', color = 'w',
         transform=width.transAxes, rotation = text_10_r)
 width.text(text_5_x, text_5_y, r'$k^*_{\mathrm{dep}}=5k^*_{\mathrm{ero}}$', color = 'w',
         transform=width.transAxes, rotation = text_5_r)
-#width.text(text_3_x, text_3_y, r'$k^*_{\mathrm{dep}}=3k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=width.transAxes, rotation = 12)
 
 ##########depth subplot
 vmin_d = min(df['depth_norm'])
@@ -223,36 +214,16 @@ depth.clabel(conts, fontsize = 12, zorder = 1)
 contsf2 = depth.contourf(X, Y, arr2, levels = clevels2, cmap = 'binary', alpha = alpha2, vmin = 0.5, vmax = 0.5)
 conts2 = depth.contour(X, Y, arr2, levels = clevels2, alpha = alpha2_line, colors = 'white', vmin = 0.5, vmax = 0.5)
 
-#ax2 = ax.twinx()
 x = np.arange(1,6)
-#depth.plot(x, x * 30, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/30
 depth.plot(x, x * 20, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/20
 depth.plot(x, x * 10, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/10
 depth.plot(x, x * 5, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/5
-#depth.plot(x, x * 3.33, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/3
 depth.set_xlim(k_ero_lims)
 depth.set_ylim(k_dep_lims)
-#plt.tight_layout()
 
-#ax.set_box_aspect(1) #set square but not with 'equal' because that relies on data coords
-
-#depth.set_xlabel(r'$k^*_{\mathrm{ero}}$')
-#depth.set_ylabel(r'$k^*_{\mathrm{dep}}$')
 depth.get_xaxis().set_ticklabels([])
 depth.get_yaxis().set_ticklabels([])
 depth.set_title('B) Normalized depth [-]')
-
-#now find a way to annotate each line 
-#depth.text(0.075, 0.7, r'$k^*_{\mathrm{dep}}=30k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=depth.transAxes, rotation = 63)
-#depth.text(text_20_x, text_20_y, r'$k^*_{\mathrm{dep}}=20k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=depth.transAxes, rotation = text_20_r)
-#depth.text(text_10_x, text_10_y, r'$k^*_{\mathrm{dep}}=10k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=depth.transAxes, rotation = text_10_r)
-#depth.text(text_5_x, text_5_y, r'$k^*_{\mathrm{dep}}=5k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=depth.transAxes, rotation = text_5_r)
-#depth.text(0.8, 0.05, r'$k^*_{\mathrm{dep}}=3k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=depth.transAxes, rotation = 12)
 
 
 ###############slope subplot
@@ -272,35 +243,16 @@ slope.clabel(conts, fontsize = 12, zorder = 1)
 contsf2 = slope.contourf(X, Y, arr2, levels = clevels2, cmap = 'binary', alpha = alpha2, vmin = 0.5, vmax = 0.5)
 conts2 = slope.contour(X, Y, arr2, levels = clevels2, alpha = alpha2_line, colors = 'white', vmin = 0.5, vmax = 0.5)
 
-#ax2 = ax.twinx()
 x = np.arange(1,6)
-#slope.plot(x, x * 30, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/30
 slope.plot(x, x * 20, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/20
 slope.plot(x, x * 10, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/10
 slope.plot(x, x * 5, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/5
-#slope.plot(x, x * 3.33, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/3
 slope.set_xlim(k_ero_lims)
 slope.set_ylim(k_dep_lims)
-#plt.tight_layout()
 
-#ax.set_box_aspect(1) #set square but not with 'equal' because that relies on data coords
-
-#slope.set_xlabel(r'$k^*_{\mathrm{ero}}$')
 slope.set_ylabel(r'$k^*_{\mathrm{dep}}$')
 slope.get_xaxis().set_ticklabels([])
 slope.set_title('C) Normalized local bed slope [-]')
-
-#now find a way to annotate each line 
-#slope.text(0.075, 0.7, r'$k^*_{\mathrm{dep}}=30k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=slope.transAxes, rotation = 63)
-#slope.text(text_20_x, text_20_y, r'$k^*_{\mathrm{dep}}=20k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=slope.transAxes, rotation = text_20_r)
-#slope.text(text_10_x, text_10_y, r'$k^*_{\mathrm{dep}}=10k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=slope.transAxes, rotation = text_10_r)
-#slope.text(text_5_x, text_5_y, r'$k^*_{\mathrm{dep}}=5k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=slope.transAxes, rotation = text_5_r)
-#slope.text(0.8, 0.05, r'$k^*_{\mathrm{dep}}=3k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=slope.transAxes, rotation = 12)
 
 
 ################tau_subplot (bank??)
@@ -320,36 +272,16 @@ tau.clabel(conts, fontsize = 12, zorder = 1)
 contsf2 = tau.contourf(X, Y, arr2, levels = clevels2, cmap = 'binary', alpha = alpha2, vmin = 0.5, vmax = 0.5)
 conts2 = tau.contour(X, Y, arr2, levels = clevels2, alpha = alpha2_line, colors = 'white', vmin = 0.5, vmax = 0.5)
 
-#ax2 = ax.twinx()
 x = np.arange(1,6)
-#tau.plot(x, x * 30, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/30
 tau.plot(x, x * 20, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/20
 tau.plot(x, x * 10, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/10
 tau.plot(x, x * 5, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/5
-#tau.plot(x, x * 3.33, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/3
 tau.set_xlim(k_ero_lims)
 tau.set_ylim(k_dep_lims)
-#plt.tight_layout()
 
-#ax.set_box_aspect(1) #set square but not with 'equal' because that relies on data coords
-
-#tau.set_xlabel(r'$k^*_{\mathrm{ero}}$')
-#tau.set_ylabel(r'$k^*_{\mathrm{dep}}$')
 tau.get_xaxis().set_ticklabels([])
 tau.get_yaxis().set_ticklabels([])
 tau.set_title('D) Normalized bank shear stress [-]')
-
-#now find a way to annotate each line 
-#tau.text(0.075, 0.7, r'$k^*_{\mathrm{dep}}=30k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=tau.transAxes, rotation = 63)
-#tau.text(text_20_x, text_20_y, r'$k^*_{\mathrm{dep}}=20k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=tau.transAxes, rotation = text_20_r)
-#tau.text(text_10_x, text_10_y, r'$k^*_{\mathrm{dep}}=10k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=tau.transAxes, rotation = text_10_r)
-#tau.text(text_5_x, text_5_y, r'$k^*_{\mathrm{dep}}=5k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=tau.transAxes, rotation = text_5_r)
-#tau.text(0.8, 0.05, r'$k^*_{\mathrm{dep}}=3k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=tau.transAxes, rotation = 12)
 
 ################fric_factor ratio subplot
 vmin_f = min(df['fr/f0'])
@@ -368,34 +300,16 @@ f_ratio.clabel(conts, fontsize = 12, zorder = 1)
 contsf2 = f_ratio.contourf(X, Y, arr2, levels = clevels2, cmap = 'binary', alpha = alpha2, vmin = 0.5, vmax = 0.5)
 conts2 = f_ratio.contour(X, Y, arr2, levels = clevels2, alpha = alpha2_line, colors = 'white', vmin = 0.5, vmax = 0.5)
 
-#ax2 = ax.twinx()
 x = np.arange(1,6)
-#f_ratio.plot(x, x * 30, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/30
 f_ratio.plot(x, x * 20, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/20
 f_ratio.plot(x, x * 10, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/10
 f_ratio.plot(x, x * 5, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/5
-#f_ratio.plot(x, x * 3.33, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/3
 f_ratio.set_xlim(k_ero_lims)
 f_ratio.set_ylim(k_dep_lims)
-#plt.tight_layout()
-
-#ax.set_box_aspect(1) #set square but not with 'equal' because that relies on data coords
 
 f_ratio.set_xlabel(r'$k^*_{\mathrm{ero}}$')
 f_ratio.set_ylabel(r'$k^*_{\mathrm{dep}}$')
 f_ratio.set_title('E) Friction factor ratio $f_r/f$ [-]')
-
-#now find a way to annotate each line 
-#f_ratio.text(0.075, 0.7, r'$k^*_{\mathrm{dep}}=30k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=f_ratio.transAxes, rotation = 63)
-#f_ratio.text(text_20_x, text_20_y, r'$k^*_{\mathrm{dep}}=20k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=f_ratio.transAxes, rotation = text_20_r)
-#f_ratio.text(text_10_x, text_10_y, r'$k^*_{\mathrm{dep}}=10k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=f_ratio.transAxes, rotation = text_10_r)
-#f_ratio.text(text_5_x, text_5_y, r'$k^*_{\mathrm{dep}}=5k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=f_ratio.transAxes, rotation = text_5_r)
-#f_ratio.text(0.8, 0.05, r'$k^*_{\mathrm{dep}}=3k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=f_ratio.transAxes, rotation = 12)
 
 ################relative submergence subplot
 vmin_r = min(df['rel_rx'])
@@ -414,35 +328,16 @@ rel_rx.clabel(conts, fontsize = 12, zorder = 1)
 contsf2 = rel_rx.contourf(X, Y, arr2, levels = clevels2, cmap = 'binary', alpha = alpha2, vmin = 0.5, vmax = 0.5)
 conts2 = rel_rx.contour(X, Y, arr2, levels = clevels2, alpha = alpha2_line, colors = 'white', vmin = 0.5, vmax = 0.5)
 
-#ax2 = ax.twinx()
 x = np.arange(1,6)
-#rel_rx.plot(x, x * 30, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/30
 rel_rx.plot(x, x * 20, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/20
 rel_rx.plot(x, x * 10, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/10
 rel_rx.plot(x, x * 5, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/5
-#rel_rx.plot(x, x * 3.33, color = 'w', linewidth = 2, zorder = 10, linestyle = lines) #kero/kdep = 1/3
 rel_rx.set_xlim(k_ero_lims)
 rel_rx.set_ylim(k_dep_lims)
-#plt.tight_layout()
-
-#ax.set_box_aspect(1) #set square but not with 'equal' because that relies on data coords
 
 rel_rx.set_xlabel(r'$k^*_{\mathrm{ero}}$')
-#rel_rx.set_ylabel(r'$k^*_{\mathrm{dep}}$')
 rel_rx.get_yaxis().set_ticklabels([])
 rel_rx.set_title('F) Relative submergence $R/z_0$ [-]')
-
-#now find a way to annotate each line 
-#rel_rx.text(0.075, 0.7, r'$k^*_{\mathrm{dep}}=30k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=rel_rx.transAxes, rotation = 63)
-#rel_rx.text(text_20_x, text_20_y, r'$k^*_{\mathrm{dep}}=20k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=rel_rx.transAxes, rotation = text_20_r)
-#rel_rx.text(text_10_x, text_10_y, r'$k^*_{\mathrm{dep}}=10k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=rel_rx.transAxes, rotation = text_10_r)
-#rel_rx.text(text_5_x, text_5_y, r'$k^*_{\mathrm{dep}}=5k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=rel_rx.transAxes, rotation = text_5_r)
-#rel_rx.text(0.8, 0.05, r'$k^*_{\mathrm{dep}}=3k^*_{\mathrm{ero}}$', color = 'w',
-#        transform=rel_rx.transAxes, rotation = 12)
 
 ###########################################
 
