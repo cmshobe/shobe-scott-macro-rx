@@ -15,14 +15,14 @@ import os
 
 # protect the entry point
 if __name__ == '__main__':
-    run_name = 'figure_7_test_refactor'
+    run_name = 'figure_7'
     
     k_ero_values = np.linspace(1, 5, 10)
     k_dep_values = np.linspace(10, 50, 10)
     
     X, Y = np.meshgrid(k_ero_values, k_dep_values)
     
-    z0 = 0.1
+    z0 = 1.
     w_bed_roughness = 0.
     l_bank_roughness = 0.
     Q = 150 #m3/s
@@ -30,8 +30,8 @@ if __name__ == '__main__':
     theta_deg = 60. #degrees; bank angle
     theta = np.radians(theta_deg)
     d50 = 0.06 #m
-    
-    time_to_run = 100000000#200000000000 #s
+
+    time_to_run = 200000000000 #s
     timestep = 1000 #s
     
     reach_length = 1000 #m

@@ -17,7 +17,7 @@ start_time = time.time()
 #######INITIALIZE###########################################################
 #parameter values, etc
 
-run_name = 'trajectory_test_refactor'
+run_name = 'figure_8_z0_0point1'
 Q = 150 #m^3/s water discharge
 Qs_in = .001 #m^3/s sediment flux in
 z0 = 0.1 #roughness length scale including macro-rx
@@ -28,8 +28,8 @@ k_dep = 10. #ratio of bed to bank deposition, unitless
 theta_deg = 60. #degrees; bank angle
 theta = np.radians(theta_deg)
 
-time_to_run = 1000000000#200000000000
-timestep = 1000 #CHECK UNITS
+time_to_run = 200000000000
+timestep = 1000 
 print_interval = 200000000000
 save_interval = 10000
 reach_length = 1000 #meters
