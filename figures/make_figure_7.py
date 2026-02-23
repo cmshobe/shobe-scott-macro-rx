@@ -341,5 +341,5 @@ rel_rx.set_title('F) Relative submergence $R/z_0$ [-]')
 
 ###########################################
 
-fig.savefig('fig_sweep_k_' + run_name +'_hires.png', dpi = 1000)
-fig.savefig('fig_sweep_k_' + run_name +'_lores.png', dpi = 100)
+fig.savefig('figure_7_' + run_name +'_hires.png', dpi = 1000)
+fig.savefig('figure_7_' + run_name +'_lores.png', dpi = 100)
