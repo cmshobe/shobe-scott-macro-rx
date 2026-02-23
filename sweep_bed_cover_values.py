@@ -15,7 +15,7 @@ import os
 
 # protect the entry point
 if __name__ == '__main__':
-    run_name = 'figure_5_test_refactor'
+    run_name = 'figure_5_nofp'
     n_steps = 15
     z0 = 0.1
     w_bed_roughness_values = np.linspace(0, 120, n_steps)
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     k_ero = 1.
     k_dep = 10.
     
-    time_to_run = 1000000000 #s
+    time_to_run = 200000000000 #s
     timestep = 1000 #s
     
     reach_length = 1000 #m
@@ -43,8 +43,8 @@ if __name__ == '__main__':
     wb = baseline_widths[np.where(baseline_slopes > 0)[0][-1]]
     print(wb)
     
-    h_floodplain = 5.+ (S * reach_length)
-    use_fp = 1 #0 for no, 1 for yes
+    h_floodplain = 5. + (S * reach_length)
+    use_fp = 0 #0 for no, 1 for yes
     
     param_array_tuple = tuple(w_bed_roughness_values)
     save_array = np.zeros((len(w_bed_roughness_values), 1))

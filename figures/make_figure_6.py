@@ -11,7 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 #run from which to get data
-run_name = 'figure_6_test_refactor'
+run_name = 'figure_6'
 data = np.load('../results/sweep_bank_cover_values_' + str(run_name) + '.npy')
 
 #convert to pandas dataframe for seaborn compatibility
@@ -71,7 +71,6 @@ fig2, axs = plt.subplots(3,2, figsize = (8,8))
 
 width = axs[0, 0]
 depth = axs[0, 1]
-#cover = axs[0, 1]
 slope = axs[1, 0]
 tau = axs[1, 1]
 f_ratio = axs[2, 0]

@@ -15,7 +15,7 @@ import os
 
 # protect the entry point
 if __name__ == '__main__':
-    run_name = 'figure_6_test_refactor'
+    run_name = 'figure_6'
     n_steps = 15
     z0 = 0.1
     w_bed_roughness = 0.
