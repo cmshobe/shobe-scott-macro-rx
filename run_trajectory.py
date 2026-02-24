@@ -17,10 +17,10 @@ start_time = time.time()
 #######INITIALIZE###########################################################
 #parameter values, etc
 
-run_name = 'figure_8_z0_0point1'
+run_name = 'figure_8_z0_10'
 Q = 150 #m^3/s water discharge
 Qs_in = .001 #m^3/s sediment flux in
-z0 = 0.1 #roughness length scale including macro-rx
+z0 = 10. #roughness length scale including macro-rx
 w_bed_roughness = 0. #fraction of bed covered by wood
 l_bank_roughness = 0. #fraction of banks covered by wood
 k_ero = 1. #ratio of bed to bank erodibility, unitless
