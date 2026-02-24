@@ -600,7 +600,6 @@ def channel_evolution_inversion(variable_args, *fixed_args):
     timestep_iter = 0
     iter = 0
     
-    d = 0.01 #guess for depth w/o roughness; loop will adjust
     d_r = 0.01 #guess for depth incl. roughness; loop will adjust
     
     w_sim = np.zeros(3)
@@ -608,7 +607,6 @@ def channel_evolution_inversion(variable_args, *fixed_args):
 
     save_widths = np.repeat(-99., int(time_to_run / save_interval) + 1)
     save_slopes = cp.deepcopy(save_widths)
-    save_depths = cp.deepcopy(save_widths)
     save_depths_r = cp.deepcopy(save_widths)
     save_qs_out = cp.deepcopy(save_widths)
     save_fw = cp.deepcopy(save_widths)
@@ -621,7 +619,6 @@ def channel_evolution_inversion(variable_args, *fixed_args):
 
     save_widths[0] = wb
     save_slopes[0] = S
-    save_depths[0] = 0
     save_depths_r[0] = 0
     save_qs_out[0] = 0
     save_fw[0] = 0
@@ -635,8 +632,8 @@ def channel_evolution_inversion(variable_args, *fixed_args):
     while kill_flag == 0 and time < time_to_run:
         
         #get discharge from Q time series; allow repeats of the series
-        if timestep_iter >= 1874223:
-            timestep_iter = 0
+#        if timestep_iter >= 1874223:
+#            timestep_iter = 0
         Q = Q_time_series[timestep_iter]
         Qs_in = 0.3 * 2.4e-6 * Q**2
 
@@ -693,7 +690,6 @@ def channel_evolution_inversion(variable_args, *fixed_args):
             iter += 1
             save_widths[iter] = wb
             save_slopes[iter] = S
-            save_depths[iter] = d
             save_depths_r[iter] = d_r
             save_qs_out[iter] = Qs_out
             save_fw[iter] = Fw_tot

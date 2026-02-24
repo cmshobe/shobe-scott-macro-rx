@@ -44,7 +44,7 @@ duration_2019_2024 = survey_2024_date - survey_2019_date
 time_to_run = duration_2019_2024.total_seconds()
 timestep = 100 #s
 print_interval = 1000000000
-save_interval = 100
+save_interval = 1000000000
 reach_length = 1100.2 #meters
 use_fp = 1 #0 for unconfined, 1 for confined
 
