@@ -78,7 +78,7 @@ df['bed_elev_norm'] = df['bed_elev'] / float(df_norm['bed_elev'][df_norm['sigma_
 
 ###########run from which to get filling regime shape
 run_name_fill = 'figure_7'#'figure_k_rev1_L1000_tol1e-13_dt1000_n100_ero1-5_dep10-50_hfp5_newSw'
-data_fill = np.load('sweep_k_values_' + str(run_name_fill) + '.npy')
+data_fill = np.load('../results/sweep_k_values_' + str(run_name_fill) + '.npy')
 
 #convert to pandas dataframe for seaborn compatibility
 df_fill = pd.DataFrame({'k_ero': data_fill[:, 0], 
@@ -341,5 +341,5 @@ rel_rx.set_title('F) Relative submergence $R/z_0$ [-]')
 
 ###########################################
 
-fig.savefig('figure_7_' + run_name +'_hires.png', dpi = 1000)
-fig.savefig('figure_7_' + run_name +'_lores.png', dpi = 100)
+fig.savefig('figure_7_' + run_name +'_hires.png', dpi = 1000, bbox_inches = 'tight')
+fig.savefig('figure_7_' + run_name +'_lores.png', dpi = 100, bbox_inches = 'tight')
