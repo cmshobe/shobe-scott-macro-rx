@@ -44,7 +44,6 @@ duration_2019_2024 = survey_2024_date - survey_2019_date
 time_to_run = duration_2019_2024.total_seconds()
 timestep = 100 #s
 print_interval = 1000000000
-save_interval = 1000000000
 reach_length = 1100.2 #meters
 use_fp = 1 #0 for unconfined, 1 for confined
 
@@ -88,7 +87,7 @@ l_bank_roughness_vals = np.array([1.91, 1.23, 1.84])
 #define fixed arguments
 args = (time_to_run, timestep, reach_length, Q_time_series_expanded, wb, theta,
         S, d50, h_floodplain,
-        use_fp, print_interval, save_interval, w_obs, h_obs, run_name,
+        use_fp, print_interval, w_obs, h_obs, run_name,
         z0_vals, w_bed_roughness_vals, l_bank_roughness_vals,
         time_checkpoint_1, time_checkpoint_2)
 

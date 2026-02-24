@@ -566,15 +566,14 @@ def channel_evolution_inversion(variable_args, *fixed_args):
     h_floodplain = fixed_args[8]
     use_fp = fixed_args[9]
     print_interval = fixed_args[10]
-    save_interval = fixed_args[11]
-    w_obs = fixed_args[12] #np array of len(3)
-    h_obs = fixed_args[13] #np array of len(3)
-    run_name = fixed_args[14]
-    z0_vals = fixed_args[15]
-    l_bed_obst_vals = fixed_args[16]
-    l_bank_obst_vals = fixed_args[17]
-    survey_time_2020 = fixed_args[18] #seconds
-    survey_time_2022 = fixed_args[19] #seconds
+    w_obs = fixed_args[11] #np array of len(3)
+    h_obs = fixed_args[12] #np array of len(3)
+    run_name = fixed_args[13]
+    z0_vals = fixed_args[14]
+    l_bed_obst_vals = fixed_args[15]
+    l_bank_obst_vals = fixed_args[16]
+    survey_time_2020 = fixed_args[17] #seconds
+    survey_time_2022 = fixed_args[18] #seconds
     
     z0 = z0_vals[0]
     w_bed_roughness = l_bed_obst_vals[0]
@@ -598,35 +597,11 @@ def channel_evolution_inversion(variable_args, *fixed_args):
     #set up time loop
     time = 0
     timestep_iter = 0
-    iter = 0
     
     d_r = 0.01 #guess for depth incl. roughness; loop will adjust
     
     w_sim = np.zeros(3)
     h_sim = np.zeros(3)
-
-    save_widths = np.repeat(-99., int(time_to_run / save_interval) + 1)
-    save_slopes = cp.deepcopy(save_widths)
-    save_depths_r = cp.deepcopy(save_widths)
-    save_qs_out = cp.deepcopy(save_widths)
-    save_fw = cp.deepcopy(save_widths)
-    save_tau_bed = cp.deepcopy(save_widths)
-    save_tau_bank = cp.deepcopy(save_widths)
-    save_S_r = cp.deepcopy(save_widths)
-    save_fr_over_f0 = cp.deepcopy(save_widths)
-    save_chan_depths = cp.deepcopy(save_widths)
-
-
-    save_widths[0] = wb
-    save_slopes[0] = S
-    save_depths_r[0] = 0
-    save_qs_out[0] = 0
-    save_fw[0] = 0
-    save_tau_bed[0] = 0
-    save_tau_bank[0] = 0
-    save_S_r[0] = 0
-    save_fr_over_f0[0] = 0
-    save_chan_depths[0] = chan_depth
     
     kill_flag = 0
     while kill_flag == 0 and time < time_to_run:
@@ -684,20 +659,6 @@ def channel_evolution_inversion(variable_args, *fixed_args):
             z0 = z0_vals[2]
             w_bed_roughness = l_bed_obst_vals[2]
             l_bank_roughness = l_bank_obst_vals[2]
-
-
-        if time % save_interval == 0:
-            iter += 1
-            save_widths[iter] = wb
-            save_slopes[iter] = S
-            save_depths_r[iter] = d_r
-            save_qs_out[iter] = Qs_out
-            save_fw[iter] = Fw_tot
-            save_tau_bed[iter] = tau_bed
-            save_tau_bank[iter] = tau_bank
-            save_S_r[iter] = S_r
-            save_fr_over_f0[iter] = f_r_over_f
-            save_chan_depths[iter] = chan_depth
         
         if (chan_depth <= 0) or np.isclose(chan_depth, 0, atol = 0.001, 
                                            rtol = 0):
