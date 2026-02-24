@@ -11,62 +11,62 @@ import matplotlib
 
 #######IMPORT BASELINE DATA FOR NORMALIZATION
 run_name = 'trajectory_z0_baseline_rev1'
-baseline_widths = np.load('results/' + str(run_name) + '_widths.npy')
-baseline_depths = np.load('results/' + str(run_name) + '_depths_r.npy')
-baseline_slopes = np.load('results/' + str(run_name) + '_slopes.npy')
-baseline_tau_bed = np.load('results/' + str(run_name) + '_tau_bed.npy')
-baseline_tau_bank = np.load('results/' + str(run_name) + '_tau_bank.npy')
+baseline_widths = np.load('../results/' + str(run_name) + '_widths.npy')
+baseline_depths = np.load('../results/' + str(run_name) + '_depths_r.npy')
+baseline_slopes = np.load('../results/' + str(run_name) + '_slopes.npy')
+baseline_tau_bed = np.load('../results/' + str(run_name) + '_tau_bed.npy')
+baseline_tau_bank = np.load('../results/' + str(run_name) + '_tau_bank.npy')
 
 
 #######IMPORT NON-DEPTH-CONSTRAINED DATA
-run_name = 'trajectory_rev1_z0_0point1_L1000_tol1e-13_dt1000_kero1_kdep10'
-sigma_z_nofp_1_widths = np.load('results/' + str(run_name) + '_widths.npy')
-sigma_z_nofp_1_depths = np.load('results/' + str(run_name) + '_depths_r.npy')
-sigma_z_nofp_1_slopes = np.load('results/' + str(run_name) + '_slopes.npy')
-sigma_z_nofp_1_tau_bed = np.load('results/' + str(run_name) + '_tau_bed.npy')
-sigma_z_nofp_1_tau_bank = np.load('results/' + str(run_name) + '_tau_bank.npy')
+run_name = 'figure_8_z0_0point1'#'trajectory_rev1_z0_0point1_L1000_tol1e-13_dt1000_kero1_kdep10'
+sigma_z_nofp_1_widths = np.load('../results/' + str(run_name) + '_widths.npy')
+sigma_z_nofp_1_depths = np.load('../results/' + str(run_name) + '_depths_r.npy')
+sigma_z_nofp_1_slopes = np.load('../results/' + str(run_name) + '_slopes.npy')
+sigma_z_nofp_1_tau_bed = np.load('../results/' + str(run_name) + '_tau_bed.npy')
+sigma_z_nofp_1_tau_bank = np.load('../results/' + str(run_name) + '_tau_bank.npy')
 
-run_name = 'trajectory_rev1_z0_0point25_L1000_tol1e-13_dt1000_kero1_kdep10'
-sigma_z_nofp_2_widths = np.load('results/' + str(run_name) + '_widths.npy')
-sigma_z_nofp_2_depths = np.load('results/' + str(run_name) + '_depths_r.npy')
-sigma_z_nofp_2_slopes = np.load('results/' + str(run_name) + '_slopes.npy')
-sigma_z_nofp_2_tau_bed = np.load('results/' + str(run_name) + '_tau_bed.npy')
-sigma_z_nofp_2_tau_bank = np.load('results/' + str(run_name) + '_tau_bank.npy')
+run_name = 'figure_8_z0_0point25'#'trajectory_rev1_z0_0point25_L1000_tol1e-13_dt1000_kero1_kdep10'
+sigma_z_nofp_2_widths = np.load('../results/' + str(run_name) + '_widths.npy')
+sigma_z_nofp_2_depths = np.load('../results/' + str(run_name) + '_depths_r.npy')
+sigma_z_nofp_2_slopes = np.load('../results/' + str(run_name) + '_slopes.npy')
+sigma_z_nofp_2_tau_bed = np.load('../results/' + str(run_name) + '_tau_bed.npy')
+sigma_z_nofp_2_tau_bank = np.load('../results/' + str(run_name) + '_tau_bank.npy')
 
-run_name = 'trajectory_rev1_z0_0point5_L1000_tol1e-13_dt1000_kero1_kdep10'
-sigma_z_nofp_3_widths = np.load('results/' + str(run_name) + '_widths.npy')
-sigma_z_nofp_3_depths = np.load('results/' + str(run_name) + '_depths_r.npy')
-sigma_z_nofp_3_slopes = np.load('results/' + str(run_name) + '_slopes.npy')
-sigma_z_nofp_3_tau_bed = np.load('results/' + str(run_name) + '_tau_bed.npy')
-sigma_z_nofp_3_tau_bank = np.load('results/' + str(run_name) + '_tau_bank.npy')
+run_name = 'figure_8_z0_0point5'#'trajectory_rev1_z0_0point5_L1000_tol1e-13_dt1000_kero1_kdep10'
+sigma_z_nofp_3_widths = np.load('../results/' + str(run_name) + '_widths.npy')
+sigma_z_nofp_3_depths = np.load('../results/' + str(run_name) + '_depths_r.npy')
+sigma_z_nofp_3_slopes = np.load('../results/' + str(run_name) + '_slopes.npy')
+sigma_z_nofp_3_tau_bed = np.load('../results/' + str(run_name) + '_tau_bed.npy')
+sigma_z_nofp_3_tau_bank = np.load('../results/' + str(run_name) + '_tau_bank.npy')
 
-run_name = 'trajectory_rev1_z0_1_L1000_tol1e-13_dt1000_kero1_kdep10'
-sigma_z_nofp_4_widths = np.load('results/' + str(run_name) + '_widths.npy')
-sigma_z_nofp_4_depths = np.load('results/' + str(run_name) + '_depths_r.npy')
-sigma_z_nofp_4_slopes = np.load('results/' + str(run_name) + '_slopes.npy')
-sigma_z_nofp_4_tau_bed = np.load('results/' + str(run_name) + '_tau_bed.npy')
-sigma_z_nofp_4_tau_bank = np.load('results/' + str(run_name) + '_tau_bank.npy')
+run_name = 'figure_8_z0_1'#'trajectory_rev1_z0_1_L1000_tol1e-13_dt1000_kero1_kdep10'
+sigma_z_nofp_4_widths = np.load('../results/' + str(run_name) + '_widths.npy')
+sigma_z_nofp_4_depths = np.load('../results/' + str(run_name) + '_depths_r.npy')
+sigma_z_nofp_4_slopes = np.load('../results/' + str(run_name) + '_slopes.npy')
+sigma_z_nofp_4_tau_bed = np.load('../results/' + str(run_name) + '_tau_bed.npy')
+sigma_z_nofp_4_tau_bank = np.load('../results/' + str(run_name) + '_tau_bank.npy')
 
-run_name = 'trajectory_rev1_z0_2point5_L1000_tol1e-13_dt1000_kero1_kdep10'
-sigma_z_nofp_5_widths = np.load('results/' + str(run_name) + '_widths.npy')
-sigma_z_nofp_5_depths = np.load('results/' + str(run_name) + '_depths_r.npy')
-sigma_z_nofp_5_slopes = np.load('results/' + str(run_name) + '_slopes.npy')
-sigma_z_nofp_5_tau_bed = np.load('results/' + str(run_name) + '_tau_bed.npy')
-sigma_z_nofp_5_tau_bank = np.load('results/' + str(run_name) + '_tau_bank.npy')
+run_name = 'figure_8_z0_2point5'#'trajectory_rev1_z0_2point5_L1000_tol1e-13_dt1000_kero1_kdep10'
+sigma_z_nofp_5_widths = np.load('../results/' + str(run_name) + '_widths.npy')
+sigma_z_nofp_5_depths = np.load('../results/' + str(run_name) + '_depths_r.npy')
+sigma_z_nofp_5_slopes = np.load('../results/' + str(run_name) + '_slopes.npy')
+sigma_z_nofp_5_tau_bed = np.load('../results/' + str(run_name) + '_tau_bed.npy')
+sigma_z_nofp_5_tau_bank = np.load('../results/' + str(run_name) + '_tau_bank.npy')
 
-run_name = 'trajectory_rev1_z0_5_L1000_tol1e-13_dt1000_kero1_kdep10'
-sigma_z_nofp_6_widths = np.load('results/' + str(run_name) + '_widths.npy')
-sigma_z_nofp_6_depths = np.load('results/' + str(run_name) + '_depths_r.npy')
-sigma_z_nofp_6_slopes = np.load('results/' + str(run_name) + '_slopes.npy')
-sigma_z_nofp_6_tau_bed = np.load('results/' + str(run_name) + '_tau_bed.npy')
-sigma_z_nofp_6_tau_bank = np.load('results/' + str(run_name) + '_tau_bank.npy')
+run_name = 'figure_8_z0_5'#'trajectory_rev1_z0_5_L1000_tol1e-13_dt1000_kero1_kdep10'
+sigma_z_nofp_6_widths = np.load('../results/' + str(run_name) + '_widths.npy')
+sigma_z_nofp_6_depths = np.load('../results/' + str(run_name) + '_depths_r.npy')
+sigma_z_nofp_6_slopes = np.load('../results/' + str(run_name) + '_slopes.npy')
+sigma_z_nofp_6_tau_bed = np.load('../results/' + str(run_name) + '_tau_bed.npy')
+sigma_z_nofp_6_tau_bank = np.load('../results/' + str(run_name) + '_tau_bank.npy')
 
-run_name = 'trajectory_rev1_z0_10_L1000_tol1e-13_dt1000_kero1_kdep10'
-sigma_z_nofp_7_widths = np.load('results/' + str(run_name) + '_widths.npy')
-sigma_z_nofp_7_depths = np.load('results/' + str(run_name) + '_depths_r.npy')
-sigma_z_nofp_7_slopes = np.load('results/' + str(run_name) + '_slopes.npy')
-sigma_z_nofp_7_tau_bed = np.load('results/' + str(run_name) + '_tau_bed.npy')
-sigma_z_nofp_7_tau_bank = np.load('results/' + str(run_name) + '_tau_bank.npy')
+run_name = 'figure_8_z0_10'#'trajectory_rev1_z0_10_L1000_tol1e-13_dt1000_kero1_kdep10'
+sigma_z_nofp_7_widths = np.load('../results/' + str(run_name) + '_widths.npy')
+sigma_z_nofp_7_depths = np.load('../results/' + str(run_name) + '_depths_r.npy')
+sigma_z_nofp_7_slopes = np.load('../results/' + str(run_name) + '_slopes.npy')
+sigma_z_nofp_7_tau_bed = np.load('../results/' + str(run_name) + '_tau_bed.npy')
+sigma_z_nofp_7_tau_bank = np.load('../results/' + str(run_name) + '_tau_bank.npy')
 
 # ##############################################################################
 

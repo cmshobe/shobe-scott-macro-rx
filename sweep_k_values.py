@@ -15,7 +15,7 @@ import os
 
 # protect the entry point
 if __name__ == '__main__':
-    run_name = 'figure_7'
+    run_name = 'figure_7_nofp'
     
     k_ero_values = np.linspace(1, 5, 10)
     k_dep_values = np.linspace(10, 50, 10)
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     print(wb)
     
     h_floodplain = 5. + (S * reach_length)
-    use_fp = 1 #0 for no, 1 for yes
+    use_fp = 0 #0 for no, 1 for yes
     
     param_array = np.array((X.ravel(), Y.ravel()))
     save_array = np.zeros((len(k_ero_values) * len(k_dep_values), 1))

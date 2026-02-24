@@ -33,7 +33,7 @@ timestep = 1000
 print_interval = 200000000000
 save_interval = 10000
 reach_length = 1000 #meters
-use_fp = 1 #0 for unconfined, 1 for confined
+use_fp = 0 #0 for unconfined, 1 for confined
 
 #read in starting equilibrium S and w values
 

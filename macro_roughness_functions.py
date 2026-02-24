@@ -573,6 +573,8 @@ def channel_evolution_inversion(variable_args, *fixed_args):
     z0_vals = fixed_args[15]
     l_bed_obst_vals = fixed_args[16]
     l_bank_obst_vals = fixed_args[17]
+    survey_time_2020 = fixed_args[18] #seconds
+    survey_time_2022 = fixed_args[19] #seconds
     
     z0 = z0_vals[0]
     w_bed_roughness = l_bed_obst_vals[0]
@@ -603,9 +605,6 @@ def channel_evolution_inversion(variable_args, *fixed_args):
     
     w_sim = np.zeros(3)
     h_sim = np.zeros(3)
-    
-    survey_time_2020 = 33264000 #seconds
-    survey_time_2022 = 96163200 #seconds
 
     save_widths = np.repeat(-99., int(time_to_run / save_interval) + 1)
     save_slopes = cp.deepcopy(save_widths)
@@ -826,8 +825,8 @@ def channel_evolution_bestfit(time_to_run,
     while kill_flag == 0 and time < time_to_run:
         
         #get discharge from Q time series; allow repeats of the series
-        if timestep_iter >= 1874223:
-            timestep_iter = 0
+ #       if timestep_iter >= 1874223:
+ #           timestep_iter = 0
         Q = Q_time_series[timestep_iter]
         Qs_in = 0.3 * 2.4e-6 * Q**2
             
@@ -863,11 +862,6 @@ def channel_evolution_bestfit(time_to_run,
         if time % print_interval == 0:
             #iter += 1
             print('time = ' + str(time))
-            #print(time / 3.154e7)
-            #print(str(wb))
-            #print(str(d_r))
-            #print(str(chan_depth))
-            #print(str(S))
             
         if time == survey_time_2020:
             z0 = z0_vals[1]

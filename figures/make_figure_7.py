@@ -12,8 +12,8 @@ import matplotlib.pyplot as plt
 
 
 #run from which to get data
-run_name = 'figure_k_rev1_L1000_tol1e-13_dt1000_n100_ero1-5_dep10-50'
-data = np.load('sweep_k_values_' + str(run_name) + '.npy')
+run_name = 'figure_7_nofp'#'figure_k_rev1_L1000_tol1e-13_dt1000_n100_ero1-5_dep10-50'
+data = np.load('../results/sweep_k_values_' + str(run_name) + '.npy')
 
 #convert to pandas dataframe for seaborn compatibility
 df = pd.DataFrame({'k_ero': data[:, 0], 
@@ -31,8 +31,8 @@ theta = 60 #degrees
 df['w_r'] = df['width'] + 2 * (df['depth'] / np.tan(np.radians(theta)))
 
 #run from which to normalize
-run_name_norm = 'figure_4_rev1_L1000_tol1e-13_dt1000_TESTkero1kdep10_newSw'
-data_norm = np.load('../figure_4/sweep_z0_values_' + str(run_name_norm) + '.npy')
+run_name_norm = 'figure_4'#'figure_4_rev1_L1000_tol1e-13_dt1000_TESTkero1kdep10_newSw'
+data_norm = np.load('../results/sweep_z0_values_' + str(run_name_norm) + '.npy')
 
 #convert to pandas dataframe for seaborn compatibility
 df_norm = pd.DataFrame({'sigma_z': data_norm[:, 0], 
@@ -77,7 +77,7 @@ df['bed_elev_norm'] = df['bed_elev'] / float(df_norm['bed_elev'][df_norm['sigma_
 
 
 ###########run from which to get filling regime shape
-run_name_fill = 'figure_k_rev1_L1000_tol1e-13_dt1000_n100_ero1-5_dep10-50_hfp5_newSw'
+run_name_fill = 'figure_7'#'figure_k_rev1_L1000_tol1e-13_dt1000_n100_ero1-5_dep10-50_hfp5_newSw'
 data_fill = np.load('sweep_k_values_' + str(run_name_fill) + '.npy')
 
 #convert to pandas dataframe for seaborn compatibility

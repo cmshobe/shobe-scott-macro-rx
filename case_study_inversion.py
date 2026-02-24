@@ -14,17 +14,34 @@ import numpy as np
 import pandas as pd
 from macro_roughness_functions import channel_evolution_inversion
 from scipy.optimize import differential_evolution
+from datetime import datetime
 
 #######INITIALIZE###########################################################
 #parameter values, etc
 
 np.random.seed(987654)
-run_name = 'case_study_test_refactor'
+run_name = 'figure_9_inversion_low_z0'
 theta_deg = 60. #degrees; bank angle
 theta = np.radians(theta_deg)
 
-#1,838 days between 2019 and 2024 survey = 158,803,200 s
-time_to_run = 158803200
+#get survey times
+datetime_format_code = '%Y-%m-%d %H:%M:%S'
+survey_2019_date = datetime.strptime('2019-03-21 12:00:00', 
+                                     datetime_format_code)
+survey_2020_date = datetime.strptime('2020-04-08 12:00:00', 
+                                     datetime_format_code)
+survey_2022_date = datetime.strptime('2022-04-06 12:00:00', 
+                                     datetime_format_code)
+survey_2024_date = datetime.strptime('2024-03-31 12:00:00', 
+                                     datetime_format_code)
+
+duration_2019_2020 = survey_2020_date - survey_2019_date
+time_checkpoint_1 = duration_2019_2020.total_seconds()
+duration_2020_2022 = survey_2022_date - survey_2020_date
+time_checkpoint_2 = duration_2020_2022.total_seconds() + time_checkpoint_1
+duration_2019_2024 = survey_2024_date - survey_2019_date
+
+time_to_run = duration_2019_2024.total_seconds()
 timestep = 100 #s
 print_interval = 1000000000
 save_interval = 100
@@ -38,13 +55,9 @@ d50 = 0.03 #m
 h_floodplain = 2.95 + (S * reach_length)
 
 #bring in Q data and trim to date bounds
-    #2019: 2019-03-20
-    #2020: 2020-04-08
-    #2022: 2022-04-06
-    #2024: 2024-03-31
 Q_time_series = pd.read_parquet('inputs/sf_sno_Q.parquet')
-Q_time_series[(Q_time_series['datetime'] >= '2019-03-20 12:00:00') & 
-              (Q_time_series['datetime'] <= '2024-03-31 12:00:00')]
+Q_time_series[(Q_time_series['datetime'] >= survey_2019_date) & 
+              (Q_time_series['datetime'] <= survey_2024_date)]
 Q_time_series_np = Q_time_series['Q (cms)'].to_numpy()
 expansion_factor = int((15 * 60) / timestep)
 Q_time_series_expanded = np.repeat(Q_time_series_np, expansion_factor)
@@ -76,7 +89,8 @@ l_bank_roughness_vals = np.array([1.91, 1.23, 1.84])
 args = (time_to_run, timestep, reach_length, Q_time_series_expanded, wb, theta,
         S, d50, h_floodplain,
         use_fp, print_interval, save_interval, w_obs, h_obs, run_name,
-        z0_vals, w_bed_roughness_vals, l_bank_roughness_vals)
+        z0_vals, w_bed_roughness_vals, l_bank_roughness_vals,
+        time_checkpoint_1, time_checkpoint_2)
 
 pop_size = 1#100
 max_iter = 1#25
