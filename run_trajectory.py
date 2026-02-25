@@ -1,45 +1,39 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on 9 Jan 2025 09:28:38
+Run a single model realization while recording information about flow and 
+morphology over time in the modeled channel. Output from this script is used to
+generate figure 8 in the paper.
 
-@author: charlesshobe
-
-run one realization (for testing)
+Created February 2026 by @author: charlesshobe
 """
 
 import numpy as np
-import copy as cp
 from macro_roughness_functions import channel_evolution_trajectory
 import time
 
 start_time = time.time()
 
-
 #######INITIALIZE###########################################################
 #parameter values, etc
 
-run_name = 'trajectory_test_refactor'
+run_name = 'figure_8_z0_10'
 Q = 150 #m^3/s water discharge
 Qs_in = .001 #m^3/s sediment flux in
-sigma_z = 0.1 #roughness length scale including wood (ideally back-calculate from literature)
-l_bed_obstacle = 0. #fraction of bed covered by wood
-l_bank_obstacle = 0. #fraction of banks covered by wood
+z0 = 10. #roughness length scale including macro-rx
+w_bed_roughness = 0. #fraction of bed covered by wood
+l_bank_roughness = 0. #fraction of banks covered by wood
 k_ero = 1. #ratio of bed to bank erodibility, unitless
 k_dep = 10. #ratio of bed to bank deposition, unitless
 theta_deg = 60. #degrees; bank angle
 theta = np.radians(theta_deg)
 
-#constants that are not model parameters
-#e = 1.5 #range of 1.33-2; Rickenmann, 2011
-
-time_to_run = 1000000000#200000000000 #work out time units...
-timestep = 1000 #CHECK UNITS
+time_to_run = 200000000000
+timestep = 1000 
 print_interval = 200000000000
 save_interval = 10000
 reach_length = 1000 #meters
-#h_floodplain = 2.
-use_fp = 1 #0 for unconfined, 1 for confined
+use_fp = 0 #0 for unconfined, 1 for confined
 
 #read in starting equilibrium S and w values
 
@@ -50,19 +44,19 @@ else:
     baseline_name = 'trajectory_z0_baseline_rev1'
     print('loading baseline slope and width...')
     baseline_slopes = np.load('results/' + str(baseline_name) + '_slopes.npy')
-    S = baseline_slopes[np.where(baseline_slopes > 0)[0][-1]] #last slope from baseline
+    S = baseline_slopes[np.where(baseline_slopes > 0)[0][-1]]
     print(S)
     baseline_widths = np.load('results/' + str(baseline_name) + '_widths.npy')
     wb = baseline_widths[np.where(baseline_slopes > 0)[0][-1]]
     print(wb)
 
-d50 = 0.06 #m !!!connect this to z0 to eliminate an arbitrary param choice
+d50 = 0.06 #m
 
 h_floodplain = 5. + (S * reach_length)
 
-param_dict = {'sigma_z': sigma_z,
-              'l_bed_obstacle': l_bed_obstacle,
-              'l_bank_obstacle': l_bank_obstacle,
+param_dict = {'z0': z0,
+              'w_bed_roughness': w_bed_roughness,
+              'l_bank_roughness': l_bank_roughness,
               'k_ero': k_ero,
               'k_dep': k_dep,
               'Q': Q,
@@ -71,9 +65,10 @@ param_dict = {'sigma_z': sigma_z,
               'd50': d50,
               'h_fp': h_floodplain,
               'runtime': time_to_run,
-              'timestep': timestep} #dict holds only vars that are unchanging
+              'timestep': timestep}
 
-with open('results/' + str(run_name) + '_params.txt','w') as params_file:  #write out params dict to text file
+#write out params dict to text file
+with open('results/' + str(run_name) + '_params.txt','w') as params_file:
     for key, value in param_dict.items():  
         params_file.write('%s: %s\n' % (key, value))
 
@@ -84,9 +79,9 @@ morph_vars_perturb = channel_evolution_trajectory(time_to_run,
      Qs_in,
      wb,
      theta,
-     sigma_z,
-     l_bed_obstacle,
-     l_bank_obstacle,
+     z0,
+     w_bed_roughness,
+     l_bank_roughness,
      k_ero,
      k_dep,
      S,
@@ -108,10 +103,6 @@ save_S_r = morph_vars_perturb[8]
 save_fr_over_f0 = morph_vars_perturb[9]
 save_chan_depths = morph_vars_perturb[10]
 teq = morph_vars_perturb[11]
-
-#shortcuts to retrieve final width and slope values:
-#save_widths[np.where(save_widths > 0)[0][-1]]
-#save_slopes[np.where(save_slopes > 0)[0][-1]]
 
 
 #save everything as npys

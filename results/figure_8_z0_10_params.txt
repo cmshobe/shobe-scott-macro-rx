@@ -1,0 +1,12 @@
+z0: 10.0
+w_bed_roughness: 0.0
+l_bank_roughness: 0.0
+k_ero: 1.0
+k_dep: 10.0
+Q: 150
+Qs_in: 0.001
+theta: 60.0
+d50: 0.06
+h_fp: 10.5645631326687
+runtime: 200000000000
+timestep: 1000
