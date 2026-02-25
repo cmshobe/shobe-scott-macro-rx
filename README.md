@@ -1,4 +1,4 @@
-# Macro-roughness mdoel code and figure scripts
+# Macro-roughness model code and figure scripts
 
 Modeling and analysis code for Shobe and Scott (in review): Modeling the influence of macro-roughness on gravel-bed river morphodynamics
 
