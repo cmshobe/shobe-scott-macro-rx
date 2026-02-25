@@ -17,7 +17,7 @@ Note 1: The model produces much of its output in .npy binaries, which can be hun
 - `sweep_z0_values.py`: driver script that runs the model across many values of $z_0$. Outputs are an `.npy` binary of model results and a `.txt` file of parameters used.
 - `sweep_bed_cover_values.py`: driver script that runs the model across many values of $w^\mathrm{bed}_\mathrm{roughness}$. Outputs are an `.npy` binary of model results and a `.txt` file of parameters used.
 - `sweep_bank_cover_values.py`: driver script that runs the model across many values of $l^\mathrm{bank}_\mathrm{roughness}$. Outputs are an `.npy` binary of model results and a `.txt` file of parameters used.
-- `sweep_k_values.py`: driver script that runs the model across many values of $k^*_\mathrm{ero}$ and $k^*_\mathrm{dep}$. Outputs are an `.npy` binary of model results and a `.txt` file of parameters used.
+- `sweep_k_values.py`: driver script that runs the model across many values of $k^\*_\mathrm{ero}$ and $k^*_\mathrm{dep}$. Outputs are an `.npy` binary of model results and a `.txt` file of parameters used.
 - `run_trajectory.py`: driver script that runs a single model realization and tracks morphologic evolution through time. 
 - `case_study_inversion.py`: driver script that runs the Differential Evolution inversion procedure to find best-fit values for the two key parameters $k^*_\mathrm{ero}$ and $k^*_\mathrm{dep}$. Output from each is a `.csv` file recording the inversion results.
 - `case_study_bestfit_run.py`: driver script that runs a single model realization using the best-fit $k^*_\mathrm{ero}$ and $k^*_\mathrm{dep}$ values from the inversion. Outputs are an `.npy` binary of model results and a `.txt` file of parameters used.
