@@ -20,7 +20,7 @@ from datetime import datetime
 #parameter values, etc
 
 np.random.seed(987654)
-run_name = 'figure_9_inversion_low_z0'
+run_name = 'figure_9_inversion_high_z0'
 theta_deg = 60. #degrees; bank angle
 theta = np.radians(theta_deg)
 
@@ -80,7 +80,11 @@ w_obs = np.array([45., 46., 45.9])
 h_obs = np.array([0.0028, 0.0032, 0.003]) * reach_length
 
 #define input time series of z0, l_bed, l_bank
-z0_vals = np.array([0.13, 0.13, 0.14])
+
+#low z0 array: np.array([0.13, 0.13, 0.14])
+#high z0 array: np.array([0.22, 0.20, 0.23])
+
+z0_vals = np.array([0.22, 0.20, 0.23])
 w_bed_roughness_vals = np.array([1.74, 1.35, 1.84])
 l_bank_roughness_vals = np.array([1.91, 1.23, 1.84])
 
@@ -91,8 +95,8 @@ args = (time_to_run, timestep, reach_length, Q_time_series_expanded, wb, theta,
         z0_vals, w_bed_roughness_vals, l_bank_roughness_vals,
         time_checkpoint_1, time_checkpoint_2)
 
-pop_size = 1#100
-max_iter = 1#25
+pop_size = 100
+max_iter = 25
 recomb = 0.5
 
 #define initial array for optimization that ensures full param space coverage:
