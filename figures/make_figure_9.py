@@ -13,11 +13,31 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 import seaborn as sns
 import numpy as np
+from datetime import datetime
 
-run_name = '../results/case_study_low_z0_rev1_TESThighQsin_inversion_record.csv'
+run_name = 'figure_9_inversion_low_z0_inversion_record.csv'
 colnames = ['k_ero', 'k_dep', 'misfit']
-data = pd.read_csv(run_name, header = None, names = colnames).sort_values(by = 'misfit', ascending = False)
+data = pd.read_csv('../results/' + str(run_name), header = None, names = colnames).sort_values(by = 'misfit', ascending = False)
 
+
+#get survey times
+datetime_format_code = '%Y-%m-%d %H:%M:%S'
+survey_2019_date = datetime.strptime('2019-03-21 12:00:00', 
+                                     datetime_format_code)
+survey_2020_date = datetime.strptime('2020-04-08 12:00:00', 
+                                     datetime_format_code)
+survey_2022_date = datetime.strptime('2022-04-06 12:00:00', 
+                                     datetime_format_code)
+survey_2024_date = datetime.strptime('2024-03-31 12:00:00', 
+                                     datetime_format_code)
+
+duration_2019_2020 = survey_2020_date - survey_2019_date
+time_checkpoint_1 = duration_2019_2020.total_seconds()
+duration_2020_2022 = survey_2022_date - survey_2020_date
+time_checkpoint_2 = duration_2020_2022.total_seconds() + time_checkpoint_1
+
+duration_2019_2024 = survey_2024_date - survey_2019_date
+time = duration_2019_2024.total_seconds()
 
 #set up the figure grid
 fig = plt.figure(figsize=(10,10))
@@ -55,7 +75,7 @@ k_dep_hist = fig.add_subplot(spec[3, 1])
 width_timeseries = fig.add_subplot(spec[5, 0])
 bed_elev_timeseries = fig.add_subplot(spec[7, 0])
 
-observed_times = np.array([0, 33264000, 96163200, 158803200]) / 31536000
+observed_times = np.array([0, time_checkpoint_1, time_checkpoint_2, time])
 
 linewidth = 5
 
@@ -156,9 +176,10 @@ misfit_scatter.text(0.01, 0.9, 'C', transform=misfit_scatter.transAxes, fontsize
 
 
 
-#bring in width timesries data
-width_data = np.load('results/case_study_bestfit_low_rev1_widths.npy')
-time_array = np.arange(0, 158803200 + 100, 100) / 31536000 #seconds per year
+#bring in width timeseries data
+bestfit_run_name_low_z0 = 'figure_9_bestfit_low_z0'
+width_data = np.load('../results/' + str(bestfit_run_name_low_z0) + '_widths.npy')
+time_array = np.arange(0, time + 100, 100) #seconds per year
 
 
 width_timeseries.plot(time_array, width_data, linewidth = 1, color = 'k',
@@ -179,7 +200,7 @@ width_timeseries.text(0.01, 0.75, 'E', transform=width_timeseries.transAxes, fon
 
 
 
-bed_elev_data = np.load('results/case_study_bestfit_low_rev1_slopes.npy') * reach_length
+bed_elev_data = np.load('../results/' + str(bestfit_run_name_low_z0) + '_slopes.npy') * reach_length
 
 bed_elev_timeseries.plot(time_array, bed_elev_data, linewidth = 1, color = 'k',
                          label = 'modeled')
@@ -202,15 +223,15 @@ bed_elev_timeseries.text(0.01, 0.76, 'G', transform=bed_elev_timeseries.transAxe
 bestfit_k_ero = data.iloc[-1, 0]
 bestfit_k_dep = data.iloc[-1, 1]
 
-misfit_scatter.text(0.18, 0.47, 
+misfit_scatter.text(0.6, 0.75, 
                       '$k^*_{\mathrm{ero}}$ = ' + '%.2f'%np.round(bestfit_k_ero, 2) + '\n' + '$k^*_{\mathrm{dep}}$ = ' + '%.1f'%np.round(bestfit_k_dep, 1), 
                       transform=misfit_scatter.transAxes, fontsize = 12,
                       bbox = dict(edgecolor = 'k', facecolor = 'white', boxstyle='round', alpha = 0.5))
 
 #RIGHT COLUMN COLUMN: SIGMA_Z CASE 2######################################
 
-run_name_2 = 'results/case_study_high_z0_rev1_inversion_record.csv'
-data_2 = pd.read_csv(run_name_2, header = None, names = colnames).sort_values(by = 'misfit', ascending = False)
+run_name_2 = 'figure_9_inversion_high_z0_inversion_record.csv'
+data_2 = pd.read_csv('../results/' + str(run_name_2), header = None, names = colnames).sort_values(by = 'misfit', ascending = False)
 
 bc_plot_2 = fig.add_subplot(spec[0, 3])
 k_ero_hist_2 = fig.add_subplot(spec[2, 3])
@@ -305,10 +326,9 @@ misfit_scatter_2.text(0.01, 0.9, 'D', transform=misfit_scatter_2.transAxes, font
 
 
 #bring in width timesries data
-width_data = np.load('results/case_study_bestfit_high_z0_rev1_widths.npy')
-time_array = np.arange(0, 158803200 + 100, 100) / 31536000 #seconds per year
-
-observed_times = np.array([0, 33264000, 96163200, 158803200]) / 31536000
+bestfit_run_name_high_z0 = 'figure_9_bestfit_high_z0'
+width_data = np.load('../results/' + str(bestfit_run_name_high_z0) + '_widths.npy')
+time_array = np.arange(0, time + 100, 100)
 
 width_timeseries_2.plot(time_array, width_data, linewidth = 1, color = 'k')
 
@@ -323,7 +343,7 @@ width_timeseries_2.get_xaxis().set_ticklabels([])
 width_timeseries_2.text(0.01, 0.75, 'F', transform=width_timeseries_2.transAxes, fontsize = 20)
 
 
-bed_elev_data = np.load('results/case_study_bestfit_high_z0_rev1_slopes.npy') * reach_length
+bed_elev_data = np.load('../results/' + str(bestfit_run_name_high_z0) + '_slopes.npy') * reach_length
 
 
 bed_elev_timeseries_2.plot(time_array, bed_elev_data, linewidth = 1, color = 'k')
@@ -342,7 +362,7 @@ bestfit_k_ero_2 = data_2.iloc[-1, 0]
 bestfit_k_dep_2 = data_2.iloc[-1, 1]
 
 
-misfit_scatter_2.text(0.23, 0.73, 
+misfit_scatter_2.text(0.6, 0.75, 
                       '$k^*_{\mathrm{ero}}$ = ' + '%.2f'%np.round(bestfit_k_ero_2, 2) + '\n' + '$k^*_{\mathrm{dep}}$ = ' + '%.1f'%np.round(bestfit_k_dep_2, 1), 
                       transform=misfit_scatter_2.transAxes, fontsize = 12,
                       bbox = dict(edgecolor = 'k', facecolor = 'white', boxstyle='round', alpha = 0.5))

@@ -17,8 +17,8 @@ from datetime import datetime
 #######INITIALIZE###########################################################
 #parameter values, etc
 
-run_name = 'figure_9_bestfit_low_z0'
-inversion_record_name = 'results/figure_9_inversion_low_z0.csv'
+run_name = 'figure_9_bestfit_high_z0'
+inversion_record_name = 'results/figure_9_inversion_high_z0_inversion_record.csv'
 colnames = ['k_ero', 'k_dep', 'misfit']
 data = (pd.read_csv(inversion_record_name, header = None, names = colnames)
         .sort_values(by = 'misfit', ascending = False))
@@ -85,7 +85,11 @@ with open('results/' + str(run_name) + '_params.txt','w') as params_file:
         params_file.write('%s: %s\n' % (key, value))
         
 #define input time series of z0, l_bed, l_bank
-z0_vals = np.array([0.13, 0.13, 0.14])
+
+#low z0 array: np.array([0.13, 0.13, 0.14])
+#high z0 array: np.array([0.22, 0.20, 0.23])
+
+z0_vals = np.array([0.22, 0.20, 0.23])
 w_bed_roughness_vals = np.array([1.74, 1.35, 1.84])
 l_bank_roughness_vals = np.array([1.91, 1.23, 1.84])
 
