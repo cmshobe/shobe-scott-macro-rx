@@ -148,6 +148,5 @@ rel_rx.set_yscale('log')
 
 
 plt.tight_layout()
-fig2.savefig('fig_sweep_bank_cover_' + run_name +'_hires.png', dpi = 1000)
-fig2.savefig('fig_sweep_bank_cover_' + run_name +'_lores.png', dpi = 100)
-
+fig2.savefig('figure_6_hires.png', dpi = 1000)
+fig2.savefig('figure_6_lores.png', dpi = 100)

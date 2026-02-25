@@ -55,7 +55,7 @@ df['bed_elev_norm'] = df['bed_elev'] / float(df['bed_elev'][df['l_bed'] == min_r
 #############################################################################
 
 #run from which to get DEPTH-LIMITED data
-run_name = 'figure_5' #old draft: run 15
+run_name = 'figure_5' 
 data = np.load('../results/sweep_bed_cover_values_' + str(run_name) + '.npy')
 
 #convert to pandas dataframe for seaborn compatibility
@@ -113,7 +113,6 @@ fig2, axs = plt.subplots(3,2, figsize = (8,8))
 
 width = axs[0, 0]
 depth = axs[0, 1]
-#cover = axs[0, 1]
 slope = axs[1, 0]
 tau = axs[1, 1]
 f_ratio = axs[2, 0]
@@ -123,9 +122,7 @@ rel_rx = axs[2, 1]
 width.scatter(df['fc_bed'], df['width_norm'], clip_on = False, zorder = 3,
               edgecolor = 'k', facecolor = '#8dd3c7', s = markersize,
               alpha = df['alpha']) ##fbb4ae
-#width.set_xscale('log')
 width.set_xlim(xmin, xmax)
-#width.set_ylim(40, 200)
 width.get_xaxis().set_ticklabels([])
 width.set_ylabel('Normalized width [-]')
 width.axhline(y = 1, color = 'gray', linestyle = '--')
@@ -136,8 +133,6 @@ depth.scatter(df['fc_bed'], df['depth_norm'],
               s = markersize, label = 'flow depth',
               alpha = df['alpha']) ##b3cde3
 depth.set_xlim(xmin, xmax)
-#depth.set_ylim(0.45, 1.1)
-#depth.set_xscale('log')
 depth.get_xaxis().set_ticklabels([])
 depth.set_ylabel('Norm. depth and bed elevation [-]')
 depth.axhline(y = 1, color = 'gray', linestyle = '--')
@@ -148,25 +143,17 @@ depth.scatter(df['fc_bed'], df['bed_elev_norm'], clip_on = False, zorder = 3,
 depth.legend(bbox_to_anchor=(0.65,1.0), loc = 'upper right', 
              bbox_transform=depth.transAxes, framealpha = 1, edgecolor = 'k')
 
-#cover.scatter(df['l_bed'], df['fc_bed'], clip_on=False, zorder = 3, edgecolor = 'k',
-#              s = markersize, color = '#d9d9d9')
-#cover.set_ylabel('Bed cover fraction $f_c^{\mathrm{bed}}$ [-]')
-#cover.get_xaxis().set_ticklabels([])
-
 slope.scatter(df['fc_bed'], df['slope_norm'], label = 'bed slope', clip_on = False, 
               zorder = 3, edgecolor = 'k', marker = 's', s = markersize,
               c = '#bebada', alpha = df['alpha']) #fdb863
 slope.scatter(df['fc_bed'], df['e_slope_norm'], label = 'energy slope', clip_on = False, 
               zorder = 3, edgecolor = 'k', marker = '^', s = markersize,
               c = '#fb8072', alpha = df['alpha']) #b2abd2
-#slope.set_xscale('log')
 slope.set_ylabel('Normalized local slope [-]')
 slope.legend(bbox_to_anchor=(0.7,1.02), loc = 'upper right', bbox_transform=slope.transAxes, framealpha = 1, edgecolor = 'k')
 slope.set_xlim(xmin, xmax)
 slope.get_xaxis().set_ticklabels([])
-#slope.set_xlabel('Roughness length $z_0$ [m]')
 slope.axhline(y = 1, color = 'gray', linestyle = '--')
-#slope.set_ylim(0, 0.03)
 slope.text(text_x, text_y, 'C', transform=slope.transAxes, fontsize = 20)
 
 tau.scatter(df['fc_bed'], df['tau_bed_norm'], color = '#80b1d3', clip_on=False,
@@ -175,7 +162,6 @@ tau.scatter(df['fc_bed'], df['tau_bed_norm'], color = '#80b1d3', clip_on=False,
 tau.scatter(df['fc_bed'], df['tau_bank_norm'], color = '#fdb462', clip_on=False,
             marker = 'v', s = markersize, edgecolor = 'k', zorder = 3,
             label = 'bank shear stress', alpha = df['alpha'])#ffd92f'
-#tau.set_xscale('log')
 tau.set_xlim(xmin, xmax)
 tau.get_xaxis().set_ticklabels([])
 tau.set_ylabel('Normalized shear stress [-]')
@@ -186,20 +172,16 @@ tau.text(text_x, text_y, 'D', transform=tau.transAxes, fontsize = 20)
 
 f_ratio.scatter(df['fc_bed'], df['fr/f0'], color = '#b3de69', clip_on = False, 
                 s = markersize, edgecolor = 'k', zorder = 3, alpha = df['alpha']) #b8e186
-#f_ratio.set_xscale('log')
 f_ratio.set_ylabel('Friction factor ratio $f_r/f$ [-]')
 f_ratio.set_xlim(xmin, xmax)
 f_ratio.set_ylim(1, 2)
 f_ratio.set_xlabel('Bed cover fraction $f_c^{\mathrm{bed}}$ [-]')
-#f_ratio.set_ylim(2.5, 4.5)
-#f_ratio.axhline(y = 1, color = 'gray', linestyle = '--')
 f_ratio.text(text_x, text_y, 'E', transform=f_ratio.transAxes, fontsize = 20)
 
 
 rel_rx.scatter(df['fc_bed'], df['rel_rx'], color = '#fccde5', clip_on=False,
                s = markersize, edgecolor = 'k', zorder = 3, alpha = df['alpha'])
 rel_rx.set_ylabel('Relative submergence $R/z_0$ [-]')
-#rel_rx.set_xscale('log')
 rel_rx.set_xlim(xmin, xmax)
 rel_rx.set_xlabel('Bed cover fraction $f_c^{\mathrm{bed}}$ [-]')
 rel_rx.text(text_x, text_y, 'F', transform=rel_rx.transAxes, fontsize = 20)
@@ -208,11 +190,5 @@ rel_rx.set_yscale('log')
 
 
 plt.tight_layout()
-fig2.savefig('fig_sweep_bed_cover_' + run_name +'_hires.png', dpi = 1000)
-fig2.savefig('fig_sweep_bed_cover_' + run_name +'_lores.png', dpi = 100)
-
-#plt.figure()
-#plt.scatter(df['sigma_z'], df['width'] / df['depth'])
-#plt.figure()
-#plt.scatter(df['sigma_z'], (df['width'] + 2 * (df['depth'] / np.tan(np.radians(60)))) / df['depth'])
-
+fig2.savefig('figure_5_hires.png', dpi = 1000)
+fig2.savefig('figure_5_lores.png', dpi = 100)

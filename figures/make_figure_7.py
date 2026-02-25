@@ -28,6 +28,7 @@ df = pd.DataFrame({'k_ero': data[:, 0],
                    'teq': data[:, 9]})
 
 theta = 60 #degrees
+z0 = 1. #m
 df['w_r'] = df['width'] + 2 * (df['depth'] / np.tan(np.radians(theta)))
 
 #run from which to normalize
@@ -64,7 +65,7 @@ df['fr/f0 norm'] = df['fr/f0'] / float(df_norm['fr/f0'][df_norm['sigma_z'] == mi
 #calculate relative roughness
 bank_angle = 60
 df['R'] = ((df['width'] + (df['depth']/np.tan(np.radians(bank_angle)))) * df['depth']) / (df['width'] + 2 * (df['depth'] / np.sin(np.radians(bank_angle))))
-df['rel_rx'] = df['R'] / 1#df['sigma_z']
+df['rel_rx'] = df['R'] / z0
 
 #calculate bed elevation
 reach_length = 1000 #m
@@ -341,5 +342,5 @@ rel_rx.set_title('F) Relative submergence $R/z_0$ [-]')
 
 ###########################################
 
-fig.savefig('figure_7_' + run_name +'_hires.png', dpi = 1000, bbox_inches = 'tight')
-fig.savefig('figure_7_' + run_name +'_lores.png', dpi = 100, bbox_inches = 'tight')
+fig.savefig('figure_7_hires.png', dpi = 1000, bbox_inches = 'tight')
+fig.savefig('figure_7_lores.png', dpi = 100, bbox_inches = 'tight')

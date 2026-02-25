@@ -63,6 +63,11 @@ high_sigma_z_values = np.array([0.20, 0.23, 0.26])
 l_bed_obst_values = np.array([1.74, 1.35, 1.84])
 l_bank_obst_values = np.array([1.91, 1.23, 1.84])
 
+#x-tick array for A,B,E,F,G,H
+#x-tick label array for A,B,E,F,G,H
+time_ticks = np.arange(0, time + 1000, time / 5)
+time_tick_labels = ['3/2019', '3/2020', '3/2021', '3/2022', '3/2023', '3/2024']
+
 
 #LEFT COLUMN: SIGMA_Z CASE 1#################################################
 
@@ -113,8 +118,8 @@ lines2, labels2 = fc_plot.get_legend_handles_labels()
 bc_plot.legend(lines + lines2, labels + labels2, bbox_to_anchor = (0.69, 1.35), 
                loc = 'upper left', ncols = 3, framealpha = 1, edgecolor = 'k')
 
-bc_plot.set_xticks(np.arange(0, 6))
-bc_plot.set_xticklabels(['3/2019', '3/2020', '3/2021', '3/2022', '3/2023', '3/2024'])
+bc_plot.set_xticks(time_ticks)
+bc_plot.set_xticklabels(time_tick_labels)
 bc_plot.set_xlabel('Date [m/yyyy]')
 bc_plot.set_ylabel('$z_0$ [m]')
 bc_plot.set_ylim(0.1, 0.7)
@@ -208,8 +213,8 @@ bed_elev_timeseries.scatter(observed_times, observed_bed_elevs, marker = 's',
                             facecolor = 'darkgray', edgecolor = 'k', label = 'observed')
 bed_elev_timeseries.set_ylabel('$h$ [m]')
 
-bed_elev_timeseries.set_xticks(np.arange(0, 6))
-bed_elev_timeseries.set_xticklabels(['3/2019', '3/2020', '3/2021', '3/2022', '3/2023', '3/2024'])
+bed_elev_timeseries.set_xticks(time_ticks)
+bed_elev_timeseries.set_xticklabels(time_tick_labels)
 bed_elev_timeseries.set_xlabel('Date [m/yyyy]')
 
 bed_elev_timeseries.legend(bbox_to_anchor = (0.95, 1.35), loc = 'upper left', 
@@ -268,8 +273,8 @@ fc_plot_2.hlines(y = l_bank_obst_values[2], xmin = observed_times[2],
 lines, labels = bc_plot.get_legend_handles_labels()
 lines2, labels2 = fc_plot.get_legend_handles_labels()
 
-bc_plot_2.set_xticks(np.arange(0, 6))
-bc_plot_2.set_xticklabels(['3/2019', '3/2020', '3/2021', '3/2022', '3/2023', '3/2024'])
+bc_plot_2.set_xticks(time_ticks)
+bc_plot_2.set_xticklabels(time_tick_labels)
 bc_plot_2.set_xlabel('Date [m/yyyy]')
 bc_plot_2.set_ylabel('$z_0$ [m]')
 bc_plot_2.set_ylim(0.1, 0.7)
@@ -350,7 +355,7 @@ bed_elev_timeseries_2.errorbar(observed_times, observed_bed_elevs, yerr = np.rep
 bed_elev_timeseries_2.scatter(observed_times, observed_bed_elevs, marker = 's', facecolor = 'darkgray', edgecolor = 'k')
 bed_elev_timeseries_2.set_ylabel('$h$ [m]')
 
-bed_elev_timeseries_2.set_xticks(np.arange(0, 6))
+bed_elev_timeseries_2.set_xticks(np.arange(0, time + 1000, time / 5))
 bed_elev_timeseries_2.set_xticklabels(['3/2019', '3/2020', '3/2021', '3/2022', '3/2023', '3/2024'])
 bed_elev_timeseries_2.set_xlabel('Date [m/yyyy]')
 
@@ -365,5 +370,5 @@ misfit_scatter_2.text(0.6, 0.75,
                       transform=misfit_scatter_2.transAxes, fontsize = 12,
                       bbox = dict(edgecolor = 'k', facecolor = 'white', boxstyle='round', alpha = 0.5))
 
-fig.savefig('figure_10_hires.png', dpi = 1000, bbox_inches = 'tight')
-fig.savefig('figure_10_lores.png', dpi = 100, bbox_inches = 'tight')
+fig.savefig('figure_9_hires.png', dpi = 1000, bbox_inches = 'tight')
+fig.savefig('figure_9_lores.png', dpi = 100, bbox_inches = 'tight')

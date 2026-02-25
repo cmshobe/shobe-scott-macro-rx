@@ -290,5 +290,5 @@ rel_rx.axvline(0.4, linewidth = 2, color = 'k')
 
 
 plt.tight_layout()
-fig2.savefig('fig_sweep_z0_' + run_name +'_hires.png', dpi = 1000)
-fig2.savefig('fig_sweep_z0_' + run_name +'_lores.png', dpi = 100)
+fig2.savefig('figure_4_hires.png', dpi = 1000)
+fig2.savefig('figure_4_lores.png', dpi = 100)
