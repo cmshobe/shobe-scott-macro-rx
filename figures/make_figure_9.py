@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar 19 14:14:51 2025
+Create figure 9 in Shobe and Scott: Case study results.
 
-@author: charlesshobe
-
-read and plot param space exploration data
+Created February 2026 by @author: charlesshobe
 """
 
 import pandas as pd
