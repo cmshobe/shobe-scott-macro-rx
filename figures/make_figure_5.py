@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jan 16 21:44:08 2025
+Create figure 5 in Shobe and Scott: Effects of bed cover on equilibrium 
+channel geometry.
 
-@author: charlesshobe
-
-Create results figure: outputs w, d, S+Sr,  and f/fr as f(sigma_z)
+Created February 2026 by @author: charlesshobe
 """
 import numpy as np
 import pandas as pd
@@ -26,8 +25,8 @@ df = pd.DataFrame({'l_bed': data[:, 0],
                    'fr/f0': data[:, 7],
                    'teq': data[:, 8]})
 
-#normalize outputs (except fr/f) to output value for sigma_z = 0.01 m
-min_rx = min(df['l_bed']) #minimum sigma_z used
+#normalize outputs (except fr/f) to minimum bed cover run
+min_rx = min(df['l_bed']) #minimum bed cover used
 df['width_norm'] = df['width'] / float(df['width'][df['l_bed'] == min_rx].iloc[0])
 df['depth_norm'] = df['depth'] / float(df['depth'][df['l_bed'] == min_rx].iloc[0])
 df['slope_norm'] = df['slope'] / float(df['slope'][df['l_bed'] == min_rx].iloc[0])
@@ -59,7 +58,7 @@ run_name = 'figure_5'
 data = np.load('../results/sweep_bed_cover_values_' + str(run_name) + '.npy')
 
 #convert to pandas dataframe for seaborn compatibility
-df_overbank = pd.DataFrame({'sigma_z': data[:, 0], 
+df_overbank = pd.DataFrame({'z0': data[:, 0], 
                    'width': data[:, 1], 
                    'depth': data[:, 2],
                    'slope': data[:, 3],
@@ -69,24 +68,24 @@ df_overbank = pd.DataFrame({'sigma_z': data[:, 0],
                    'fr/f0': data[:, 7],
                    'teq': data[:, 8]})
 
-#normalize outputs (except fr/f) to output value for sigma_z = 0.01 m
-min_rx = min(df_overbank['sigma_z']) #minimum sigma_z used
-df_overbank['width_norm'] = df_overbank['width'] / float(df_overbank['width'][df_overbank['sigma_z'] == min_rx].iloc[0])
-df_overbank['depth_norm'] = df_overbank['depth'] / float(df_overbank['depth'][df_overbank['sigma_z'] == min_rx].iloc[0])
-df_overbank['slope_norm'] = df_overbank['slope'] / float(df_overbank['slope'][df_overbank['sigma_z'] == min_rx].iloc[0])
-df_overbank['e_slope_norm'] = df_overbank['e_slope'] / float(df_overbank['e_slope'][df_overbank['sigma_z'] == min_rx].iloc[0])
-df_overbank['tau_bed_norm'] = df_overbank['tau_bed'] / float(df_overbank['tau_bed'][df_overbank['sigma_z'] == min_rx].iloc[0])
-df_overbank['tau_bank_norm'] = df_overbank['tau_bank'] / float(df_overbank['tau_bank'][df_overbank['sigma_z'] == min_rx].iloc[0])
-df_overbank['fr/f0 norm'] = df_overbank['fr/f0'] / float(df['fr/f0'][df_overbank['sigma_z'] == min_rx].iloc[0])
+#normalize outputs (except fr/f) to minimum bed cover run
+min_rx = min(df_overbank['z0']) #minimum bed cover used
+df_overbank['width_norm'] = df_overbank['width'] / float(df_overbank['width'][df_overbank['z0'] == min_rx].iloc[0])
+df_overbank['depth_norm'] = df_overbank['depth'] / float(df_overbank['depth'][df_overbank['z0'] == min_rx].iloc[0])
+df_overbank['slope_norm'] = df_overbank['slope'] / float(df_overbank['slope'][df_overbank['z0'] == min_rx].iloc[0])
+df_overbank['e_slope_norm'] = df_overbank['e_slope'] / float(df_overbank['e_slope'][df_overbank['z0'] == min_rx].iloc[0])
+df_overbank['tau_bed_norm'] = df_overbank['tau_bed'] / float(df_overbank['tau_bed'][df_overbank['z0'] == min_rx].iloc[0])
+df_overbank['tau_bank_norm'] = df_overbank['tau_bank'] / float(df_overbank['tau_bank'][df_overbank['z0'] == min_rx].iloc[0])
+df_overbank['fr/f0 norm'] = df_overbank['fr/f0'] / float(df['fr/f0'][df_overbank['z0'] == min_rx].iloc[0])
 
 #calculate relative roughness
 df_overbank['R'] = ((df_overbank['width'] + (df_overbank['depth']/np.tan(np.radians(bank_angle)))) * df_overbank['depth']) / (df_overbank['width'] + 2 * (df_overbank['depth'] / np.sin(np.radians(bank_angle))))
-df_overbank['rel_rx'] = df_overbank['R'] / df_overbank['sigma_z']
+df_overbank['rel_rx'] = df_overbank['R'] / z0
 
 #calculate bed elevation
 h_baselevel = 0
 df_overbank['bed_elev'] = df_overbank['slope'] * reach_length + h_baselevel
-df_overbank['bed_elev_norm'] = df_overbank['bed_elev'] / float(df_overbank['bed_elev'][df_overbank['sigma_z'] == min_rx].iloc[0])
+df_overbank['bed_elev_norm'] = df_overbank['bed_elev'] / float(df_overbank['bed_elev'][df_overbank['z0'] == min_rx].iloc[0])
 
 
 ##########################################################################
