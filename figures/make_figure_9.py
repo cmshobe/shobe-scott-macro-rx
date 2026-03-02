@@ -15,7 +15,8 @@ from datetime import datetime
 
 run_name = 'figure_9_inversion_low_z0_inversion_record.csv'
 colnames = ['k_ero', 'k_dep', 'misfit']
-data = pd.read_csv('../results/' + str(run_name), header = None, names = colnames).sort_values(by = 'misfit', ascending = False)
+data = (pd.read_csv('../results/' + str(run_name), header = None, names = colnames)
+        .sort_values(by = 'misfit', ascending = False))
 
 
 #get survey times
@@ -57,8 +58,8 @@ k_dep_min = 0
 k_dep_max = 122
 
 #DATA and axis lims FOR BOUNDARY CONDITION PLOTS
-low_sigma_z_values = np.array([0.13, 0.13, 0.14])
-high_sigma_z_values = np.array([0.20, 0.23, 0.26])
+low_z0_values = np.array([0.13, 0.13, 0.14])
+high_z0_values = np.array([0.20, 0.23, 0.26])
 
 l_bed_obst_values = np.array([1.74, 1.35, 1.84])
 l_bank_obst_values = np.array([1.91, 1.23, 1.84])
@@ -69,7 +70,7 @@ time_ticks = np.arange(0, time + 1000, time / 5)
 time_tick_labels = ['3/2019', '3/2020', '3/2021', '3/2022', '3/2023', '3/2024']
 
 
-#LEFT COLUMN: SIGMA_Z CASE 1#################################################
+#LEFT COLUMN: z0 CASE 1#################################################
 
 bc_plot = fig.add_subplot(spec[0, 0])
 k_ero_hist = fig.add_subplot(spec[2, 0])
@@ -82,17 +83,17 @@ observed_times = np.array([0, time_checkpoint_1, time_checkpoint_2, time])
 
 linewidth = 5
 
-sigma_z_color = '#fb8072'
+z0_color = '#fb8072'
 bank_obst_color = '#8dd3c7'
 bed_obst_color = '#bebada'
 
-bc_plot.hlines(y = low_sigma_z_values[0], xmin = observed_times[0], 
-                xmax = observed_times[1], linewidth = linewidth, color = sigma_z_color,
+bc_plot.hlines(y = low_z0_values[0], xmin = observed_times[0], 
+                xmax = observed_times[1], linewidth = linewidth, color = z0_color,
                 label = '$z_0$')
-bc_plot.hlines(y = low_sigma_z_values[1], xmin = observed_times[1], 
-                xmax = observed_times[2], linewidth = linewidth, color = sigma_z_color)
-bc_plot.hlines(y = low_sigma_z_values[2], xmin = observed_times[2], 
-                xmax = observed_times[3], linewidth = linewidth, color = sigma_z_color)
+bc_plot.hlines(y = low_z0_values[1], xmin = observed_times[1], 
+                xmax = observed_times[2], linewidth = linewidth, color = z0_color)
+bc_plot.hlines(y = low_z0_values[2], xmin = observed_times[2], 
+                xmax = observed_times[3], linewidth = linewidth, color = z0_color)
 
 fc_plot = bc_plot.twinx()
 fc_plot.hlines(y = l_bed_obst_values[0], xmin = observed_times[0], 
@@ -231,7 +232,7 @@ misfit_scatter.text(0.6, 0.75,
                       transform=misfit_scatter.transAxes, fontsize = 12,
                       bbox = dict(edgecolor = 'k', facecolor = 'white', boxstyle='round', alpha = 0.5))
 
-#RIGHT COLUMN COLUMN: SIGMA_Z CASE 2######################################
+#RIGHT COLUMN COLUMN: z0 CASE 2######################################
 
 run_name_2 = 'figure_9_inversion_high_z0_inversion_record.csv'
 data_2 = pd.read_csv('../results/' + str(run_name_2), header = None, names = colnames).sort_values(by = 'misfit', ascending = False)
@@ -243,13 +244,13 @@ k_dep_hist_2 = fig.add_subplot(spec[3, 4])
 width_timeseries_2 = fig.add_subplot(spec[5, 3])
 bed_elev_timeseries_2 = fig.add_subplot(spec[7, 3])
 
-bc_plot_2.hlines(y = high_sigma_z_values[0], xmin = observed_times[0], 
-                xmax = observed_times[1], linewidth = linewidth, color = sigma_z_color,
+bc_plot_2.hlines(y = high_z0_values[0], xmin = observed_times[0], 
+                xmax = observed_times[1], linewidth = linewidth, color = z0_color,
                 label = '$z_0$')
-bc_plot_2.hlines(y = high_sigma_z_values[1], xmin = observed_times[1], 
-                xmax = observed_times[2], linewidth = linewidth, color = sigma_z_color)
-bc_plot_2.hlines(y = high_sigma_z_values[2], xmin = observed_times[2], 
-                xmax = observed_times[3], linewidth = linewidth, color = sigma_z_color)
+bc_plot_2.hlines(y = high_z0_values[1], xmin = observed_times[1], 
+                xmax = observed_times[2], linewidth = linewidth, color = z0_color)
+bc_plot_2.hlines(y = high_z0_values[2], xmin = observed_times[2], 
+                xmax = observed_times[3], linewidth = linewidth, color = z0_color)
 
 fc_plot_2 = bc_plot_2.twinx()
 fc_plot_2.hlines(y = l_bed_obst_values[0], xmin = observed_times[0], 
