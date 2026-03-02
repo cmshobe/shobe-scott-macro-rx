@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 
 #run from which to get data
-run_name = 'figure_7_nofp'#'figure_k_rev1_L1000_tol1e-13_dt1000_n100_ero1-5_dep10-50'
+run_name = 'figure_7_nofp'
 data = np.load('../results/sweep_k_values_' + str(run_name) + '.npy')
 
 #convert to pandas dataframe for seaborn compatibility
@@ -32,11 +32,11 @@ z0 = 1. #m
 df['w_r'] = df['width'] + 2 * (df['depth'] / np.tan(np.radians(theta)))
 
 #run from which to normalize
-run_name_norm = 'figure_4'#'figure_4_rev1_L1000_tol1e-13_dt1000_TESTkero1kdep10_newSw'
+run_name_norm = 'figure_4'
 data_norm = np.load('../results/sweep_z0_values_' + str(run_name_norm) + '.npy')
 
 #convert to pandas dataframe for seaborn compatibility
-df_norm = pd.DataFrame({'sigma_z': data_norm[:, 0], 
+df_norm = pd.DataFrame({'z0': data_norm[:, 0], 
                    'width': data_norm[:, 1], 
                    'depth': data_norm[:, 2],
                    'slope': data_norm[:, 3],
@@ -51,16 +51,16 @@ df_norm['w_r'] = df_norm['width'] + 2 * (df_norm['depth'] / np.tan(np.radians(60
 
 
 
-#normalize outputs (except fr/f) to output value for sigma_z = 0.01 m
-min_rx = min(df_norm['sigma_z']) #minimum sigma_z used
-df['width_norm'] = df['width'] / float(df_norm['width'][df_norm['sigma_z'] == min_rx].iloc[0])
-df['w_r_norm'] = df['w_r'] / float(df_norm['w_r'][df_norm['sigma_z'] == min_rx].iloc[0])
-df['depth_norm'] = df['depth'] / float(df_norm['depth'][df_norm['sigma_z'] == min_rx].iloc[0])
-df['slope_norm'] = df['slope'] / float(df_norm['slope'][df_norm['sigma_z'] == min_rx].iloc[0])
-df['e_slope_norm'] = df['e_slope'] / float(df_norm['e_slope'][df_norm['sigma_z'] == min_rx].iloc[0])
-df['tau_bed_norm'] = df['tau_bed'] / float(df_norm['tau_bed'][df_norm['sigma_z'] == min_rx].iloc[0])
-df['tau_bank_norm'] = df['tau_bank'] / float(df_norm['tau_bank'][df_norm['sigma_z'] == min_rx].iloc[0])
-df['fr/f0 norm'] = df['fr/f0'] / float(df_norm['fr/f0'][df_norm['sigma_z'] == min_rx].iloc[0])
+#normalize outputs (except fr/f) to output value for z0 = 0.01 m
+min_rx = min(df_norm['z0']) #minimum z0 used
+df['width_norm'] = df['width'] / float(df_norm['width'][df_norm['z0'] == min_rx].iloc[0])
+df['w_r_norm'] = df['w_r'] / float(df_norm['w_r'][df_norm['z0'] == min_rx].iloc[0])
+df['depth_norm'] = df['depth'] / float(df_norm['depth'][df_norm['z0'] == min_rx].iloc[0])
+df['slope_norm'] = df['slope'] / float(df_norm['slope'][df_norm['z0'] == min_rx].iloc[0])
+df['e_slope_norm'] = df['e_slope'] / float(df_norm['e_slope'][df_norm['z0'] == min_rx].iloc[0])
+df['tau_bed_norm'] = df['tau_bed'] / float(df_norm['tau_bed'][df_norm['z0'] == min_rx].iloc[0])
+df['tau_bank_norm'] = df['tau_bank'] / float(df_norm['tau_bank'][df_norm['z0'] == min_rx].iloc[0])
+df['fr/f0 norm'] = df['fr/f0'] / float(df_norm['fr/f0'][df_norm['z0'] == min_rx].iloc[0])
 
 #calculate relative roughness
 bank_angle = 60
@@ -72,7 +72,7 @@ reach_length = 1000 #m
 h_baselevel = 0
 df['bed_elev'] = df['slope'] * reach_length + h_baselevel
 df_norm['bed_elev'] = df_norm['slope'] * reach_length + h_baselevel
-df['bed_elev_norm'] = df['bed_elev'] / float(df_norm['bed_elev'][df_norm['sigma_z'] == min_rx].iloc[0])
+df['bed_elev_norm'] = df['bed_elev'] / float(df_norm['bed_elev'][df_norm['z0'] == min_rx].iloc[0])
 
 
 
