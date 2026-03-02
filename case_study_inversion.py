@@ -20,7 +20,7 @@ from datetime import datetime
 #parameter values, etc
 
 np.random.seed(987654)
-run_name = 'figure_9_inversion_high_z0'
+run_name = 'figure_9_inversion_low_z0'
 theta_deg = 60. #degrees; bank angle
 theta = np.radians(theta_deg)
 
@@ -84,7 +84,7 @@ h_obs = np.array([0.0028, 0.0032, 0.003]) * reach_length
 #low z0 array: np.array([0.13, 0.13, 0.14])
 #high z0 array: np.array([0.22, 0.20, 0.23])
 
-z0_vals = np.array([0.22, 0.20, 0.23])
+z0_vals = np.array([0.13, 0.13, 0.14])
 w_bed_roughness_vals = np.array([1.74, 1.35, 1.84])
 l_bank_roughness_vals = np.array([1.91, 1.23, 1.84])
 

@@ -15,7 +15,7 @@ import os
 
 # protect the entry point
 if __name__ == '__main__':
-    run_name = 'figure_5_nofp'
+    run_name = 'figure_5'
     n_steps = 15
     z0 = 0.1
     w_bed_roughness_values = np.linspace(0, 120, n_steps)
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     print(wb)
     
     h_floodplain = 5. + (S * reach_length)
-    use_fp = 0 #0 for no, 1 for yes
+    use_fp = 1 #0 for no, 1 for yes
     
     param_array_tuple = tuple(w_bed_roughness_values)
     save_array = np.zeros((len(w_bed_roughness_values), 1))

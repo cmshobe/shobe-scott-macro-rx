@@ -260,8 +260,8 @@ def channel_evolution_equilibrium(time_to_run,
     
     #constants
     tolerance_over_timestep = 1e-13
-    a1 = 6.5 #VPE constant
-    a2 = 2.5 #VPE constant
+    a1 = 7. #VPE constant
+    a2 = 3. #VPE constant
     rho_w = 1000 #kg/m^3; water density
     rho_s = 2650 #kg/m^3, sed density
     g = 9.81 #m/s^2 accel due to gravity
@@ -380,8 +380,8 @@ def channel_evolution_trajectory(time_to_run,
     
     #constants
     tolerance_over_timestep = 1e-13
-    a1 = 6.5 #VPE constant
-    a2 = 2.5 #VPE constant
+    a1 = 7. #VPE constant
+    a2 = 3. #VPE constant
     rho_w = 1000 #kg/m^3; water density
     rho_s = 2650 #kg/m^3, sed density
     g = 9.81 #m/s^2 accel due to gravity
@@ -581,8 +581,8 @@ def channel_evolution_inversion(variable_args, *fixed_args):
     
     
     #constants that are not model parameters
-    a1 = 6.5 #VPE constant
-    a2 = 2.5 #VPE constant
+    a1 = 7. #VPE constant
+    a2 = 3. #VPE constant
     rho_w = 1000 #kg/m^3; water density
     rho_s = 2650 #kg/m^3, sed density
     g = 9.81 #m/s^2 accel due to gravity
@@ -733,8 +733,8 @@ def channel_evolution_bestfit(time_to_run,
     l_bank_roughness = l_bank_obst_vals[0]
     
     #constants
-    a1 = 6.5 #VPE constant
-    a2 = 2.5 #VPE constant
+    a1 = 7. #VPE constant
+    a2 = 3. #VPE constant
     rho_w = 1000 #kg/m^3; water density
     rho_s = 2650 #kg/m^3, sed density
     g = 9.81 #m/s^2 accel due to gravity

@@ -39,7 +39,13 @@ df['fr/f0 norm'] = df['fr/f0'] / float(df['fr/f0'][df['l_bank'] == min_rx].iloc[
 bank_angle = 60
 z0 = 0.1
 reach_length = 1000 #m
-initial_slope = 0.0055645631326687005
+
+#load slope from which all runs started
+baseline_name = 'trajectory_z0_baseline_rev1'
+print('loading baseline slope and width...')
+baseline_slopes = np.load('../results/' + str(baseline_name) + '_slopes.npy')
+initial_slope = baseline_slopes[np.where(baseline_slopes > 0)[0][-1]]
+
 h_baselevel = 0
 hfp = 5 + h_baselevel + initial_slope * reach_length #5 + initial slope + reach length
 df['chan_depth'] = hfp - (df['slope'] * reach_length)
