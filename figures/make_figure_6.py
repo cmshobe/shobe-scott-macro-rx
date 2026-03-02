@@ -25,8 +25,8 @@ df = pd.DataFrame({'l_bank': data[:, 0],
                    'fr/f0': data[:, 7],
                    'teq': data[:, 8]})
 
-#normalize outputs (except fr/f) to output value for sigma_z = 0.01 m
-min_rx = min(df['l_bank']) #minimum sigma_z used
+#normalize outputs (except fr/f) to minimum bank cover run
+min_rx = min(df['l_bank']) #minimum bank cover used
 df['width_norm'] = df['width'] / float(df['width'][df['l_bank'] == min_rx].iloc[0])
 df['depth_norm'] = df['depth'] / float(df['depth'][df['l_bank'] == min_rx].iloc[0])
 df['slope_norm'] = df['slope'] / float(df['slope'][df['l_bank'] == min_rx].iloc[0])
