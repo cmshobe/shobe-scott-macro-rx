@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jan 16 21:44:08 2025
+Create figure 4 in Shobe and Scott: Effects of roughness on equilibrium 
+channel geometry.
 
-@author: charlesshobe
-
-Create results figure: outputs w, d, S+Sr,  and f/fr as f(sigma_z)
+Created February 2026 by @author: charlesshobe
 """
 import numpy as np
 import pandas as pd
@@ -16,7 +15,7 @@ run_name = 'figure_4_nofp'
 data = np.load('../results/sweep_z0_values_' + str(run_name) + '.npy')
 
 #convert to pandas dataframe for seaborn compatibility
-df = pd.DataFrame({'sigma_z': data[:, 0], 
+df = pd.DataFrame({'z0': data[:, 0], 
                    'width': data[:, 1], 
                    'depth': data[:, 2],
                    'slope': data[:, 3],
@@ -29,27 +28,27 @@ df = pd.DataFrame({'sigma_z': data[:, 0],
 theta = 60 #degrees
 df['w_r'] = df['width'] + 2 * (df['depth'] / np.tan(np.radians(theta)))
 
-#normalize outputs (except fr/f) to output value for sigma_z = 0.01 m
-min_rx = min(df['sigma_z']) #minimum sigma_z used
-df['width_norm'] = df['width'] / float(df['width'][df['sigma_z'] == min_rx].iloc[0])
-df['w_r_norm'] = df['w_r'] / float(df['w_r'][df['sigma_z'] == min_rx].iloc[0])
-df['depth_norm'] = df['depth'] / float(df['depth'][df['sigma_z'] == min_rx].iloc[0])
-df['slope_norm'] = df['slope'] / float(df['slope'][df['sigma_z'] == min_rx].iloc[0])
-df['e_slope_norm'] = df['e_slope'] / float(df['e_slope'][df['sigma_z'] == min_rx].iloc[0])
-df['tau_bed_norm'] = df['tau_bed'] / float(df['tau_bed'][df['sigma_z'] == min_rx].iloc[0])
-df['tau_bank_norm'] = df['tau_bank'] / float(df['tau_bank'][df['sigma_z'] == min_rx].iloc[0])
-df['fr/f0 norm'] = df['fr/f0'] / float(df['fr/f0'][df['sigma_z'] == min_rx].iloc[0])
+#normalize outputs (except fr/f) to output value for z0 = 0.01 m
+min_rx = min(df['z0']) #minimum z0 used
+df['width_norm'] = df['width'] / float(df['width'][df['z0'] == min_rx].iloc[0])
+df['w_r_norm'] = df['w_r'] / float(df['w_r'][df['z0'] == min_rx].iloc[0])
+df['depth_norm'] = df['depth'] / float(df['depth'][df['z0'] == min_rx].iloc[0])
+df['slope_norm'] = df['slope'] / float(df['slope'][df['z0'] == min_rx].iloc[0])
+df['e_slope_norm'] = df['e_slope'] / float(df['e_slope'][df['z0'] == min_rx].iloc[0])
+df['tau_bed_norm'] = df['tau_bed'] / float(df['tau_bed'][df['z0'] == min_rx].iloc[0])
+df['tau_bank_norm'] = df['tau_bank'] / float(df['tau_bank'][df['z0'] == min_rx].iloc[0])
+df['fr/f0 norm'] = df['fr/f0'] / float(df['fr/f0'][df['z0'] == min_rx].iloc[0])
 
 #calculate relative roughness
 bank_angle = 60
 df['R'] = ((df['width'] + (df['depth']/np.tan(np.radians(bank_angle)))) * df['depth']) / (df['width'] + 2 * (df['depth'] / np.sin(np.radians(bank_angle))))
-df['rel_rx'] = df['R'] / df['sigma_z']
+df['rel_rx'] = df['R'] / df['z0']
 
 #calculate bed elevation
 reach_length = 1000 #m
 h_baselevel = 0
 df['bed_elev'] = df['slope'] * reach_length + h_baselevel
-df['bed_elev_norm'] = df['bed_elev'] / float(df['bed_elev'][df['sigma_z'] == min_rx].iloc[0])
+df['bed_elev_norm'] = df['bed_elev'] / float(df['bed_elev'][df['z0'] == min_rx].iloc[0])
 
 #############################################################################
 
@@ -58,7 +57,7 @@ run_name = 'figure_4' #old draft: run 15
 data = np.load('../results/sweep_z0_values_' + str(run_name) + '.npy')
 
 #convert to pandas dataframe for seaborn compatibility
-df_overbank = pd.DataFrame({'sigma_z': data[:, 0], 
+df_overbank = pd.DataFrame({'z0': data[:, 0], 
                    'width': data[:, 1], 
                    'depth': data[:, 2],
                    'slope': data[:, 3],
@@ -68,24 +67,24 @@ df_overbank = pd.DataFrame({'sigma_z': data[:, 0],
                    'fr/f0': data[:, 7],
                    'teq': data[:, 8]})
 
-#normalize outputs (except fr/f) to output value for sigma_z = 0.01 m
-min_rx = min(df_overbank['sigma_z']) #minimum sigma_z used
-df_overbank['width_norm'] = df_overbank['width'] / float(df_overbank['width'][df_overbank['sigma_z'] == min_rx].iloc[0])
-df_overbank['depth_norm'] = df_overbank['depth'] / float(df_overbank['depth'][df_overbank['sigma_z'] == min_rx].iloc[0])
-df_overbank['slope_norm'] = df_overbank['slope'] / float(df_overbank['slope'][df_overbank['sigma_z'] == min_rx].iloc[0])
-df_overbank['e_slope_norm'] = df_overbank['e_slope'] / float(df_overbank['e_slope'][df_overbank['sigma_z'] == min_rx].iloc[0])
-df_overbank['tau_bed_norm'] = df_overbank['tau_bed'] / float(df_overbank['tau_bed'][df_overbank['sigma_z'] == min_rx].iloc[0])
-df_overbank['tau_bank_norm'] = df_overbank['tau_bank'] / float(df_overbank['tau_bank'][df_overbank['sigma_z'] == min_rx].iloc[0])
-df_overbank['fr/f0 norm'] = df_overbank['fr/f0'] / float(df['fr/f0'][df_overbank['sigma_z'] == min_rx].iloc[0])
+#normalize outputs (except fr/f) to output value for z0 = 0.01 m
+min_rx = min(df_overbank['z0']) #minimum z0 used
+df_overbank['width_norm'] = df_overbank['width'] / float(df_overbank['width'][df_overbank['z0'] == min_rx].iloc[0])
+df_overbank['depth_norm'] = df_overbank['depth'] / float(df_overbank['depth'][df_overbank['z0'] == min_rx].iloc[0])
+df_overbank['slope_norm'] = df_overbank['slope'] / float(df_overbank['slope'][df_overbank['z0'] == min_rx].iloc[0])
+df_overbank['e_slope_norm'] = df_overbank['e_slope'] / float(df_overbank['e_slope'][df_overbank['z0'] == min_rx].iloc[0])
+df_overbank['tau_bed_norm'] = df_overbank['tau_bed'] / float(df_overbank['tau_bed'][df_overbank['z0'] == min_rx].iloc[0])
+df_overbank['tau_bank_norm'] = df_overbank['tau_bank'] / float(df_overbank['tau_bank'][df_overbank['z0'] == min_rx].iloc[0])
+df_overbank['fr/f0 norm'] = df_overbank['fr/f0'] / float(df['fr/f0'][df_overbank['z0'] == min_rx].iloc[0])
 
 #calculate relative roughness
 df_overbank['R'] = ((df_overbank['width'] + (df_overbank['depth']/np.tan(np.radians(bank_angle)))) * df_overbank['depth']) / (df_overbank['width'] + 2 * (df_overbank['depth'] / np.sin(np.radians(bank_angle))))
-df_overbank['rel_rx'] = df_overbank['R'] / df_overbank['sigma_z']
+df_overbank['rel_rx'] = df_overbank['R'] / df_overbank['z0']
 
 #calculate bed elevation
 h_baselevel = 0
 df_overbank['bed_elev'] = df_overbank['slope'] * reach_length + h_baselevel
-df_overbank['bed_elev_norm'] = df_overbank['bed_elev'] / float(df_overbank['bed_elev'][df_overbank['sigma_z'] == min_rx].iloc[0])
+df_overbank['bed_elev_norm'] = df_overbank['bed_elev'] / float(df_overbank['bed_elev'][df_overbank['z0'] == min_rx].iloc[0])
 
 
 ##########################################################################
@@ -117,7 +116,7 @@ f_ratio = axs[2, 0]
 rel_rx = axs[2, 1]
 
 
-width.scatter(df['sigma_z'], df['width_norm'], clip_on = False, zorder = 3,
+width.scatter(df['z0'], df['width_norm'], clip_on = False, zorder = 3,
               edgecolor = 'k', facecolor = '#8dd3c7', s = markersize,
               alpha = df['alpha'])
 
@@ -140,7 +139,7 @@ width.text(0.48, 0.6, 'widening/\nsteepening', transform=width.transAxes, fontsi
 width.text(0.8, 0.3, 'filling', transform=width.transAxes, fontsize = 12,
                bbox = dict(boxstyle='square', fc = (1,1,1,1), edgecolor = 'k'))
 
-depth.scatter(df['sigma_z'], df['depth_norm'], 
+depth.scatter(df['z0'], df['depth_norm'], 
               clip_on = False, zorder = 3, edgecolor = 'k', facecolor = '#ffffb3',
               s = markersize, alpha = df['alpha'], label = 'flow depth')
 depth.set_xlim(xmin, xmax)
@@ -149,7 +148,7 @@ depth.get_xaxis().set_ticklabels([])
 depth.set_ylabel('Norm. depth and bed elevation [-]')
 depth.axhline(y = 1, color = 'gray', linestyle = '--')
 depth.text(text_x, text_y, 'B', transform=depth.transAxes, fontsize = 20)
-depth.scatter(df['sigma_z'], df['bed_elev_norm'], clip_on = False, zorder = 3,
+depth.scatter(df['z0'], df['bed_elev_norm'], clip_on = False, zorder = 3,
               edgecolor = 'k', facecolor = '#d9d9d9', s = markersize, 
               marker = 'P',alpha = df['alpha'],  label = 'bed elevation')
 depth.legend(bbox_to_anchor=(0.65,1.0), loc = 'upper right', 
@@ -159,10 +158,10 @@ depth.legend(bbox_to_anchor=(0.65,1.0), loc = 'upper right',
 depth.axvline(1.8, linewidth = 2, color = 'k')
 depth.axvline(0.4, linewidth = 2, color = 'k')
 
-slope.scatter(df['sigma_z'], df['slope_norm'], label = 'bed slope', clip_on = False, 
+slope.scatter(df['z0'], df['slope_norm'], label = 'bed slope', clip_on = False, 
               zorder = 3, edgecolor = 'k', marker = 's', s = markersize,
               c = '#bebada', alpha = df['alpha'])
-slope.scatter(df['sigma_z'], df['e_slope_norm'], label = 'energy slope', clip_on = False, 
+slope.scatter(df['z0'], df['e_slope_norm'], label = 'energy slope', clip_on = False, 
               zorder = 3, edgecolor = 'k', marker = '^', s = markersize,
               c = '#fb8072', alpha = df['alpha'])
 slope.set_xscale('log')
@@ -177,10 +176,10 @@ slope.text(text_x, text_y, 'C', transform=slope.transAxes, fontsize = 20)
 slope.axvline(1.8, linewidth = 2, color = 'k')
 slope.axvline(0.4, linewidth = 2, color = 'k')
 
-tau.scatter(df['sigma_z'], df['tau_bed_norm'], color = '#80b1d3', clip_on=False,
+tau.scatter(df['z0'], df['tau_bed_norm'], color = '#80b1d3', clip_on=False,
             marker = 'h', s = markersize, edgecolor = 'k', zorder = 3,
             label = 'bed shear stress', alpha = df['alpha'])
-tau.scatter(df['sigma_z'], df['tau_bank_norm'], color = '#fdb462', clip_on=False,
+tau.scatter(df['z0'], df['tau_bank_norm'], color = '#fdb462', clip_on=False,
             marker = 'v', s = markersize, edgecolor = 'k', zorder = 3,
             label = 'bank shear stress', alpha = df['alpha'])
 tau.set_xscale('log')
@@ -196,7 +195,7 @@ tau.text(text_x, text_y, 'D', transform=tau.transAxes, fontsize = 20)
 tau.axvline(1.8, linewidth = 2, color = 'k')
 tau.axvline(0.4, linewidth = 2, color = 'k')
 
-f_ratio.scatter(df['sigma_z'], df['fr/f0'], color = '#b3de69', clip_on = False, 
+f_ratio.scatter(df['z0'], df['fr/f0'], color = '#b3de69', clip_on = False, 
                 s = markersize, edgecolor = 'k', zorder = 3,
                 alpha = df['alpha'])
 f_ratio.set_xscale('log')
@@ -212,7 +211,7 @@ f_ratio.set_yscale('log')
 f_ratio.axvline(1.8, linewidth = 2, color = 'k')
 f_ratio.axvline(0.4, linewidth = 2, color = 'k')
 
-rel_rx.scatter(df['sigma_z'], df['rel_rx'], color = '#fccde5', clip_on=False,
+rel_rx.scatter(df['z0'], df['rel_rx'], color = '#fccde5', clip_on=False,
                s = markersize, edgecolor = 'k', zorder = 3,
                alpha = df['alpha'])
 rel_rx.set_xlabel('Roughness length $z_0$ [m]')
