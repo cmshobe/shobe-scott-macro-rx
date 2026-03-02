@@ -26,8 +26,8 @@ df = pd.DataFrame({'sigma_z': data[:, 0],
                    'fr/f0': data[:, 7],
                    'teq': data[:, 8]})
 
-#w_r = wb + 2 * (d_r / np.tan(theta))
-df['w_r'] = df['width'] + 2 * (df['depth'] / np.tan(np.radians(60)))
+theta = 60 #degrees
+df['w_r'] = df['width'] + 2 * (df['depth'] / np.tan(np.radians(theta)))
 
 #normalize outputs (except fr/f) to output value for sigma_z = 0.01 m
 min_rx = min(df['sigma_z']) #minimum sigma_z used
@@ -104,60 +104,6 @@ alpha_overbank = 0.25
 df['alpha'] = alpha_belowbank
 df.loc[df_overbank['e_slope_norm'] < 0.001, 'alpha'] = alpha_overbank
 
-
-#create figure: 4 panels
-# fig, axs = plt.subplots(2,2, figsize = (8,5))
-
-# width = axs[0, 0]
-# depth = axs[0, 1]
-# slope = axs[1, 0]
-# f_ratio = axs[1,1]
-
-
-# width.scatter(df['sigma_z'], df['width'], clip_on = False, zorder = 3,
-#               edgecolor = 'k', facecolor = '#fbb4ae', s = markersize)
-# width.set_xscale('log')
-# width.set_xlim(xmin, xmax)
-# #width.set_ylim(40, 200)
-# width.get_xaxis().set_ticklabels([])
-# width.set_ylabel('Equilibrium width [m]')
-# width.text(0.02, 0.85, 'A', transform=width.transAxes, fontsize = 20)
-
-# depth.scatter(df['sigma_z'], df['depth'], color = 'r', 
-#               clip_on = False, zorder = 3, edgecolor = 'k', facecolor = '#b3cde3',
-#               s = markersize)
-# depth.set_xlim(xmin, xmax)
-# #depth.set_ylim(0, 4)
-# depth.set_xscale('log')
-# depth.get_xaxis().set_ticklabels([])
-# depth.set_ylabel('Equilibrium depth [m]')
-# depth.text(0.02, 0.85, 'B', transform=depth.transAxes, fontsize = 20)
-
-# slope.scatter(df['sigma_z'], df['slope'], label = 'bed slope', clip_on = False, 
-#               zorder = 3, edgecolor = 'k', alpha = 1, marker = 's', s = markersize,
-#               c = '#fdb863')
-# slope.scatter(df['sigma_z'], df['e_slope'], label = 'energy slope', clip_on = False, 
-#               zorder = 3, edgecolor = 'k', alpha = 1, marker = '^', s = markersize,
-#               c = '#b2abd2')
-# slope.set_xscale('log')
-# slope.set_ylabel('Equilibrium slope [m/m]')
-# slope.set_xlim(xmin, xmax)
-# #slope.set_ylim(0, 0.03)
-# slope.text(0.02, 0.85, 'C', transform=slope.transAxes, fontsize = 20)
-# slope.legend(loc = 'upper center', framealpha = 1, edgecolor = 'k')
-
-# f_ratio.scatter(df['sigma_z'], df['fr/f0'], color = '#b8e186', clip_on = False, 
-#                 s = markersize, edgecolor = 'k', zorder = 3)
-# f_ratio.set_xscale('log')
-# f_ratio.set_ylabel('Normalized friction factor [-]')
-# f_ratio.set_xlim(xmin, xmax)
-# f_ratio.set_xlabel('Roughness length $\sigma_z$ [m]')
-# f_ratio.text(0.02, 0.85, 'D', transform=f_ratio.transAxes, fontsize = 20)
-
-
-# plt.tight_layout()
-#fig.savefig('sweep_sigma_z_' + run_name +'.png', dpi = 1000)
-
 ###NORMALIZED FIGURE##########################################################
 
 #create figure: 6 panels
@@ -173,10 +119,7 @@ rel_rx = axs[2, 1]
 
 width.scatter(df['sigma_z'], df['width_norm'], clip_on = False, zorder = 3,
               edgecolor = 'k', facecolor = '#8dd3c7', s = markersize,
-              alpha = df['alpha']) ##fbb4ae
-
-#width.scatter(df['sigma_z'], df['w_r_norm'], clip_on = False, zorder = 3,
-#              edgecolor = 'k', facecolor = 'red', s = markersize) ##fbb4ae
+              alpha = df['alpha'])
 
 width.set_xscale('log')
 width.set_xlim(xmin, xmax)
@@ -190,7 +133,6 @@ width.text(text_x, text_y, 'A', transform=width.transAxes, fontsize = 20)
 width.axvline(1.8, linewidth = 2, color = 'k')
 width.axvline(0.4, linewidth = 2, color = 'k')
 
-#width.text(0.1, 0.7, 'widening/\nflattening', fontsize = 16, transform=width.transAxes)
 width.text(0.13, 0.77, 'widening-\ndominated', transform=width.transAxes, fontsize = 12,
                bbox = dict(boxstyle='square', fc = (1,1,1,1), edgecolor = 'k'))
 width.text(0.48, 0.6, 'widening/\nsteepening', transform=width.transAxes, fontsize = 12,
@@ -200,9 +142,8 @@ width.text(0.8, 0.3, 'filling', transform=width.transAxes, fontsize = 12,
 
 depth.scatter(df['sigma_z'], df['depth_norm'], 
               clip_on = False, zorder = 3, edgecolor = 'k', facecolor = '#ffffb3',
-              s = markersize, alpha = df['alpha'], label = 'flow depth') ##b3cde3
+              s = markersize, alpha = df['alpha'], label = 'flow depth')
 depth.set_xlim(xmin, xmax)
-#depth.set_ylim(0, 4)
 depth.set_xscale('log')
 depth.get_xaxis().set_ticklabels([])
 depth.set_ylabel('Norm. depth and bed elevation [-]')
@@ -220,18 +161,16 @@ depth.axvline(0.4, linewidth = 2, color = 'k')
 
 slope.scatter(df['sigma_z'], df['slope_norm'], label = 'bed slope', clip_on = False, 
               zorder = 3, edgecolor = 'k', marker = 's', s = markersize,
-              c = '#bebada', alpha = df['alpha']) #fdb863
+              c = '#bebada', alpha = df['alpha'])
 slope.scatter(df['sigma_z'], df['e_slope_norm'], label = 'energy slope', clip_on = False, 
               zorder = 3, edgecolor = 'k', marker = '^', s = markersize,
-              c = '#fb8072', alpha = df['alpha']) #b2abd2
+              c = '#fb8072', alpha = df['alpha'])
 slope.set_xscale('log')
 slope.set_ylabel('Normalized local slope [-]')
 slope.legend(loc = 'upper center', framealpha = 1, edgecolor = 'k')
 slope.set_xlim(xmin, xmax)
 slope.get_xaxis().set_ticklabels([])
-#slope.set_xlabel('Roughness length $\sigma_z$ [m]')
 slope.axhline(y = 1, color = 'gray', linestyle = '--')
-#slope.set_ylim(0, 0.03)
 slope.text(text_x, text_y, 'C', transform=slope.transAxes, fontsize = 20)
 
 #regime-separating lines
@@ -243,7 +182,7 @@ tau.scatter(df['sigma_z'], df['tau_bed_norm'], color = '#80b1d3', clip_on=False,
             label = 'bed shear stress', alpha = df['alpha'])
 tau.scatter(df['sigma_z'], df['tau_bank_norm'], color = '#fdb462', clip_on=False,
             marker = 'v', s = markersize, edgecolor = 'k', zorder = 3,
-            label = 'bank shear stress', alpha = df['alpha'])#ffd92f'
+            label = 'bank shear stress', alpha = df['alpha'])
 tau.set_xscale('log')
 tau.set_xlim(xmin, xmax)
 tau.get_xaxis().set_ticklabels([])
@@ -259,7 +198,7 @@ tau.axvline(0.4, linewidth = 2, color = 'k')
 
 f_ratio.scatter(df['sigma_z'], df['fr/f0'], color = '#b3de69', clip_on = False, 
                 s = markersize, edgecolor = 'k', zorder = 3,
-                alpha = df['alpha']) #b8e186
+                alpha = df['alpha'])
 f_ratio.set_xscale('log')
 f_ratio.set_ylabel('Friction factor ratio $f_r/f$ [-]')
 f_ratio.set_xlim(xmin, xmax)
