@@ -148,7 +148,7 @@ def transport_erosion_deposition(rho_w, g, R_r, S_r, rho_s, d50, wb, d_r, theta,
         l_bank = 2 * (np.maximum(chan_depth, d_r) / np.sin(theta))
     
     fc_bed = np.minimum(w_bed_roughness / wb, 1)
-    fc_bank = np.minimum(l_bank_roughness / l_bank, 1)
+    fc_bank = np.minimum(2 * l_bank_roughness / l_bank, 1)
     fc_tot = (fc_bed * wb + fc_bank * l_bank) / (l_bank + wb)
     
     
@@ -610,7 +610,8 @@ def channel_evolution_inversion(variable_args, *fixed_args):
 #        if timestep_iter >= 1874223:
 #            timestep_iter = 0
         Q = Q_time_series[timestep_iter]
-        Qs_in = 0.3 * 2.4e-6 * Q**2
+        #Qs_in = 0.3 * 2.4e-6 * Q**2
+        Qs_in = 0.05 * 1.9e-6 * Q**2
 
         #PART 1: HYDRAULICS
         
@@ -677,8 +678,8 @@ def channel_evolution_inversion(variable_args, *fixed_args):
         
     #calculate misfit function
     
-    width_uncertainty = 5 #m
-    bed_elev_uncertainty = 0.1 #m
+    width_uncertainty = 2.5 #m
+    bed_elev_uncertainty = 0.5 #m
     
     weight_on_width = 1. #0 for all weight on slope, 1 for all on width
     
@@ -785,7 +786,7 @@ def channel_evolution_bestfit(time_to_run,
  #       if timestep_iter >= 1874223:
  #           timestep_iter = 0
         Q = Q_time_series[timestep_iter]
-        Qs_in = 0.3 * 2.4e-6 * Q**2
+        Qs_in = 0.05 * 1.9e-6 * Q**2
             
 
         #PART 1: HYDRAULICS

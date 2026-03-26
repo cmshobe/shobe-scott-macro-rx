@@ -19,7 +19,7 @@ if __name__ == '__main__':
     n_steps = 15
     z0 = 0.1
     w_bed_roughness = 0.
-    l_bank_roughness_values = np.linspace(0, 10, n_steps)
+    l_bank_roughness_values = np.linspace(0, 5, n_steps)
     Q = 150 #m3/s
     Qs_in = 0.001 #m3/s
     theta_deg = 60. #degrees; bank angle
