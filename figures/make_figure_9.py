@@ -59,10 +59,10 @@ k_dep_max = 122
 
 #DATA and axis lims FOR BOUNDARY CONDITION PLOTS
 low_z0_values = np.array([0.13, 0.13, 0.14])
-high_z0_values = np.array([0.20, 0.23, 0.26])
+high_z0_values = np.array([0.22, 0.20, 0.23])
 
 l_bed_obst_values = np.array([1.74, 1.35, 1.84])
-l_bank_obst_values = np.array([1.91, 1.23, 1.84])
+l_bank_obst_values = np.array([0.95, 0.61, 0.92])#np.array([1.91, 1.23, 1.84])
 
 #x-tick array for A,B,E,F,G,H
 #x-tick label array for A,B,E,F,G,H
@@ -97,12 +97,12 @@ bc_plot.hlines(y = low_z0_values[2], xmin = observed_times[2],
 
 fc_plot = bc_plot.twinx()
 fc_plot.hlines(y = l_bed_obst_values[0], xmin = observed_times[0], 
-                xmax = observed_times[1], linewidth = linewidth, color = bed_obst_color,
+                xmax = observed_times[1], linewidth = linewidth, color = bed_obst_color, linestyle = '--',
                 label = '$w^{\mathrm{bed}}_{\mathrm{roughness}}$')
 fc_plot.hlines(y = l_bed_obst_values[1], xmin = observed_times[1], 
-                xmax = observed_times[2], linewidth = linewidth, color = bed_obst_color)
+                xmax = observed_times[2], linewidth = linewidth, color = bed_obst_color, linestyle = '--')
 fc_plot.hlines(y = l_bed_obst_values[2], xmin = observed_times[2], 
-                xmax = observed_times[3], linewidth = linewidth, color = bed_obst_color)
+                xmax = observed_times[3], linewidth = linewidth, color = bed_obst_color, linestyle = '--')
 
 fc_plot.hlines(y = l_bank_obst_values[0], xmin = observed_times[0], 
                 xmax = observed_times[1], linewidth = linewidth, color = bank_obst_color, linestyle = '--',
@@ -166,6 +166,8 @@ misfit_scatter.scatter(data.k_ero.iloc[-1], data.k_dep.iloc[-1],
 cax = fig.add_axes([0.4, 0.67, 0.15, 0.01])
 c = fig.colorbar(cbar_mappable, cax = cax, orientation='horizontal')
 c.ax.yaxis.set_visible(False)
+c.ax.set_xticks(np.array([data.misfit.min(), data.misfit.max()]))
+c.ax.set_xticklabels(['low', 'high'])
 cax.set_title('log(misfit) [-]', fontsize=12)
 
 misfit_scatter.set_xlabel('$k^*_{\mathrm{ero}}$ [-]', labelpad = 0)
@@ -254,12 +256,12 @@ bc_plot_2.hlines(y = high_z0_values[2], xmin = observed_times[2],
 
 fc_plot_2 = bc_plot_2.twinx()
 fc_plot_2.hlines(y = l_bed_obst_values[0], xmin = observed_times[0], 
-                xmax = observed_times[1], linewidth = linewidth, color = bed_obst_color,
+                xmax = observed_times[1], linewidth = linewidth, color = bed_obst_color,linestyle = '--',
                 label = '$w^{\mathrm{bed}}_{\mathrm{roughness}}$')
 fc_plot_2.hlines(y = l_bed_obst_values[1], xmin = observed_times[1], 
-                xmax = observed_times[2], linewidth = linewidth, color = bed_obst_color)
+                xmax = observed_times[2], linewidth = linewidth, color = bed_obst_color,linestyle = '--')
 fc_plot_2.hlines(y = l_bed_obst_values[2], xmin = observed_times[2], 
-                xmax = observed_times[3], linewidth = linewidth, color = bed_obst_color)
+                xmax = observed_times[3], linewidth = linewidth, color = bed_obst_color,linestyle = '--')
 
 fc_plot_2.hlines(y = l_bank_obst_values[0], xmin = observed_times[0], 
                 xmax = observed_times[1], linewidth = linewidth, color = bank_obst_color,linestyle = '--',
