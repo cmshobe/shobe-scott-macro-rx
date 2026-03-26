@@ -534,6 +534,31 @@ slope_short.text(text_x, text_y, 'G', transform=slope_short.transAxes, fontsize 
 slope_short.set_xlim(xmin_v_short, xmax_v_short)
 slope_short.set_ylim(slope_short_min, slope_short_max)
 
+from matplotlib.patches import FancyArrowPatch
+arrow = FancyArrowPatch(posA=(0.00095, 1.01),
+                        posB=(0.00095, 1.25),
+                        connectionstyle="arc3,rad=0.",
+                        arrowstyle='-|>',
+                        mutation_scale=20,
+                        color='k',
+                        linewidth=2)
+slope_short.add_patch(arrow)
+
+arrow2 = FancyArrowPatch(posA=(0.00095, 0.99),
+                        posB=(0.00095, 0.75),
+                        connectionstyle="arc3,rad=0.",
+                        arrowstyle='-|>',
+                        mutation_scale=20,
+                        color='k',
+                        linewidth=2)
+slope_short.add_patch(arrow2)
+
+#agg/deg label
+slope_short.text(0.4, .57, 'bed aggradation', transform=slope_short.transAxes, fontsize = 12,
+           rotation = 0, color = 'k')
+slope_short.text(0.55, .43, 'bed incision', transform=slope_short.transAxes, fontsize = 12,
+           rotation = 0, color = 'k')
+
 slope.plot(time_array[:z0_nofp_1_final_index], 
                  z0_nofp_1_slopes_norm[:z0_nofp_1_final_index],
                  linewidth = linewidth, color = z0_1_color, alpha = alpha)
