@@ -176,6 +176,22 @@ slope.text(text_x, text_y, 'C', transform=slope.transAxes, fontsize = 20)
 slope.axvline(1.8, linewidth = 2, color = 'k')
 slope.axvline(0.4, linewidth = 2, color = 'k')
 
+#agg/degg arrow
+from matplotlib.patches import FancyArrowPatch
+arrow = FancyArrowPatch(posA=(0.1, 1.2),
+                        posB=(5, 3.3),
+                        connectionstyle="arc3,rad=0.35",
+                        arrowstyle='-|>',
+                        mutation_scale=20,
+                        color='#bebada',
+                        linewidth=2)
+slope.add_patch(arrow)
+
+#agg/deg label
+slope.text(.4, .33, 'bed aggradation', transform=slope.transAxes, fontsize = 12,
+           rotation = 32, color='#bebada')
+
+
 tau.scatter(df['z0'], df['tau_bed_norm'], color = '#80b1d3', clip_on=False,
             marker = 'h', s = markersize, edgecolor = 'k', zorder = 3,
             label = 'bed shear stress', alpha = df['alpha'])
@@ -217,7 +233,7 @@ rel_rx.scatter(df['z0'], df['rel_rx'], color = '#fccde5', clip_on=False,
 rel_rx.set_xlabel('Roughness length $z_0$ [m]')
 rel_rx.set_xscale('log')
 rel_rx.set_xlim(xmin, xmax)
-rel_rx.set_ylabel('Relative submergence $R/z_0$ [-]')
+rel_rx.set_ylabel('Relative submergence $R_r/z_0$ [-]')
 rel_rx.text(text_x, text_y, 'F', transform=rel_rx.transAxes, fontsize = 20)
 rel_rx.set_ylim(0.1, 100)
 rel_rx.set_yscale('log')

@@ -155,6 +155,21 @@ slope.get_xaxis().set_ticklabels([])
 slope.axhline(y = 1, color = 'gray', linestyle = '--')
 slope.text(text_x, text_y, 'C', transform=slope.transAxes, fontsize = 20)
 
+#agg/degg arrow
+from matplotlib.patches import FancyArrowPatch
+arrow = FancyArrowPatch(posA=(0.02, 1.2),
+                        posB=(0.6, 2.6),
+                        connectionstyle="arc3,rad=0.2",
+                        arrowstyle='-|>',
+                        mutation_scale=20,
+                        color='#bebada',
+                        linewidth=2)
+slope.add_patch(arrow)
+
+#agg/deg label
+slope.text(.15, .25, 'bed aggradation', transform=slope.transAxes, fontsize = 12,
+           rotation = 32, color='#bebada')
+
 tau.scatter(df['fc_bed'], df['tau_bed_norm'], color = '#80b1d3', clip_on=False,
             marker = 'h', s = markersize, edgecolor = 'k', zorder = 3,
             label = 'bed shear stress', alpha = df['alpha'])
@@ -180,7 +195,7 @@ f_ratio.text(text_x, text_y, 'E', transform=f_ratio.transAxes, fontsize = 20)
 
 rel_rx.scatter(df['fc_bed'], df['rel_rx'], color = '#fccde5', clip_on=False,
                s = markersize, edgecolor = 'k', zorder = 3, alpha = df['alpha'])
-rel_rx.set_ylabel('Relative submergence $R/z_0$ [-]')
+rel_rx.set_ylabel('Relative submergence $R_r/z_0$ [-]')
 rel_rx.set_xlim(xmin, xmax)
 rel_rx.set_xlabel('Bed cover fraction $f_c^{\mathrm{bed}}$ [-]')
 rel_rx.text(text_x, text_y, 'F', transform=rel_rx.transAxes, fontsize = 20)

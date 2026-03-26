@@ -42,7 +42,6 @@ reach_length = 1000 #m
 
 #load slope from which all runs started
 baseline_name = 'trajectory_z0_baseline_rev1'
-print('loading baseline slope and width...')
 baseline_slopes = np.load('../results/' + str(baseline_name) + '_slopes.npy')
 initial_slope = baseline_slopes[np.where(baseline_slopes > 0)[0][-1]]
 
@@ -120,6 +119,21 @@ slope.axhline(y = 1, color = 'gray', linestyle = '--')
 slope.set_ylim(0.4, 1.2)
 slope.text(text_x, text_y, 'C', transform=slope.transAxes, fontsize = 20)
 
+#agg/degg arrow
+from matplotlib.patches import FancyArrowPatch
+arrow = FancyArrowPatch(posA=(0.02, 0.92),
+                        posB=(0.6, 0.52),
+                        connectionstyle="arc3,rad=0.",
+                        arrowstyle='-|>',
+                        mutation_scale=20,
+                        color='#bebada',
+                        linewidth=2)
+slope.add_patch(arrow)
+
+#agg/deg label
+slope.text(.18, .25, 'bed incision', transform=slope.transAxes, fontsize = 12,
+           rotation = -26, color = '#bebada')
+
 tau.scatter(df['fc_bank'], df['tau_bed_norm'], color = '#80b1d3', clip_on=False,
             marker = 'h', s = markersize, edgecolor = 'k', zorder = 3,
             label = 'bed shear stress')
@@ -145,7 +159,7 @@ f_ratio.text(text_x, text_y, 'E', transform=f_ratio.transAxes, fontsize = 20)
 
 rel_rx.scatter(df['fc_bank'], df['rel_rx'], color = '#fccde5', clip_on=False,
                s = markersize, edgecolor = 'k', zorder = 3)
-rel_rx.set_ylabel('Relative submergence $R/z_0$ [-]')
+rel_rx.set_ylabel('Relative submergence $R_r/z_0$ [-]')
 rel_rx.set_xlim(xmin, xmax)
 rel_rx.set_xlabel('Bank cover fraction $f_c^{\mathrm{bank}}$ [-]')
 rel_rx.text(text_x, text_y, 'F', transform=rel_rx.transAxes, fontsize = 20)

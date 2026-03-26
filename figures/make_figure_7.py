@@ -338,7 +338,7 @@ rel_rx.set_ylim(k_dep_lims)
 
 rel_rx.set_xlabel(r'$k^*_{\mathrm{ero}}$')
 rel_rx.get_yaxis().set_ticklabels([])
-rel_rx.set_title('F) Relative submergence $R/z_0$ [-]')
+rel_rx.set_title('F) Relative submergence $R_r/z_0$ [-]')
 
 ###########################################
 
