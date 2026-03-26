@@ -2,6 +2,8 @@
 
 Modeling and analysis code for Shobe and Scott (in review): Modeling the influence of macro-roughness on gravel-bed river morphodynamics
 
+[![DOI](https://zenodo.org/badge/976142323.svg)](https://doi.org/10.5281/zenodo.19238487)
+
 This repository contains all code and input data required to reproduce the modeling and analysis in the above paper.
 
 Note 1: The model produces much of its output in .npy binaries, which can be hundreds of MB each. These files are not included in this repository, but they can be produced by running the code in this repository.
