@@ -55,7 +55,7 @@ h_floodplain = 2.95 + (S * reach_length)
 
 #bring in Q data and trim to date bounds
 Q_time_series = pd.read_parquet('inputs/sf_sno_Q.parquet')
-Q_time_series[(Q_time_series['datetime'] >= survey_2019_date) & 
+Q_time_series = Q_time_series[(Q_time_series['datetime'] >= survey_2019_date) & 
               (Q_time_series['datetime'] <= survey_2024_date)]
 Q_time_series_np = Q_time_series['Q (cms)'].to_numpy()
 expansion_factor = int((15 * 60) / timestep)

@@ -17,12 +17,12 @@ import os
 if __name__ == '__main__':
     run_name = 'figure_7'
     
-    k_ero_values = np.linspace(1, 5, 10)
-    k_dep_values = np.linspace(10, 50, 10)
+    k_ero_values = np.logspace(-1, np.log10(5), 20)#np.logspace(-1, 1, 10)#np.linspace(1, 5, 10)
+    k_dep_values = np.logspace(1, 2, 20)#np.linspace(10, 100, 10)#np.linspace(10, 50, 10)
     
     X, Y = np.meshgrid(k_ero_values, k_dep_values)
     
-    z0 = 1.
+    z0 = 0.1#1.
     w_bed_roughness = 0.
     l_bank_roughness = 0.
     Q = 150 #m3/s
@@ -69,7 +69,7 @@ if __name__ == '__main__':
         for key, value in param_dict.items():  
             params_file.write('%s: %s\n' % (key, value))
     
-    with Pool(os.cpu_count() - 1) as p:
+    with Pool(os.cpu_count() - 8) as p:
         
         #prepare arguments
         args = [(time_to_run, timestep, reach_length, Q, Qs_in, wb, theta,

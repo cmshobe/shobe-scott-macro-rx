@@ -55,7 +55,7 @@ k_ero_min = 0.01
 k_ero_max = 10.02
 
 k_dep_min = 0
-k_dep_max = 122
+k_dep_max = 123
 
 #DATA and axis lims FOR BOUNDARY CONDITION PLOTS
 low_z0_values = np.array([0.13, 0.13, 0.14])
