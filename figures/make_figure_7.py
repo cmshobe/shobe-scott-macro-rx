@@ -122,8 +122,8 @@ text_100_x = 0.
 text_100_y = 0.11
 text_100_r = 48
 
-text_50_x = 0.22
-text_50_y = 0.19
+text_50_x = 0.13
+text_50_y = 0.02
 text_50_r = 48
 
 text_20_x = 0.34
@@ -134,7 +134,7 @@ text_10_x = 0.52
 text_10_y = 0.02
 text_10_r = 48
 
-text_5_x = 0.67
+text_5_x = 0.71
 text_5_y = 0.02
 text_5_r = 48
 
@@ -217,7 +217,7 @@ width.text(text_20_x, text_20_y, r'$20$', color = 'w',
         transform=width.transAxes, rotation = text_20_r, fontsize = 14)
 width.text(text_10_x, text_10_y, r'$10$', color = 'w',
         transform=width.transAxes, rotation = text_10_r, fontsize = 14)
-width.text(text_5_x, text_5_y, r'$k^*_{\mathrm{dep}}/k^*_{\mathrm{ero}}=5$', color = 'w',
+width.text(text_5_x, text_5_y, r'$5$', color = 'w',
         transform=width.transAxes, rotation = text_5_r, fontsize = 14)
 
 width.set_xscale('log')
