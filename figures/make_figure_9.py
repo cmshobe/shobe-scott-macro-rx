@@ -374,4 +374,6 @@ misfit_scatter_2.text(0.6, 0.75,
                       bbox = dict(edgecolor = 'k', facecolor = 'white', boxstyle='round', alpha = 0.5))
 
 fig.savefig('figure_9_hires.png', dpi = 1000, bbox_inches = 'tight')
+fig.savefig('figure_9_hires.pdf', dpi = 1000, bbox_inches = 'tight')
+fig.savefig('figure_9_hires.tif', dpi = 300, bbox_inches = 'tight')
 fig.savefig('figure_9_lores.png', dpi = 100, bbox_inches = 'tight')

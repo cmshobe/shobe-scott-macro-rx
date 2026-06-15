@@ -245,4 +245,6 @@ rel_rx.axvline(0.4, linewidth = 2, color = 'k')
 
 plt.tight_layout()
 fig2.savefig('figure_4_hires.png', dpi = 1000)
+fig2.savefig('figure_4_hires.pdf', dpi = 1000)
+fig2.savefig('figure_4_hires.tif', dpi = 300)
 fig2.savefig('figure_4_lores.png', dpi = 100)

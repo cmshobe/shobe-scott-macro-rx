@@ -205,4 +205,6 @@ rel_rx.set_yscale('log')
 
 plt.tight_layout()
 fig2.savefig('figure_5_hires.png', dpi = 1000)
+fig2.savefig('figure_5_hires.pdf', dpi = 1000)
+fig2.savefig('figure_5_hires.tif', dpi = 300)
 fig2.savefig('figure_5_lores.png', dpi = 100)

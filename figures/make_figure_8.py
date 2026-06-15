@@ -930,6 +930,8 @@ tau_bank_long.text(text_x, text_y, 'O', transform=tau_bank_long.transAxes, fonts
 
 
 fig2.savefig('figure_8_hires.png', dpi = 1000, bbox_inches = 'tight')
+fig2.savefig('figure_8_hires.pdf', dpi = 1000, bbox_inches = 'tight')
+fig2.savefig('figure_8_hires.tif', dpi = 300, bbox_inches = 'tight')
 fig2.savefig('figure_8_lores.png', dpi = 100, bbox_inches = 'tight')
 
 

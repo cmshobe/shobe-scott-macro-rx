@@ -223,6 +223,7 @@ width.text(text_5_x, text_5_y, r'$5$', color = 'w',
 width.set_xscale('log')
 width.set_yscale('log')
 width.get_xaxis().set_ticklabels([])
+width.tick_params(which = 'minor', labelleft=False)
 
 
 ##########depth subplot
@@ -296,6 +297,7 @@ slope.set_xscale('log')
 slope.set_yscale('log')
 
 slope.get_xaxis().set_ticklabels([])
+slope.tick_params(which = 'minor', labelleft=False)
 
 
 ################tau_subplot (bank??)
@@ -364,6 +366,7 @@ f_ratio.set_ylim(k_dep_lims)
 f_ratio.set_xlabel(r'$k^*_{\mathrm{ero}}$')
 f_ratio.set_ylabel(r'$k^*_{\mathrm{dep}}$')
 f_ratio.set_title('E) Friction factor ratio $f_r/f$ [-]')
+f_ratio.tick_params(which = 'minor', labelleft=False)
 
 f_ratio.set_xscale('log')
 f_ratio.set_yscale('log')
@@ -407,4 +410,6 @@ rel_rx.tick_params(axis='y', which = 'minor', labelleft=False)
 ###########################################
 
 fig.savefig('figure_7_hires.png', dpi = 1000, bbox_inches = 'tight')
+fig.savefig('figure_7_hires.pdf', dpi = 1000, bbox_inches = 'tight')
+fig.savefig('figure_7_hires.tif', dpi = 300, bbox_inches = 'tight')
 fig.savefig('figure_7_lores.png', dpi = 100, bbox_inches = 'tight')
